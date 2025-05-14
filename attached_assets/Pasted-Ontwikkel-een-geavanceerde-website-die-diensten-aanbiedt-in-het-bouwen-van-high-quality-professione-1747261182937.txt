@@ -1,0 +1,45 @@
+Ontwikkel een geavanceerde website die diensten aanbiedt in het bouwen van high-quality, professionele websites, applicaties, en dashboards voor bedrijven. De site moet de nieuwste webontwikkelingsprincipes reflecteren en dienen als een portfolio om klanten aan te trekken en te overtuigen van onze expertise.
+
+Doelgroep: Bedrijven op zoek naar upscaling van hun digitale aanwezigheid met op maat gemaakte, innovatieve en professionele weboplossingen.
+
+Kernfuncties:
+
+Responsive Design: Geschikt voor alle apparaten en schermformaten.
+High-Performance: Geoptimaliseerd voor snelheid en gebruikerservaring.
+SEO-Ready: Opzet voor maximale vindbaarheid in zoekmachines.
+Content Management Systeem (CMS): Intuïtieve interface voor inhoudsbeheer.
+Geavanceerde Beveiliging: Bescherming van gebruikersgegevens en bedrijfsinformatie.
+Multilingual Support: Ondersteuning voor meerdere talen om een breed publiek te bereiken.
+Live Chat & Klantenportaal: Voor directe communicatie en klantensupport.
+Design & Merkidentiteit:
+
+Strak, modern design met een kleurenschema dat professionaliteit en innovatie uitstraalt.
+Logo en merkelementen moeten in het ontwerp worden geïntegreerd.
+Inspiratie: Apple, Google's Material Design en Adobe.
+Content Richtlijnen:
+
+Een mix van SEO-geoptimaliseerde teksten, high-quality afbeeldingen, en video’s die onze diensten en succesverhalen uitlichten.
+Duidelijke CTA’s om conversie te stimuleren.
+Concurrentieanalyse & Innovatie:
+
+Een diepgaande analyse van concurrenten en het identificeren van kansen voor innovatie en differentiatie.
+Technologieën & Tools:
+
+Front-End: HTML, CSS, JavaScript (Frameworks zoals React of Vue.js).
+Back-End: Node.js, Python of vergelijkbaar, afhankelijk van de benodigdheden.
+Database: MongoDB, PostgreSQL, of een geschikte keuze afhankelijk van de data behoeften.
+SEO Tools: Google Analytics, SEMrush of Ahrefs voor optimalisatie en monitoring.
+Beveiliging: SSL, regelmatige beveiligingsaudits en GDPR compliance tools.
+Performance & Analyse Tools:
+
+Integreer Google Analytics en CRM-tool voor het volgen van KPI’s en gebruikersengagement.
+Setup van dashboards voor real-time monitoring van websitestatistieken en gebruikersgedrag.
+Budget & Deadlines:
+
+Specificeer budgetlimieten en doeldeadlines voor projectfasen.
+Replit Gebruik:
+
+Start met een prototypefase binnen Replit om de initiële structuur en basisfunctionaliteiten te ontwikkelen.
+Maak gebruik van Replit's collaboratieve functies voor real-time codebewerking en feedback.
+Conclusie:
+Dit project vereist een zorgvuldige planning, aandacht voor detail, en constante communicatie tussen alle teamleden. Het einddoel is een state-of-the-art website die niet alleen onze technische vaardigheden toont, maar ook dient als het ultieme voorbeeld van wat wij onze klanten bieden.
