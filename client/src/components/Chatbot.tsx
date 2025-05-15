@@ -22,11 +22,41 @@ export const Chatbot = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [hasShownAutomatically, setHasShownAutomatically] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Show welcome message when chat is first opened
+  // Auto-open chat after 10 seconds
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    if (!hasShownAutomatically) {
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        setHasShownAutomatically(true);
+        
+        // After opening, automatically show an engaging question
+        setIsTyping(true);
+        
+        setTimeout(() => {
+          const initialQuestion = {
+            id: `bot-${Date.now()}`,
+            sender: "bot" as const,
+            text: isEnglish 
+              ? "Hi there! 👋 Can I help you with your web development project today? I'd be happy to tell you about our services."
+              : "Hallo daar! 👋 Kan ik je vandaag helpen met je webontwikkelingsproject? Ik vertel je graag meer over onze diensten.",
+            timestamp: new Date()
+          };
+          
+          setMessages([initialQuestion]);
+          setIsTyping(false);
+        }, 1000);
+      }, 10000); // 10 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, [hasShownAutomatically, isEnglish]);
+
+  // Show welcome message when chat is first opened manually
+  useEffect(() => {
+    if (isOpen && messages.length === 0 && hasShownAutomatically === false) {
       const welcomeMessage = {
         id: `bot-${Date.now()}`,
         sender: "bot" as const,
@@ -44,7 +74,7 @@ export const Chatbot = () => {
         setIsTyping(false);
       }, 1000);
     }
-  }, [isOpen, isEnglish, messages.length]);
+  }, [isOpen, isEnglish, messages.length, hasShownAutomatically]);
 
   // Auto-scroll to the latest message
   useEffect(() => {
