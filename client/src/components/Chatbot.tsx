@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { trackEvent } from "@/lib/analytics";
+import { generateAIResponse } from "@/lib/openai-service";
 
 interface Message {
   id: string;
@@ -117,7 +118,7 @@ export const Chatbot = () => {
     trackEvent('chat_closed', 'engagement', 'chatbot');
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     // Add user message
@@ -135,54 +136,48 @@ export const Chatbot = () => {
     // Track this message
     trackEvent('message_sent', 'engagement', 'chatbot');
 
-    // Simple response logic based on keywords
-    let botResponse = "";
-    const lowerCaseMessage = message.toLowerCase();
+    // Bereid de chatgeschiedenis voor in het formaat dat de AI-service verwacht
+    const chatHistory = messages.map(msg => ({
+      role: msg.sender === "user" ? "user" : "assistant",
+      content: msg.text
+    }));
 
-    // Determine response based on language and message content
-    if (isEnglish) {
-      if (lowerCaseMessage.includes("pricing") || lowerCaseMessage.includes("cost") || lowerCaseMessage.includes("price")) {
-        botResponse = "Our pricing depends on the project scope and requirements. Would you like to schedule a consultation to discuss your project in detail?";
-      } else if (lowerCaseMessage.includes("contact") || lowerCaseMessage.includes("talk to human") || lowerCaseMessage.includes("support")) {
-        botResponse = "You can reach our team via the contact form on our website or by sending an email to info@digitaalatelier.com. Would you like me to direct you to our contact page?";
-      } else if (lowerCaseMessage.includes("service") || lowerCaseMessage.includes("offer")) {
-        botResponse = "We offer web development, application building, UI/UX design, and digital marketing services. Which service are you interested in learning more about?";
-      } else if (lowerCaseMessage.includes("portfolio") || lowerCaseMessage.includes("example") || lowerCaseMessage.includes("previous work")) {
-        botResponse = "You can view our portfolio of previous projects on our website. Would you like me to direct you to our portfolio section?";
-      } else if (lowerCaseMessage.includes("time") || lowerCaseMessage.includes("deadline") || lowerCaseMessage.includes("duration")) {
-        botResponse = "Project timelines vary based on complexity. Simple websites typically take 3-4 weeks, while larger projects might take 8-12 weeks. Would you like to discuss your specific project timeline?";
-      } else {
-        botResponse = "Thanks for your message! To better assist you, would you prefer to discuss your project with our team directly? I can help you get in touch with them.";
-      }
-    } else {
-      // Dutch responses
-      if (lowerCaseMessage.includes("prijs") || lowerCaseMessage.includes("kosten") || lowerCaseMessage.includes("tarief")) {
-        botResponse = "Onze prijzen zijn afhankelijk van de projectomvang en vereisten. Wilt u een consultatie inplannen om uw project in detail te bespreken?";
-      } else if (lowerCaseMessage.includes("contact") || lowerCaseMessage.includes("praat met mens") || lowerCaseMessage.includes("support")) {
-        botResponse = "U kunt ons team bereiken via het contactformulier op onze website of door een e-mail te sturen naar info@digitaalatelier.com. Wilt u dat ik u naar onze contactpagina verwijs?";
-      } else if (lowerCaseMessage.includes("dienst") || lowerCaseMessage.includes("aanbod")) {
-        botResponse = "Wij bieden webontwikkeling, applicatiebouw, UI/UX-ontwerp en digitale marketingdiensten aan. Over welke dienst wilt u meer weten?";
-      } else if (lowerCaseMessage.includes("portfolio") || lowerCaseMessage.includes("voorbeeld") || lowerCaseMessage.includes("eerder werk")) {
-        botResponse = "U kunt ons portfolio van eerdere projecten bekijken op onze website. Wilt u dat ik u naar ons portfolio-gedeelte verwijs?";
-      } else if (lowerCaseMessage.includes("tijd") || lowerCaseMessage.includes("deadline") || lowerCaseMessage.includes("duur")) {
-        botResponse = "Projecttijdlijnen variëren op basis van complexiteit. Eenvoudige websites duren meestal 3-4 weken, terwijl grotere projecten 8-12 weken kunnen duren. Wilt u uw specifieke projecttijdlijn bespreken?";
-      } else {
-        botResponse = "Bedankt voor uw bericht! Om u beter te helpen, wilt u liever uw project rechtstreeks met ons team bespreken? Ik kan u helpen om contact met hen op te nemen.";
-      }
-    }
-
-    // Simulate bot typing with delay
-    setTimeout(() => {
-      const botMessage: Message = {
-        id: `bot-${Date.now()}`,
-        sender: "bot",
-        text: botResponse,
-        timestamp: new Date(),
-      };
+    try {
+      // Gebruik de AI-service om een antwoord te genereren
+      const aiResponse = await generateAIResponse(message, chatHistory);
       
-      setMessages((prev) => [...prev, botMessage]);
-      setIsTyping(false);
-    }, 1500);
+      // Voeg het antwoord toe na een korte vertraging om typegedrag te simuleren
+      setTimeout(() => {
+        const botMessage: Message = {
+          id: `bot-${Date.now()}`,
+          sender: "bot",
+          text: aiResponse,
+          timestamp: new Date(),
+        };
+        
+        setMessages((prev) => [...prev, botMessage]);
+        setIsTyping(false);
+      }, 1500);
+    } catch (error) {
+      console.error("Error getting AI response:", error);
+      
+      // Fallback antwoord in geval van een fout
+      setTimeout(() => {
+        const fallbackMessage = isEnglish
+          ? "I'm sorry, I'm having trouble processing your request right now. Could you try again later or contact our team directly?"
+          : "Het spijt me, ik heb momenteel moeite met het verwerken van je verzoek. Kun je het later nog eens proberen of direct contact opnemen met ons team?";
+        
+        const botMessage: Message = {
+          id: `bot-${Date.now()}`,
+          sender: "bot",
+          text: fallbackMessage,
+          timestamp: new Date(),
+        };
+        
+        setMessages((prev) => [...prev, botMessage]);
+        setIsTyping(false);
+      }, 1500);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
