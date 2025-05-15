@@ -27,6 +27,32 @@ export default function PrivacyPolicy() {
           : "Privacybeleid van Digitaal Atelier. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen."
         }
         ogType="article"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": isEnglish ? "Privacy Policy" : "Privacybeleid",
+          "description": isEnglish 
+            ? "Privacy Policy for Digitaal Atelier. Learn how we collect, use, and protect your personal information."
+            : "Privacybeleid van Digitaal Atelier. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "url": "https://digitaalatelier.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://digitaalatelier.com/logo.png"
+            }
+          },
+          "mainEntity": {
+            "@type": "WebPage",
+            "lastReviewed": "2023-05-15",
+            "author": {
+              "@type": "Organization",
+              "name": "Digitaal Atelier"
+            }
+          },
+          "specialty": "Privacy and Data Protection"
+        }}
       />
       <Header />
       <main className="pt-28 pb-20">

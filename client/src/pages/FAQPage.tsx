@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { FAQ } from '@/components/FAQ';
 import { CallToAction } from '@/components/CallToAction';
+import { SEO } from '@/components/SEO';
 
 const FAQPage = () => {
   const { t } = useTranslation();
@@ -16,12 +16,22 @@ const FAQPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>FAQ | Digitaal Atelier</title>
-        <meta name="description" content={t('faq.description')} />
-        <meta property="og:title" content="FAQ | Digitaal Atelier" />
-        <meta property="og:description" content={t('faq.description')} />
-      </Helmet>
+      <SEO
+        title="FAQ"
+        description={t('faq.description')}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": (t('faq.items', { returnObjects: true }) as any[]).map(faq => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.answer
+            }
+          }))
+        }}
+      />
       
       <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}

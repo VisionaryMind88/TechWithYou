@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Contact } from '@/components/Contact';
+import { SEO } from '@/components/SEO';
 
 const ContactPage = () => {
   const { t } = useTranslation();
@@ -15,12 +15,45 @@ const ContactPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{t('contact.title')} | Digitaal Atelier</title>
-        <meta name="description" content={t('contact.description')} />
-        <meta property="og:title" content={`${t('contact.title')} | Digitaal Atelier`} />
-        <meta property="og:description" content={t('contact.description')} />
-      </Helmet>
+      <SEO
+        title={t('contact.title')}
+        description={t('contact.description')}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "name": t('contact.title'),
+          "description": t('contact.description'),
+          "publisher": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "url": "https://digitaalatelier.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://digitaalatelier.com/logo.png"
+            }
+          },
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Prinsengracht 123",
+              "addressLocality": "Amsterdam",
+              "postalCode": "1015 AB",
+              "addressCountry": "NL"
+            },
+            "telephone": "+31-20-1234567",
+            "email": "info@digitaalatelier.com",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "customer service",
+              "telephone": "+31-20-1234567",
+              "email": "info@digitaalatelier.com",
+              "availableLanguage": ["English", "Dutch"]
+            }
+          }
+        }}
+      />
       
       <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}
