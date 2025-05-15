@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/hooks/use-auth";
-import { ProtectedRoute } from "@/lib/protected-route";
+import { ProtectedRoute, AdminProtectedRoute } from "@/lib/protected-route";
 import { queryClient } from "@/lib/queryClient";
 
 import NotFound from "@/pages/not-found";
@@ -65,7 +65,7 @@ function Router() {
       </Route>
       <ProtectedRoute path="/dashboard" component={DashboardPage} />
       <ProtectedRoute path="/project/:id" component={ProjectDetailPage} />
-      <ProtectedRoute path="/admin" component={AdminDashboardPage} />
+      <AdminProtectedRoute path="/admin" component={AdminDashboardPage} />
       <Route>
         {() => <NotFound />}
       </Route>
