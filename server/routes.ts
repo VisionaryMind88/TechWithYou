@@ -407,6 +407,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bestand uploaden naar project
+  app.post('/api/dashboard/projects/:projectId/files', requireAuth, async (req: Request, res: Response) => {
+    try {
+      const user = assertUser(req, res);
+      if (!user) return;
+      
+      const projectId = parseInt(req.params.projectId);
+      
+      // Validatie: Controleer of het project bestaat en of deze gebruiker toegang heeft
+      const project = await storage.getProject(projectId);
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+      
+      // Alleen toegang voor eigenaar of admin
+      if (project.userId !== user.id && user.role !== 'admin') {
+        return res.status(403).json({ error: 'You do not have permission to access this project' });
+      }
+      
+      // Simuleer bestandupload, omdat we nog geen echte bestandsupload hebben geïmplementeerd
+      // In een echte implementatie zou je hier multer gebruiken voor het verwerken van het bestand
+      const { name, description, notifyAdmin } = req.body;
+      
+      // Validatie
+      if (!name) {
+        return res.status(400).json({ error: 'File name is required' });
+      }
+      
+      // Maak een nieuw projectbestand aan
+      const newFile = await storage.createProjectFile({
+        projectId,
+        name,
+        description: description || '',
+        fileUrl: 'https://example.com/dummy-file.pdf', // Plaats hier de echte URL in productie
+        fileType: 'pdf', // Bepaal hier het echte bestandstype in productie
+        fileSize: 1024, // Bepaal hier de echte bestandsgrootte in productie
+        uploadedBy: user.id,
+        uploadedAt: new Date(),
+      });
+      
+      // Als notifyAdmin is ingeschakeld, stuur een notificatie naar alle admins
+      if (notifyAdmin === 'true') {
+        console.log('Sending notification to admins about new file upload');
+        
+        // Haal alle admins op
+        const admins = await storage.getUsersByRole('admin');
+        
+        // Stuur een notificatie naar elke admin
+        for (const admin of admins) {
+          await storage.createNotification({
+            userId: admin.id,
+            title: 'New File Uploaded',
+            message: `${user.name || user.username} has uploaded a new file "${name}" to project "${project.name}"`,
+            type: 'file_upload',
+            read: false,
+            link: `/admin/projects/${projectId}`,
+            createdAt: new Date(),
+          });
+        }
+      }
+      
+      res.status(201).json(newFile);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      res.status(500).json({ error: 'Failed to upload file' });
+    }
+  });
+
   // Milestones API routes
   app.get('/api/dashboard/projects/:projectId/milestones', requireAuth, async (req: Request, res: Response) => {
     try {

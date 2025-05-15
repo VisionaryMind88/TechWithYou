@@ -4,6 +4,7 @@ import { useLocation, useRoute, Link } from "wouter";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { UploadFileForm } from "@/components/UploadFileForm";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/use-translation";
@@ -167,8 +168,14 @@ export default function ProjectDetailPage() {
   // Get project status text based on status code
   const getStatusText = (status: string) => {
     switch (status) {
-      case "proposal":
-        return isEnglish ? "Proposal" : "Voorstel";
+      case "pending":
+        return isEnglish ? "Pending Approval" : "Wacht op Goedkeuring";
+      case "approved":
+        return isEnglish ? "Approved" : "Goedgekeurd";
+      case "rejected":
+        return isEnglish ? "Changes Requested" : "Wijzigingen Gevraagd";
+      case "proposal": // Oude status, behouden voor backward compatibility
+        return isEnglish ? "Pending Approval" : "Wacht op Goedkeuring";
       case "in-progress":
         return isEnglish ? "In Progress" : "In Uitvoering";
       case "review":
@@ -176,7 +183,7 @@ export default function ProjectDetailPage() {
       case "completed":
         return isEnglish ? "Completed" : "Voltooid";
       default:
-        return status;
+        return status.charAt(0).toUpperCase() + status.slice(1); // Capitalize first letter
     }
   };
   
@@ -298,10 +305,12 @@ export default function ProjectDetailPage() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <Badge variant="outline" className={`
-                  ${project.status === "proposal" ? "bg-blue-100 text-blue-800" : ""}
-                  ${project.status === "in-progress" ? "bg-yellow-100 text-yellow-800" : ""}
-                  ${project.status === "review" ? "bg-purple-100 text-purple-800" : ""}
-                  ${project.status === "completed" ? "bg-green-100 text-green-800" : ""}
+                  ${project.status === "pending" || project.status === "proposal" ? "bg-orange-100 text-orange-800 border-orange-200" : ""}
+                  ${project.status === "approved" ? "bg-green-100 text-green-800 border-green-200" : ""}
+                  ${project.status === "rejected" ? "bg-red-100 text-red-800 border-red-200" : ""}
+                  ${project.status === "in-progress" ? "bg-yellow-100 text-yellow-800 border-yellow-200" : ""}
+                  ${project.status === "review" ? "bg-purple-100 text-purple-800 border-purple-200" : ""}
+                  ${project.status === "completed" ? "bg-green-100 text-green-800 border-green-200" : ""}
                 `}>
                   {getStatusText(project.status)}
                 </Badge>
@@ -885,6 +894,35 @@ export default function ProjectDetailPage() {
               {isEnglish ? "Save Milestone" : "Mijlpaal Opslaan"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* File upload dialog */}
+      <Dialog open={isUploadFileDialogOpen} onOpenChange={setIsUploadFileDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {isEnglish ? "Upload File" : "Bestand Uploaden"}
+            </DialogTitle>
+            <DialogDescription>
+              {isEnglish
+                ? "Upload a file to share with the project team."
+                : "Upload een bestand om te delen met het projectteam."}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
+            <UploadFileForm 
+              projectId={projectId} 
+              onSuccess={() => {
+                setIsUploadFileDialogOpen(false);
+                // Vernieuw de lijst met bestanden
+                queryClient.invalidateQueries({
+                  queryKey: ["/api/dashboard/projects", projectId, "files"]
+                });
+              }}
+            />
+          </div>
         </DialogContent>
       </Dialog>
       
