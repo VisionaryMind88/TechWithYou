@@ -554,7 +554,7 @@ export default function DashboardPage() {
             </TabsContent>
 
             {/* Activity Tab */}
-            <TabsContent value="activity">
+            <TabsContent value="activity" className="dashboard-milestones">
               <div className="mb-6">
                 <h2 className="text-xl font-semibold">{isEnglish ? "Recent Activity" : "Recente Activiteit"}</h2>
               </div>
