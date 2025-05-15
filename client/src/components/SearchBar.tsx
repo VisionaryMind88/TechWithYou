@@ -30,7 +30,7 @@ export const SearchBar = () => {
       description: isEnglish 
         ? "Our web development, design and digital marketing services" 
         : "Onze webontwikkeling, design en digitale marketing diensten",
-      path: "/#services"
+      path: "/services"
     },
     {
       id: "portfolio",
@@ -38,7 +38,7 @@ export const SearchBar = () => {
       description: isEnglish 
         ? "Explore our previous projects and case studies" 
         : "Ontdek onze eerdere projecten en casestudies",
-      path: "/#portfolio"
+      path: "/portfolio"
     },
     {
       id: "about",
@@ -46,7 +46,7 @@ export const SearchBar = () => {
       description: isEnglish 
         ? "Learn more about our company and team" 
         : "Leer meer over ons bedrijf en team",
-      path: "/#about"
+      path: "/about"
     },
     {
       id: "contact",
@@ -54,7 +54,7 @@ export const SearchBar = () => {
       description: isEnglish 
         ? "Get in touch with our team for questions or quotes" 
         : "Neem contact op met ons team voor vragen of offertes",
-      path: "/#contact"
+      path: "/contact"
     },
     {
       id: "faq",
@@ -62,7 +62,7 @@ export const SearchBar = () => {
       description: isEnglish 
         ? "Frequently asked questions about our services" 
         : "Veelgestelde vragen over onze diensten",
-      path: "/#faq"
+      path: "/faq"
     }
   ].filter(item => 
     item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 

@@ -70,7 +70,7 @@ export const Footer = () => {
             <h3 className="text-lg font-semibold mb-6">{t('footer.navigation')}</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/" className="text-neutral-400 hover:text-white transition">
                   Home
                 </a>
               </li>

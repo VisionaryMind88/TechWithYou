@@ -13,14 +13,30 @@ import { initGA, trackPageView } from "@/lib/analytics";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/services" component={() => <Home initialSection="services" />} />
-      <Route path="/portfolio" component={() => <Home initialSection="portfolio" />} />
-      <Route path="/about" component={() => <Home initialSection="about" />} />
-      <Route path="/faq" component={() => <Home initialSection="faq" />} />
-      <Route path="/contact" component={() => <Home initialSection="contact" />} />
-      <Route path="/privacy-policy" component={PrivacyPolicy} />
-      <Route component={NotFound} />
+      <Route path="/">
+        {() => <Home />}
+      </Route>
+      <Route path="/services">
+        {() => <Home initialSection="services" />}
+      </Route>
+      <Route path="/portfolio">
+        {() => <Home initialSection="portfolio" />}
+      </Route>
+      <Route path="/about">
+        {() => <Home initialSection="about" />}
+      </Route>
+      <Route path="/faq">
+        {() => <Home initialSection="faq" />}
+      </Route>
+      <Route path="/contact">
+        {() => <Home initialSection="contact" />}
+      </Route>
+      <Route path="/privacy-policy">
+        {() => <PrivacyPolicy />}
+      </Route>
+      <Route>
+        {() => <NotFound />}
+      </Route>
     </Switch>
   );
 }
