@@ -7,7 +7,10 @@ const enTranslations = {
     services: 'Services',
     portfolio: 'Portfolio',
     about: 'About us',
-    contact: 'Contact'
+    contact: 'Contact',
+    login: 'Login',
+    dashboard: 'Dashboard',
+    clientArea: 'Client Area'
   },
   hero: {
     title: 'We build <highlight>digital experiences</highlight> that make an impact',
@@ -210,7 +213,10 @@ const nlTranslations = {
     services: 'Services',
     portfolio: 'Portfolio',
     about: 'Over ons',
-    contact: 'Contact'
+    contact: 'Contact',
+    login: 'Inloggen',
+    dashboard: 'Dashboard',
+    clientArea: 'Klantomgeving'
   },
   hero: {
     title: 'Wij bouwen <highlight>digitale ervaringen</highlight> die impact maken',
