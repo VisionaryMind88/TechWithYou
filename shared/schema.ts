@@ -114,6 +114,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
   role: true,
   avatarUrl: true,
   preferences: true,
+  verified: true,
 });
 
 export const insertContactSchema = createInsertSchema(contacts).pick({
