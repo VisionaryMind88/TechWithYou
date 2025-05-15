@@ -252,32 +252,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = user.id;
       
       try {
-        const projectData = insertProjectSchema.parse({
+        // Belangrijk: zorg ervoor dat de userId een number is
+        const rawData = {
           ...req.body,
-          userId
-        });
+          userId: Number(userId)
+        };
+        
+        console.log('Project data before validation:', JSON.stringify(rawData, null, 2));
+        
+        // Valideer de data met schema
+        const projectData = insertProjectSchema.parse(rawData);
         
         console.log('Project data after validation:', JSON.stringify(projectData, null, 2));
+        
+        // Controleer kritieke velden
+        if (!projectData.name || !projectData.description || !projectData.type) {
+          console.error('Missing required fields in project data');
+          return res.status(400).json({
+            message: 'Invalid project data',
+            errors: ['Required fields (name, description, type) are missing']
+          });
+        }
+        
+        // Gebruik zeker status 'proposal' indien niet meegegeven
+        if (!projectData.status) {
+          projectData.status = 'proposal';
+        }
         
         const project = await storage.createProject(projectData);
         console.log('Project created successfully:', JSON.stringify(project, null, 2));
         
-        // Create a notification about the new project
-        await storage.createNotification({
-          userId,
-          title: 'New Project Created',
-          message: `Your project '${project.name}' has been created successfully.`,
-          type: 'success'
-        });
-        
-        console.log('Notification created for project');
+        // Maak een notificatie over het nieuwe project
+        try {
+          await storage.createNotification({
+            userId,
+            title: 'New Project Created',
+            message: `Your project '${project.name}' has been created successfully.`,
+            type: 'success'
+          });
+          console.log('Notification created for project');
+        } catch (notificationError) {
+          // Log maar laat het project doorgaan zelfs als de notificatie mislukt
+          console.error('Failed to create notification, but project was created:', notificationError);
+        }
         
         res.status(201).json(project);
-      } catch (validationError) {
+      } catch (validationError: any) {
         console.error('Project validation error:', validationError);
         
         if (validationError.name === 'ZodError') {
-          const formattedError = fromZodError(validationError as ZodError);
+          const formattedError = fromZodError(validationError);
           return res.status(400).json({
             message: 'Invalid project data',
             errors: formattedError.details
@@ -288,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error: any) {
       console.error('Project creation failed:', error);
-      res.status(500).json({ message: 'Failed to create project' });
+      res.status(500).json({ message: 'Failed to create project: ' + (error.message || 'Unknown error') });
     }
   });
   
