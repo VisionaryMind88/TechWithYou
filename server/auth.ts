@@ -27,10 +27,34 @@ async function hashPassword(password: string) {
 }
 
 async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  try {
+    console.log(`comparePasswords: vergelijken van wachtwoord "${supplied.substring(0, 3)}***" met hash "${stored.substring(0, 10)}..."`);
+    
+    // Controleer of het stored wachtwoord de juiste structuur heeft (hash.salt)
+    if (!stored || !stored.includes('.')) {
+      console.error(`comparePasswords: onjuist hash formaat, geen . gevonden in: ${stored.substring(0, 10)}...`);
+      return false;
+    }
+    
+    const [hashed, salt] = stored.split(".");
+    console.log(`comparePasswords: hash lengte=${hashed.length}, salt lengte=${salt.length}`);
+    
+    if (!hashed || !salt) {
+      console.error(`comparePasswords: ontbrekende hash of salt`);
+      return false;
+    }
+    
+    const hashedBuf = Buffer.from(hashed, "hex");
+    const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+    const result = timingSafeEqual(hashedBuf, suppliedBuf);
+    
+    console.log(`comparePasswords: wachtwoord vergelijking resultaat: ${result ? 'CORRECT' : 'INCORRECT'}`);
+    
+    return result;
+  } catch (error) {
+    console.error(`comparePasswords: fout tijdens wachtwoord vergelijking:`, error);
+    return false;
+  }
 }
 
 export function setupAuth(app: Express) {

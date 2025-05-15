@@ -80,11 +80,13 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      console.log(`DatabaseStorage.getUserByUsername: zoeken naar gebruiker met username="${username}"`);
+      // Trim de gebruikersnaam om spaties te verwijderen
+      const trimmedUsername = username.trim();
+      console.log(`DatabaseStorage.getUserByUsername: zoeken naar gebruiker met username="${trimmedUsername}" (origineel: "${username}")`);
       
       // Gebruik de Drizzle ORM methode (veiliger en betrouwbaarder)
       console.log(`DatabaseStorage.getUserByUsername: gebruiken van Drizzle ORM`);
-      const drizzleResult = await db.select().from(users).where(eq(users.username, username));
+      const drizzleResult = await db.select().from(users).where(eq(users.username, trimmedUsername));
       
       const resultLength = drizzleResult?.length || 0;
       console.log(`DatabaseStorage.getUserByUsername: Drizzle resultaat: ${resultLength} gebruikers gevonden`);
@@ -92,7 +94,7 @@ export class DatabaseStorage implements IStorage {
       if (resultLength > 0 && drizzleResult[0]) {
         console.log(`DatabaseStorage.getUserByUsername: gebruiker gevonden met ID ${drizzleResult[0].id}`);
       } else {
-        console.log(`DatabaseStorage.getUserByUsername: geen gebruiker gevonden met username=${username}`);
+        console.log(`DatabaseStorage.getUserByUsername: geen gebruiker gevonden met username=${trimmedUsername}`);
       }
       
       const [user] = drizzleResult;
@@ -105,9 +107,11 @@ export class DatabaseStorage implements IStorage {
   
   async getUserByEmail(email: string): Promise<User | undefined> {
     try {
-      console.log(`DatabaseStorage.getUserByEmail: zoeken naar gebruiker met email="${email}"`);
+      // Trim de email om spaties te verwijderen
+      const trimmedEmail = email.trim();
+      console.log(`DatabaseStorage.getUserByEmail: zoeken naar gebruiker met email="${trimmedEmail}" (origineel: "${email}")`);
       
-      const drizzleResult = await db.select().from(users).where(eq(users.email, email));
+      const drizzleResult = await db.select().from(users).where(eq(users.email, trimmedEmail));
       
       const resultLength = drizzleResult?.length || 0;
       console.log(`DatabaseStorage.getUserByEmail: Drizzle resultaat: ${resultLength} gebruikers gevonden`);
@@ -115,7 +119,7 @@ export class DatabaseStorage implements IStorage {
       if (resultLength > 0 && drizzleResult[0]) {
         console.log(`DatabaseStorage.getUserByEmail: gebruiker gevonden met ID ${drizzleResult[0].id}`);
       } else {
-        console.log(`DatabaseStorage.getUserByEmail: geen gebruiker gevonden met email=${email}`);
+        console.log(`DatabaseStorage.getUserByEmail: geen gebruiker gevonden met email=${trimmedEmail}`);
       }
       
       const [user] = drizzleResult;
