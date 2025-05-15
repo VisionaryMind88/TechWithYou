@@ -9,7 +9,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div>
             <div className="text-2xl font-bold mb-6">
-              <span className="text-primary">Digitaal</span>Atelier
+              <span className="text-primary">Tech</span>WithYou
             </div>
             <p className="text-neutral-400 mb-6">
               {t('footer.description')}

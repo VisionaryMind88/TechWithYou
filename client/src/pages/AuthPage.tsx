@@ -371,11 +371,11 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title={isEnglish ? "Login or Register | Digitaal Atelier" : "Inloggen of Registreren | Digitaal Atelier"}
+        title={isEnglish ? "Login or Register | TechWithYou" : "Inloggen of Registreren | TechWithYou"}
         description={
           isEnglish
-            ? "Login to your Digitaal Atelier account or register for a new account to access your dashboard and manage your projects."
-            : "Log in op je Digitaal Atelier-account of registreer voor een nieuw account om toegang te krijgen tot je dashboard en je projecten te beheren."
+            ? "Login to your TechWithYou account or register for a new account to access your dashboard and manage your projects."
+            : "Log in op je TechWithYou-account of registreer voor een nieuw account om toegang te krijgen tot je dashboard en je projecten te beheren."
         }
       />
       <Header />
@@ -914,8 +914,8 @@ export default function AuthPage() {
                     >
                       <h1 className="text-4xl font-bold tracking-tight">
                         {isEnglish 
-                          ? "Welcome to Digitaal Atelier" 
-                          : "Welkom bij Digitaal Atelier"}
+                          ? "Welcome to TechWithYou" 
+                          : "Welkom bij TechWithYou"}
                       </h1>
                       <p className="mt-4 text-lg text-muted-foreground">
                         {isEnglish 

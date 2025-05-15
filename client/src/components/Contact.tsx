@@ -67,10 +67,10 @@ export const Contact = () => {
                     <h4 className="text-lg font-semibold mb-1">{t('contact.info.email')}</h4>
                     <p className="text-neutral-600">
                       <a
-                        href="mailto:info@digitaalatelier.nl"
+                        href="mailto:info@techwithyou.nl"
                         className="text-primary hover:text-primary-dark transition"
                       >
-                        info@digitaalatelier.nl
+                        info@techwithyou.nl
                       </a>
                     </p>
                   </div>
