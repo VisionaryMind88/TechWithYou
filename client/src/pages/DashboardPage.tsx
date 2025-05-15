@@ -634,7 +634,7 @@ export default function DashboardPage() {
         setIsCreateProjectOpen(open);
         if (!open) form.reset();
       }}>
-        <AlertDialogContent className="max-w-4xl">
+        <AlertDialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
           <AlertDialogHeader>
             <AlertDialogTitle>
               {isEnglish ? "Create New Project" : "Nieuw Project Aanmaken"}
@@ -809,7 +809,7 @@ export default function DashboardPage() {
                 )}
               />
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
                   name="budget"
@@ -913,7 +913,7 @@ export default function DashboardPage() {
                     : "Selecteer welke diensten je nodig hebt van TechWithYou"}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField
                     control={form.control}
                     name="needsDesign"
@@ -1172,7 +1172,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               
-              <div className="sticky bottom-0 bg-white dark:bg-gray-950 pt-2">
+              <div className="sticky bottom-0 bg-white dark:bg-gray-950 py-2 border-t mt-6">
                 <AlertDialogFooter>
                   <AlertDialogCancel type="button">
                     {isEnglish ? "Cancel" : "Annuleren"}
