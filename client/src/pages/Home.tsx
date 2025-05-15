@@ -13,7 +13,7 @@ import { FAQ } from "@/components/FAQ";
 import { CallToAction } from "@/components/CallToAction";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
-import { SEOHead } from "@/components/SEOHead";
+import { SEO } from "@/components/SEO";
 import { useEffect } from "react";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -52,7 +52,7 @@ export default function Home({ initialSection }: HomeProps) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <SEOHead 
+      <SEO 
         title={isEnglish ? "Professional Web Development" : "Professionele Web Ontwikkeling"}
         description={isEnglish 
           ? "We build high-quality, professional websites, applications, and dashboards for businesses ready for the future."

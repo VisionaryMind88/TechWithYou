@@ -106,6 +106,12 @@ export const Header = () => {
               <div className="flex items-center gap-2">
                 <SearchBar />
                 <LanguageToggle />
+                <a
+                  href="/analytics-dashboard"
+                  className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200 ml-2"
+                >
+                  {t('language') === 'en' ? 'Analytics' : 'Analytics'}
+                </a>
               </div>
             </nav>
           </div>
@@ -174,6 +180,13 @@ export const Header = () => {
                   <SearchBar />
                   <LanguageToggle />
                 </div>
+                <a
+                  href="/analytics-dashboard"
+                  onClick={closeMobileMenu}
+                  className="flex items-center justify-center w-full bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200 mt-3"
+                >
+                  {t('language') === 'en' ? 'Analytics Dashboard' : 'Analytics Dashboard'}
+                </a>
               </div>
             </nav>
           </motion.div>
