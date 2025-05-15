@@ -99,6 +99,20 @@ export default function AdminDashboardPage() {
     enabled: !!user && user.role === "admin",
   });
 
+  // Type for project metadata
+  interface ProjectMetaData {
+    services?: string[];
+    domain?: {
+      hasOwn: boolean;
+      name?: string;
+    };
+    logo?: {
+      hasOwn: boolean;
+      fileUrl?: string;
+    };
+    [key: string]: any;
+  }
+
   // Fetch all projects
   const {
     data: projects = [],
@@ -107,6 +121,33 @@ export default function AdminDashboardPage() {
     queryKey: ["/api/admin/projects"],
     queryFn: getQueryFn<Project[]>({ on401: "throw" }),
     enabled: !!user && user.role === "admin",
+  });
+
+  // Approve project mutation
+  const approveProjectMutation = useMutation({
+    mutationFn: async (projectId: number) => {
+      const res = await apiRequest("PUT", `/api/admin/projects/${projectId}`, {
+        status: "planning"
+      });
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
+      toast({
+        title: isEnglish ? "Project approved" : "Project goedgekeurd",
+        description: isEnglish 
+          ? "The project has been approved and moved to planning stage" 
+          : "Het project is goedgekeurd en verplaatst naar de planningsfase",
+      });
+      trackEvent("project_approved", "admin", "project_management");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: isEnglish ? "Failed to approve project" : "Project goedkeuring mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   });
 
   // Fetch all contact form submissions
@@ -453,6 +494,106 @@ export default function AdminDashboardPage() {
                               {isEnglish 
                                 ? "No clients found. Add a client to get started." 
                                 : "Geen klanten gevonden. Voeg een klant toe om te beginnen."}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            {/* New Projects Tab */}
+            <TabsContent value="newprojects" className="space-y-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <div>
+                    <CardTitle>{isEnglish ? "New Project Requests" : "Nieuwe Projectaanvragen"}</CardTitle>
+                    <CardDescription>
+                      {isEnglish 
+                        ? "Review and process new project requests from clients" 
+                        : "Beoordeel en verwerk nieuwe projectaanvragen van klanten"}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {isLoadingProjects ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableCaption>
+                        {isEnglish 
+                          ? `New project requests: ${projects.filter(p => p.status === "new").length}` 
+                          : `Nieuwe projectaanvragen: ${projects.filter(p => p.status === "new").length}`}
+                      </TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{isEnglish ? "Project Name" : "Projectnaam"}</TableHead>
+                          <TableHead>{isEnglish ? "Client" : "Klant"}</TableHead>
+                          <TableHead>{isEnglish ? "Requested Services" : "Aangevraagde Diensten"}</TableHead>
+                          <TableHead>{isEnglish ? "Date Submitted" : "Datum Ingediend"}</TableHead>
+                          <TableHead className="text-right">{isEnglish ? "Actions" : "Acties"}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {projects.filter(p => p.status === "new").length > 0 ? (
+                          projects
+                            .filter(p => p.status === "new")
+                            .map((project) => {
+                              const client = clients.find(c => c.id === project.userId);
+                              return (
+                                <TableRow key={project.id}>
+                                  <TableCell className="font-medium">{project.name}</TableCell>
+                                  <TableCell>{client?.name || "Unknown"}</TableCell>
+                                  <TableCell>
+                                    {project.metaData ? 
+                                      (() => {
+                                        const meta = project.metaData as ProjectMetaData;
+                                        return meta.services && Array.isArray(meta.services) ? 
+                                          meta.services.map((service: string, index: number) => (
+                                            <Badge key={index} variant="outline" className="mr-1 mb-1">
+                                              {service}
+                                            </Badge>
+                                          )) 
+                                        : "-";
+                                      })()
+                                    : "-"}
+                                  </TableCell>
+                                  <TableCell>
+                                    {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : "-"}
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                    <div className="flex justify-end gap-2">
+                                      <Button variant="outline" size="sm" onClick={() => {
+                                        // View details / edit functionality would go here
+                                      }}>
+                                        {isEnglish ? "View Details" : "Bekijk Details"}
+                                      </Button>
+                                      <Button 
+                                        variant="default" 
+                                        size="sm" 
+                                        onClick={() => approveProjectMutation.mutate(project.id)}
+                                        disabled={approveProjectMutation.isPending}
+                                      >
+                                        {approveProjectMutation.isPending ? (
+                                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        ) : null}
+                                        {isEnglish ? "Approve" : "Goedkeuren"}
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                              {isEnglish 
+                                ? "No new project requests found." 
+                                : "Geen nieuwe projectaanvragen gevonden."}
                             </TableCell>
                           </TableRow>
                         )}
