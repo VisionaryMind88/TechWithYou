@@ -43,7 +43,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Loader2, PlusCircle, Edit, Trash, UserIcon, Search, FileText, Bell, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, PlusCircle, Edit, Trash, UserIcon, Search, FileText, Bell, CheckCircle, XCircle, MessageSquare } from "lucide-react";
 import {
   Dialog,
   DialogContent,
