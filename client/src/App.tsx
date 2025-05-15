@@ -118,12 +118,6 @@ function App() {
     });
   }, []);
 
-  // Bepaal of de gebruiker op een beveiligde route is die de chatbot niet zou moeten tonen
-  const [location] = useLocation();
-  const shouldHideChatbot = location.startsWith('/dashboard') || 
-                           location.startsWith('/admin') || 
-                           location.startsWith('/project/');
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -131,8 +125,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
-            {/* Toon de chatbot alleen op niet-beveiligde routes (dashboard pagina's etc. hebben geen chatbot) */}
-            {!shouldHideChatbot && <Chatbot />}
+            <Chatbot />
             <CookieConsent />
           </TooltipProvider>
         </LanguageContext.Provider>
