@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ContactForm } from "./ContactForm";
 import { useTranslation } from "@/hooks/use-translation";
+import { Link } from "wouter";
 
 export const Contact = () => {
   const { t } = useTranslation();
@@ -98,30 +99,34 @@ export const Contact = () => {
                 <div className="pt-6 border-t border-neutral-200">
                   <h4 className="text-lg font-semibold mb-4">{t('contact.info.followUs')}</h4>
                   <div className="flex space-x-4">
-                    <a
-                      href="#"
+                    <Link
+                      href="https://linkedin.com"
+                      target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-linkedin-fill"></i>
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      href="https://twitter.com"
+                      target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-twitter-fill"></i>
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      href="https://instagram.com"
+                      target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-instagram-fill"></i>
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      href="https://facebook.com"
+                      target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-facebook-fill"></i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
 

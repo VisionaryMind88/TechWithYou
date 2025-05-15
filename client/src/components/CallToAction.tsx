@@ -20,23 +20,29 @@ export const CallToAction = () => {
             {t('cta.description')}
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <motion.a
-              href="#contact"
-              className="inline-flex justify-center items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-neutral-900 bg-white hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-150"
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t('cta.startProject')}
-              <i className="ri-arrow-right-line ml-2"></i>
-            </motion.a>
-            <motion.a
-              href="#"
-              className="inline-flex justify-center items-center px-8 py-4 border border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-150"
+              <Link
+                href="/contact"
+                className="inline-flex justify-center items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-neutral-900 bg-white hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-150"
+              >
+                {t('cta.startProject')}
+                <i className="ri-arrow-right-line ml-2"></i>
+              </Link>
+            </motion.div>
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t('cta.scheduleCall')}
-            </motion.a>
+              <Link
+                href="/contact"
+                className="inline-flex justify-center items-center px-8 py-4 border border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-150"
+              >
+                {t('cta.scheduleCall')}
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
       </div>

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/use-translation";
+import { Link } from "wouter";
 
 export const About = () => {
   const { t } = useTranslation();
@@ -23,18 +24,18 @@ export const About = () => {
               {t('about.description2')}
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-              <a
-                href="#team"
+              <Link
+                href="/about"
                 className="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150"
               >
                 {t('about.meetTeam')}
-              </a>
-              <a
-                href="#contact"
+              </Link>
+              <Link
+                href="/contact"
                 className="inline-flex justify-center items-center px-6 py-3 border border-primary text-base font-medium rounded-md text-primary bg-transparent hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150"
               >
                 {t('about.contact')}
-              </a>
+              </Link>
             </div>
           </motion.div>
           <motion.div
