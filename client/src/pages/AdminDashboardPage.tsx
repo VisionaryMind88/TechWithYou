@@ -74,6 +74,8 @@ export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState("clients");
   const [isAddClientDialogOpen, setIsAddClientDialogOpen] = useState(false);
   const [clientSearchQuery, setClientSearchQuery] = useState("");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isProjectDetailDialogOpen, setIsProjectDetailDialogOpen] = useState(false);
   
   // Tracking analytics on page visit
   useEffect(() => {
@@ -110,6 +112,28 @@ export default function AdminDashboardPage() {
       hasOwn: boolean;
       fileUrl?: string;
     };
+    existingWebsite?: string;
+    targetAudience?: string;
+    designPreferences?: string;
+    features?: string;
+    competitors?: string;
+    budget?: string;
+    deadline?: string;
+    timeframe?: string;
+    contactPerson?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    needsDomain?: boolean;
+    hasDomain?: boolean;
+    domainName?: string;
+    needsLogo?: boolean;
+    hasLogo?: boolean;
+    logoFile?: string;
+    needsHosting?: boolean;
+    needsDesign?: boolean;
+    needsDevelopment?: boolean;
+    needsSEO?: boolean;
+    needsMaintenance?: boolean;
     [key: string]: any;
   }
 
@@ -568,9 +592,14 @@ export default function AdminDashboardPage() {
                                   </TableCell>
                                   <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                      <Button variant="outline" size="sm" onClick={() => {
-                                        // View details / edit functionality would go here
-                                      }}>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={() => {
+                                          setSelectedProject(project);
+                                          setIsProjectDetailDialogOpen(true);
+                                        }}
+                                      >
                                         {isEnglish ? "View Details" : "Bekijk Details"}
                                       </Button>
                                       <Button 
