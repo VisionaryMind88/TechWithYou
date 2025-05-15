@@ -13,6 +13,7 @@ import {
   FileText, 
   FileArchive, 
   Download,
+  Bell,
   X as CloseIcon
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -23,11 +24,21 @@ import {
   sendChatMessage, 
   subscribeToChatMessages, 
   uploadChatAttachment, 
-  ChatMessage as FirebaseChatMessage
+  ChatMessage as FirebaseChatMessage,
+  subscribeToNotifications,
+  ChatNotification,
+  markNotificationAsRead
 } from "@/lib/firebase";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Define extended interface for chat messages
 interface ChatMessage extends FirebaseChatMessage {
@@ -51,9 +62,12 @@ export function ChatInterface({
 }: ChatInterfaceProps) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [notifications, setNotifications] = useState<ChatNotification[]>([]);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -85,6 +99,36 @@ export function ChatInterface({
       unsubscribe();
     };
   }, [roomId]);
+  
+  // Abonneren op notificaties als je geen admin bent
+  useEffect(() => {
+    if (!isAdmin && userId) {
+      const unsubscribe = subscribeToNotifications(userId, (newNotifications) => {
+        setNotifications(newNotifications);
+        // Bereken het aantal ongelezen notificaties
+        const unread = newNotifications.filter(n => !n.read).length;
+        setUnreadCount(unread);
+        
+        // Toon een popup toast als er een nieuwe notificatie binnenkomt
+        const latestNotification = newNotifications[0];
+        if (latestNotification && !latestNotification.read) {
+          // Speel een geluid af of toon een toast bericht
+          toast({
+            title: isEnglish ? "New message" : "Nieuw bericht",
+            description: `${latestNotification.fromUsername}: ${latestNotification.message.substring(0, 50)}${latestNotification.message.length > 50 ? '...' : ''}`,
+            duration: 5000,
+          });
+          
+          // Open automatisch het notificatie dialoog
+          setIsNotificationOpen(true);
+        }
+      });
+      
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [userId, isAdmin, isEnglish, toast]);
 
   useEffect(() => {
     // Scroll to bottom whenever messages update
@@ -209,11 +253,17 @@ export function ChatInterface({
         username,
         message: message.trim(),
         timestamp: Date.now(),
+        isAdmin,
+        ...(isAdmin && selectedClientId && { clientId: selectedClientId }),
         ...(attachment && { attachment }),
       };
       
-      // Send message to Firebase
-      await sendChatMessage(roomId, newMessage);
+      // Send message to Firebase with notification if admin is chatting with a client
+      if (isAdmin && selectedClientId) {
+        await sendChatMessage(roomId, newMessage, selectedClientId);
+      } else {
+        await sendChatMessage(roomId, newMessage);
+      }
       
       // Clear input
       setMessage("");
@@ -258,6 +308,22 @@ export function ChatInterface({
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
     return format(date, 'HH:mm', { locale: isEnglish ? enUS : nl });
+  };
+
+  // Functie om notificaties als gelezen te markeren
+  const handleMarkNotificationsAsRead = async () => {
+    if (!userId) return;
+    
+    // Markeer alle ongelezen notificaties als gelezen
+    for (const notification of notifications) {
+      if (!notification.read && notification.id) {
+        await markNotificationAsRead(userId, notification.id);
+      }
+    }
+    
+    // Sluit het notificatiedialog
+    setIsNotificationOpen(false);
+    setUnreadCount(0);
   };
 
   return (

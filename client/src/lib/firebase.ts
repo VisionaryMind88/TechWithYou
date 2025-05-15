@@ -369,7 +369,7 @@ export const markNotificationAsRead = async (userId: number, notificationId: str
     // Update de notificatie
     await set(notificationRef, {
       read: true
-    }, { merge: true });
+    });
     
     console.log('Notification marked as read');
   } catch (error) {
