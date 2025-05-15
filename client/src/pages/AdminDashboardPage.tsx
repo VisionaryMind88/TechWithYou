@@ -336,10 +336,19 @@ export default function AdminDashboardPage() {
           </div>
           
           <Tabs defaultValue="clients" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-1 md:grid-cols-3">
+            <TabsList className="grid w-full grid-cols-1 md:grid-cols-4">
               <TabsTrigger value="clients">
                 <UserIcon className="h-4 w-4 mr-2" />
                 {isEnglish ? "Clients" : "Klanten"}
+              </TabsTrigger>
+              <TabsTrigger value="newprojects">
+                <PlusCircle className="h-4 w-4 mr-2" />
+                {isEnglish ? "New Projects" : "Nieuwe Projecten"}
+                {projects.filter(p => p.status === "new").length > 0 && (
+                  <Badge className="ml-2" variant="destructive">
+                    {projects.filter(p => p.status === "new").length}
+                  </Badge>
+                )}
               </TabsTrigger>
               <TabsTrigger value="projects">
                 <FileText className="h-4 w-4 mr-2" />
