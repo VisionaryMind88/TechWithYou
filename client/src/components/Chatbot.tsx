@@ -48,8 +48,8 @@ export const Chatbot = () => {
             id: `bot-${Date.now()}`,
             sender: "bot" as const,
             text: isEnglish 
-              ? "Hi there! 👋 Can I help you with your web development project today? I'd be happy to tell you about our services."
-              : "Hallo daar! 👋 Kan ik je vandaag helpen met je webontwikkelingsproject? Ik vertel je graag meer over onze diensten.",
+              ? "Hi there! 👋 I'm Dalia, your personal assistant. Can I help you with your web development project today? I'd be happy to tell you about our services."
+              : "Hallo daar! 👋 Ik ben Dalia, je persoonlijke assistent. Kan ik je vandaag helpen met je webontwikkelingsproject? Ik vertel je graag meer over onze diensten.",
             timestamp: new Date()
           };
           
@@ -69,8 +69,8 @@ export const Chatbot = () => {
         id: `bot-${Date.now()}`,
         sender: "bot" as const,
         text: isEnglish 
-          ? "Hi there! 👋 I'm your virtual assistant. How can I help you today?"
-          : "Hallo daar! 👋 Ik ben je virtuele assistent. Hoe kan ik je vandaag helpen?",
+          ? "Hi there! 👋 I'm Dalia, your personal assistant. How can I help you today?"
+          : "Hallo daar! 👋 Ik ben Dalia, je persoonlijke assistent. Hoe kan ik je vandaag helpen?",
         timestamp: new Date()
       };
       
@@ -236,11 +236,11 @@ export const Chatbot = () => {
             <div className="bg-gradient-to-r from-primary to-primary/80 text-white p-3 flex justify-between items-center rounded-t-xl">
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="https://ui-avatars.com/api/?name=Support+Team&background=random" alt="Support Team" />
-                  <AvatarFallback className="bg-white/20">ST</AvatarFallback>
+                  <AvatarImage src="/assets/dalia-avatar.svg" alt="Dalia" />
+                  <AvatarFallback className="bg-white/20">DA</AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold">
-                  {isEnglish ? "Digital Assistant" : "Digitale Assistent"}
+                  Dalia
                 </h3>
               </div>
               <div className="flex items-center gap-1">
