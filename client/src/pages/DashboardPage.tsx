@@ -740,10 +740,12 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent className="h-full p-0">
                   <div className="h-full">
-                    <ChatInterface 
-                      userId={user.id} 
-                      username={user.name || user.username}
-                    />
+                    {user && (
+                      <ChatInterface 
+                        userId={user.id}
+                        username={user.username}
+                      />
+                    )}
                   </div>
                 </CardContent>
               </Card>

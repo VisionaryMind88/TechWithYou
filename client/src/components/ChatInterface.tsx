@@ -62,7 +62,7 @@ export function ChatInterface({
   const inputRef = useRef<HTMLInputElement>(null);
   
   // Get all clients if admin
-  const { data: clients = [] } = useQuery({
+  const { data: clients = [] } = useQuery<any[]>({
     queryKey: ['/api/admin/clients'],
     enabled: isAdmin,
   });
@@ -343,19 +343,25 @@ export function ChatInterface({
                           </a>
                         </div>
                       ) : (
-                        <Card className="p-2 flex items-center gap-2 hover:bg-accent/50 cursor-pointer" onClick={() => window.open(msg.attachment.url, '_blank')}>
-                          {getFileIcon(msg.attachment.type)}
+                        <Card className="p-2 flex items-center gap-2 hover:bg-accent/50 cursor-pointer" onClick={() => msg.attachment ? window.open(msg.attachment.url, '_blank') : null}>
+                          {msg.attachment && getFileIcon(msg.attachment.type)}
                           <div className="flex-1 overflow-hidden">
-                            <div className="truncate text-sm font-medium">{msg.attachment.name}</div>
-                            <div className="text-xs text-muted-foreground">{formatFileSize(msg.attachment.size)}</div>
+                            {msg.attachment && (
+                              <>
+                                <div className="truncate text-sm font-medium">{msg.attachment.name}</div>
+                                <div className="text-xs text-muted-foreground">{formatFileSize(msg.attachment.size)}</div>
+                              </>
+                            )}
                           </div>
-                          <a 
-                            href={msg.attachment.url}
-                            download={msg.attachment.name}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Download className="h-4 w-4" />
-                          </a>
+                          {msg.attachment && (
+                            <a 
+                              href={msg.attachment.url}
+                              download={msg.attachment.name}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Download className="h-4 w-4" />
+                            </a>
+                          )}
                         </Card>
                       )}
                     </div>
