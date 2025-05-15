@@ -111,6 +111,34 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return updatedUser || undefined;
   }
+  
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.verificationToken, token));
+    return user || undefined;
+  }
+  
+  async verifyUser(id: number): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set({ 
+        verified: true,
+        verificationToken: null,
+        verificationExpires: null 
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+  
+  async setVerificationToken(id: number, token: string, expires: Date): Promise<User | undefined> {
+    const [user] = await db.update(users)
+      .set({
+        verificationToken: token,
+        verificationExpires: expires
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
 
   // Contact methods
   async createContact(insertContact: InsertContact): Promise<Contact> {

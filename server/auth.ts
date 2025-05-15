@@ -10,6 +10,7 @@ import { fromZodError } from "zod-validation-error";
 import { ZodError } from "zod";
 import connectPg from "connect-pg-simple";
 import { pool } from "./db";
+import { emailService, generateToken, generateTokenExpiration } from "./email-service";
 
 declare global {
   namespace Express {
@@ -77,8 +78,13 @@ export function setupAuth(app: Express) {
           return done(null, false, { message: "Invalid credentials" });
         }
         
+        // Check if user is verified
+        if (!user.verified) {
+          return done(null, false, { message: "Please verify your email address before logging in" });
+        }
+        
         // Update last login timestamp
-        await storage.updateUser(user.id, {});
+        await storage.updateUser(user.id, { lastLogin: new Date() });
         
         return done(null, user);
       } catch (error) {
@@ -121,27 +127,41 @@ export function setupAuth(app: Express) {
       // Hash password
       const hashedPassword = await hashPassword(userData.password);
       
-      // Create user
+      // Generate verification token
+      const verificationToken = generateToken();
+      const verificationExpires = generateTokenExpiration();
+      
+      // Create user with verified=false
       const user = await storage.createUser({
         ...userData,
         password: hashedPassword,
+        verified: false,
       });
+      
+      // Set verification token
+      await storage.setVerificationToken(user.id, verificationToken, verificationExpires);
+      
+      // Send verification email
+      await emailService.sendVerificationEmail(
+        user.email,
+        user.username,
+        verificationToken
+      );
       
       // Create welcome notification
       await storage.createNotification({
         userId: user.id,
         title: "Welcome to Digitaal Atelier!",
-        message: "Thank you for registering. Explore your dashboard to manage your projects and track progress.",
-        type: "success",
+        message: "Thank you for registering. Please check your email to verify your account.",
+        type: "info",
       });
       
-      // Log in the user automatically
-      req.login(user, (err) => {
-        if (err) return next(err);
-        
-        // Return the user without password
-        const { password, ...userWithoutPassword } = user;
-        return res.status(201).json(userWithoutPassword);
+      // Return success without logging in (user must verify email first)
+      const { password, ...userWithoutPassword } = user;
+      return res.status(201).json({
+        ...userWithoutPassword,
+        message: "Registration successful. Please check your email to verify your account.",
+        requiresVerification: true
       });
     } catch (error: any) {
       // Handle validation errors
