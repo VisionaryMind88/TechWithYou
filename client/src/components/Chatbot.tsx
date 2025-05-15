@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/hooks/use-translation";
-import { Send, Maximize2, Minimize2, X, Bot } from "lucide-react";
+import { Send, Maximize2, Minimize2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { trackEvent } from "@/lib/analytics";
 
 interface Message {
@@ -197,7 +197,9 @@ export const Chatbot = () => {
           } hover:bg-primary/90 text-white p-3`}
           aria-label={isOpen ? "Minimize chat" : "Open chat"}
         >
-          <Bot size={24} />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle">
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          </svg>
         </Button>
       </div>
 
@@ -213,14 +215,15 @@ export const Chatbot = () => {
             }
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-20 right-5 w-full sm:w-96 bg-white rounded-lg shadow-xl overflow-hidden z-30 border border-neutral-200"
+            className="fixed bottom-20 right-5 w-full sm:w-80 bg-white rounded-xl shadow-2xl overflow-hidden z-30 border border-neutral-100"
             style={{ maxHeight: "calc(100vh - 160px)" }}
           >
             {/* Chat Header */}
-            <div className="bg-primary text-white p-4 flex justify-between items-center">
+            <div className="bg-gradient-to-r from-primary to-primary/80 text-white p-3 flex justify-between items-center rounded-t-xl">
               <div className="flex items-center gap-2">
-                <Avatar className="bg-white/20 h-8 w-8">
-                  <Bot size={18} />
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="https://ui-avatars.com/api/?name=Support+Team&background=random" alt="Support Team" />
+                  <AvatarFallback className="bg-white/20">ST</AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold">
                   {isEnglish ? "Digital Assistant" : "Digitale Assistent"}
@@ -251,7 +254,7 @@ export const Chatbot = () => {
               <>
                 {/* Chat Messages */}
                 <div 
-                  className="p-4 h-96 overflow-y-auto flex flex-col gap-3 bg-neutral-50"
+                  className="p-4 h-72 overflow-y-auto flex flex-col gap-3 bg-gradient-to-b from-white to-neutral-50"
                   aria-live="polite"
                 >
                   {messages.map((msg) => (
@@ -262,10 +265,10 @@ export const Chatbot = () => {
                       }`}
                     >
                       <div
-                        className={`max-w-[80%] p-3 rounded-lg ${
+                        className={`max-w-[80%] p-3 rounded-2xl ${
                           msg.sender === "user"
-                            ? "bg-primary text-white rounded-tr-none"
-                            : "bg-white shadow-sm border border-neutral-200 rounded-tl-none"
+                            ? "bg-gradient-to-br from-primary to-primary/80 text-white rounded-tr-none shadow-md"
+                            : "bg-white shadow-sm border border-neutral-100 rounded-tl-none"
                         }`}
                       >
                         <p className="text-sm">{msg.text}</p>
@@ -283,11 +286,11 @@ export const Chatbot = () => {
                   {/* Typing indicator */}
                   {isTyping && (
                     <div className="flex justify-start">
-                      <div className="bg-white shadow-sm border border-neutral-200 p-3 rounded-lg rounded-tl-none max-w-[80%]">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-bounce"></div>
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                          <div className="w-2 h-2 rounded-full bg-neutral-400 animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                      <div className="bg-white shadow-sm border border-neutral-100 p-2.5 rounded-2xl rounded-tl-none max-w-[80%]">
+                        <div className="flex gap-1.5 px-1">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary opacity-80 animate-bounce"></div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary opacity-60 animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary opacity-40 animate-bounce" style={{ animationDelay: "0.4s" }}></div>
                         </div>
                       </div>
                     </div>
