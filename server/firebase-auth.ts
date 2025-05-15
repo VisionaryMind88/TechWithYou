@@ -14,6 +14,7 @@ try {
     projectId: process.env.VITE_FIREBASE_PROJECT_ID,
   });
   console.log("Firebase Admin initialisatie succesvol");
+  console.log("Firebase Project ID:", process.env.VITE_FIREBASE_PROJECT_ID);
 } catch (error) {
   console.error("Firebase Admin initialisatie mislukt:", error);
 }
