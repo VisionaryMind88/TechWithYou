@@ -9,6 +9,7 @@ const enTranslations = {
     about: 'About us',
     contact: 'Contact',
     login: 'Login',
+    logout: 'Logout',
     dashboard: 'Dashboard',
     clientArea: 'Client Area'
   },
@@ -215,6 +216,7 @@ const nlTranslations = {
     about: 'Over ons',
     contact: 'Contact',
     login: 'Inloggen',
+    logout: 'Uitloggen',
     dashboard: 'Dashboard',
     clientArea: 'Klantomgeving'
   },

@@ -3,12 +3,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useScroll } from "@/hooks/use-scroll";
 import { LanguageToggle } from "./LanguageToggle";
 import { useTranslation } from "@/hooks/use-translation";
+import { useAuth } from "@/hooks/use-auth";
 import { SearchBar } from "./SearchBar";
+import { LogOut, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { scrolledPast50 } = useScroll();
   const { t } = useTranslation();
+  const { user, logoutMutation } = useAuth();
+  
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
 
   // Close mobile menu when clicking elsewhere
   useEffect(() => {
@@ -106,24 +114,62 @@ export const Header = () => {
               <div className="flex items-center gap-2">
                 <SearchBar />
                 <LanguageToggle />
-                <a
-                  href="/auth"
-                  className="text-sm border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1 rounded-md transition duration-200 ml-2"
-                >
-                  {t('header.login')}
-                </a>
-                <a
-                  href="/dashboard"
-                  className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
-                >
-                  {t('header.clientArea')}
-                </a>
-                <a
-                  href="/admin"
-                  className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
-                >
-                  Admin
-                </a>
+                
+                {user ? (
+                  <>
+                    {/* Logged-in navigation */}
+                    {user.role === 'admin' && (
+                      <a
+                        href="/admin"
+                        className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
+                      >
+                        Admin
+                      </a>
+                    )}
+                    <a
+                      href="/dashboard"
+                      className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
+                    >
+                      {t('header.clientArea')}
+                    </a>
+                    <Button 
+                      onClick={handleLogout} 
+                      disabled={logoutMutation.isPending}
+                      size="sm"
+                      variant="outline"
+                      className="gap-1 px-3 py-1 h-auto text-sm"
+                    >
+                      {logoutMutation.isPending ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <LogOut className="h-3 w-3" />
+                      )}
+                      {t('header.logout')}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    {/* Logged-out navigation */}
+                    <a
+                      href="/auth"
+                      className="text-sm border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1 rounded-md transition duration-200 ml-2"
+                    >
+                      {t('header.login')}
+                    </a>
+                    <a
+                      href="/dashboard"
+                      className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
+                    >
+                      {t('header.clientArea')}
+                    </a>
+                    <a
+                      href="/admin"
+                      className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
+                    >
+                      Admin
+                    </a>
+                  </>
+                )}
               </div>
             </nav>
           </div>
@@ -192,29 +238,75 @@ export const Header = () => {
                   <SearchBar />
                   <LanguageToggle />
                 </div>
-                <div className="grid grid-cols-2 gap-2 mt-3">
-                  <a
-                    href="/auth"
-                    onClick={closeMobileMenu}
-                    className="flex items-center justify-center border border-primary text-primary hover:bg-primary hover:text-white px-3 py-2 rounded-md transition duration-200"
-                  >
-                    {t('header.login')}
-                  </a>
-                  <a
-                    href="/dashboard"
-                    onClick={closeMobileMenu}
-                    className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
-                  >
-                    {t('header.clientArea')}
-                  </a>
-                </div>
-                <a
-                  href="/admin"
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-center w-full bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200 mt-2"
-                >
-                  Admin
-                </a>
+                
+                {user ? (
+                  <>
+                    {/* Logged-in user navigation */}
+                    <div className="grid grid-cols-1 gap-2 mt-3">
+                      <a
+                        href="/dashboard"
+                        onClick={closeMobileMenu}
+                        className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
+                      >
+                        {t('header.clientArea')}
+                      </a>
+                      
+                      {user.role === 'admin' && (
+                        <a
+                          href="/admin"
+                          onClick={closeMobileMenu}
+                          className="flex items-center justify-center bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200"
+                        >
+                          Admin
+                        </a>
+                      )}
+                      
+                      <Button 
+                        onClick={() => {
+                          closeMobileMenu();
+                          handleLogout();
+                        }}
+                        disabled={logoutMutation.isPending}
+                        variant="outline"
+                        className="w-full mt-2 flex justify-center items-center gap-2"
+                      >
+                        {logoutMutation.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <LogOut className="h-4 w-4" />
+                        )}
+                        {t('header.logout')}
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Logged-out navigation */}
+                    <div className="grid grid-cols-2 gap-2 mt-3">
+                      <a
+                        href="/auth"
+                        onClick={closeMobileMenu}
+                        className="flex items-center justify-center border border-primary text-primary hover:bg-primary hover:text-white px-3 py-2 rounded-md transition duration-200"
+                      >
+                        {t('header.login')}
+                      </a>
+                      <a
+                        href="/dashboard"
+                        onClick={closeMobileMenu}
+                        className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
+                      >
+                        {t('header.clientArea')}
+                      </a>
+                    </div>
+                    <a
+                      href="/admin"
+                      onClick={closeMobileMenu}
+                      className="flex items-center justify-center w-full bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200 mt-2"
+                    >
+                      Admin
+                    </a>
+                  </>
+                )}
               </div>
             </nav>
           </motion.div>
