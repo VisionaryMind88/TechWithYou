@@ -6,6 +6,7 @@ import { Redirect, Link } from "wouter";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
 import { useTranslation } from "@/hooks/use-translation";
+import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -31,7 +32,8 @@ import {
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
-import { Loader2, CheckCircle2Icon } from "lucide-react";
+import { Loader2, CheckCircle2Icon, Mail, RefreshCw } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const loginSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -72,12 +74,58 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 export default function AuthPage() {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
   const isEnglish = t('language') === 'en';
+  
+  // Function to handle resending verification email
+  const handleResendVerification = async () => {
+    if (isResending || !verificationEmail) return;
+    
+    setIsResending(true);
+    try {
+      const response = await fetch('/api/resend-verification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: verificationEmail })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast({
+          title: isEnglish ? "Email Sent" : "E-mail Verzonden",
+          description: isEnglish 
+            ? "Verification email has been resent to your inbox" 
+            : "Verificatie-e-mail is opnieuw verzonden naar uw inbox",
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: isEnglish ? "Error" : "Fout",
+          description: data.message || (isEnglish 
+            ? "Failed to resend verification email" 
+            : "Kon verificatie-e-mail niet opnieuw verzenden"),
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: isEnglish ? "Error" : "Fout",
+        description: isEnglish 
+          ? "An error occurred. Please try again later." 
+          : "Er is een fout opgetreden. Probeer het later opnieuw.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
