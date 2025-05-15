@@ -175,6 +175,7 @@ export default function DashboardPage() {
       needsSEO: false,
       needsMaintenance: false,
     },
+    mode: "onChange", // Valideren bij iedere wijziging
   });
 
   // Mutation for creating a new project
@@ -1145,7 +1146,7 @@ export default function DashboardPage() {
                 <h3 className="text-lg font-medium mb-2">
                   {isEnglish ? "Logo" : "Logo"} <span className="text-destructive">*</span>
                 </h3>
-                {!form.formState.isValid && form.formState.errors.logoOption && (
+                {form.formState.errors.root?.message && form.formState.errors.root.message.includes("logo") && (
                   <p className="text-sm text-destructive mb-2">
                     {isEnglish 
                       ? "Please select a logo option" 
