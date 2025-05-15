@@ -650,11 +650,9 @@ export default function AuthPage() {
                         <TabsContent value="register">
                           <Card>
                             <CardHeader>
-                              <CardTitle className="text-2xl">{isEnglish ? "Create an Account" : "Account Aanmaken"}</CardTitle>
+                              <CardTitle className="text-2xl">{t('auth.registerTitle')}</CardTitle>
                               <CardDescription>
-                                {isEnglish 
-                                  ? "Enter your details to create a new account" 
-                                  : "Voer je gegevens in om een nieuw account aan te maken"}
+                                {t('auth.registerDescription')}
                               </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -665,11 +663,11 @@ export default function AuthPage() {
                                     name="username"
                                     render={({ field }) => (
                                       <FormItem>
-                                        <FormLabel>{isEnglish ? "Username" : "Gebruikersnaam"}</FormLabel>
+                                        <FormLabel>{t('auth.username')}</FormLabel>
                                         <FormControl>
                                           <Input 
                                             type="text" 
-                                            placeholder={isEnglish ? "Choose a username" : "Kies een gebruikersnaam"}
+                                            placeholder={t('auth.username')}
                                             {...field} 
                                           />
                                         </FormControl>
