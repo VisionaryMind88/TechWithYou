@@ -236,7 +236,7 @@ export const Chatbot = () => {
             <div className="bg-gradient-to-r from-primary to-primary/80 text-white p-3 flex justify-between items-center rounded-t-xl">
               <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/assets/dalia-avatar.svg" alt="Dalia" />
+                  <AvatarImage src="https://randomuser.me/api/portraits/women/65.jpg" alt="Dalia" />
                   <AvatarFallback className="bg-white/20">DA</AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold">
