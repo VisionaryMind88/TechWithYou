@@ -228,6 +228,7 @@ export interface ChatMessage {
 
 // Interface voor notificaties
 export interface ChatNotification {
+  id?: string;
   roomId: string;
   fromUsername: string;
   message: string;

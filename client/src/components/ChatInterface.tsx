@@ -329,115 +329,111 @@ export function ChatInterface({
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Client selector voor admin gebruikers */}
-      {isAdmin && (
-        <div className="px-4 py-2 border-b">
-          <Select
-            value={selectedClientId?.toString() || ""}
-            onValueChange={(value) => onClientSelect && onClientSelect(Number(value))}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder={isEnglish ? "Select a client" : "Selecteer een klant"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>{isEnglish ? "Clients" : "Klanten"}</SelectLabel>
-                {clients.map((client: any) => (
-                  <SelectItem key={client.id} value={client.id.toString()}>
-                    {client.name || client.username}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-      
-      {/* Notificatie indicator voor klanten */}
-      {!isAdmin && unreadCount > 0 && (
-        <div className="px-4 py-2 border-b flex items-center justify-between">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-2"
-            onClick={() => setIsNotificationOpen(true)}
-          >
-            <Bell className="h-4 w-4 text-orange-500 animate-pulse" />
-            {isEnglish ? "New messages" : "Nieuwe berichten"}
-            <Badge variant="destructive">{unreadCount}</Badge>
-          </Button>
-        </div>
-      )}
-      
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
-          {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-40 text-muted-foreground">
-              {isEnglish 
-                ? "No messages yet. Start the conversation!" 
-                : "Nog geen berichten. Begin het gesprek!"}
-            </div>
-          ) : (
-            messages.map((msg, index) => (
-              <div 
-                key={index} 
-                className={`flex items-start gap-2 ${msg.userId === userId ? 'justify-end' : ''}`}
-              >
-                {msg.userId !== userId && (
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback style={{ backgroundColor: getRandomColor(msg.username) }}>
-                      {getInitials(msg.username)}
-                    </AvatarFallback>
-                  </Avatar>
-                )}
-                
+    <>
+      <div className="flex flex-col h-full">
+        {/* Client selector voor admin gebruikers */}
+        {isAdmin && (
+          <div className="px-4 py-2 border-b">
+            <Select
+              value={selectedClientId?.toString() || ""}
+              onValueChange={(value) => onClientSelect && onClientSelect(Number(value))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={isEnglish ? "Select a client" : "Selecteer een klant"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>{isEnglish ? "Clients" : "Klanten"}</SelectLabel>
+                  {clients.map((client: any) => (
+                    <SelectItem key={client.id} value={client.id.toString()}>
+                      {client.name || client.username}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        
+        {/* Notificatie indicator voor klanten */}
+        {!isAdmin && unreadCount > 0 && (
+          <div className="px-4 py-2 border-b flex items-center justify-between">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
+              onClick={() => setIsNotificationOpen(true)}
+            >
+              <Bell className="h-4 w-4 text-orange-500 animate-pulse" />
+              {isEnglish ? "New messages" : "Nieuwe berichten"}
+              <Badge variant="destructive">{unreadCount}</Badge>
+            </Button>
+          </div>
+        )}
+        
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-4">
+            {messages.length === 0 ? (
+              <div className="flex items-center justify-center h-40 text-muted-foreground">
+                {isEnglish 
+                  ? "No messages yet. Start the conversation!" 
+                  : "Nog geen berichten. Begin het gesprek!"}
+              </div>
+            ) : (
+              messages.map((msg, index) => (
                 <div 
-                  className={`
-                    max-w-[80%] rounded-lg px-3 py-2 
-                    ${msg.userId === userId 
-                      ? 'bg-primary text-primary-foreground ml-auto' 
-                      : 'bg-muted'
-                    }
-                  `}
+                  key={index} 
+                  className={`flex items-start gap-2 ${msg.userId === userId ? 'justify-end' : ''}`}
                 >
                   {msg.userId !== userId && (
-                    <div className="font-medium text-xs mb-1">{msg.username}</div>
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback style={{ backgroundColor: getRandomColor(msg.username) }}>
+                        {getInitials(msg.username)}
+                      </AvatarFallback>
+                    </Avatar>
                   )}
-                  {msg.message && <div>{msg.message}</div>}
                   
-                  {/* Toon bijlage indien aanwezig */}
-                  {msg.attachment && (
-                    <div className="mt-2">
-                      {msg.attachment.type.startsWith('image/') ? (
-                        <div className="relative">
-                          <img 
-                            src={msg.attachment.url}
-                            alt={msg.attachment.name}
-                            className="max-w-full max-h-48 rounded-md object-contain"
-                          />
-                          <a 
-                            href={msg.attachment.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            download={msg.attachment.name}
-                            className="absolute bottom-2 right-2 bg-black/60 text-white p-1 rounded-full"
-                          >
-                            <Download className="h-4 w-4" />
-                          </a>
-                        </div>
-                      ) : (
-                        <Card className="p-2 flex items-center gap-2 hover:bg-accent/50 cursor-pointer" onClick={() => msg.attachment ? window.open(msg.attachment.url, '_blank') : null}>
-                          {msg.attachment && getFileIcon(msg.attachment.type)}
-                          <div className="flex-1 overflow-hidden">
-                            {msg.attachment && (
-                              <>
-                                <div className="truncate text-sm font-medium">{msg.attachment.name}</div>
-                                <div className="text-xs text-muted-foreground">{formatFileSize(msg.attachment.size)}</div>
-                              </>
-                            )}
+                  <div 
+                    className={`
+                      max-w-[80%] rounded-lg px-3 py-2 
+                      ${msg.userId === userId 
+                        ? 'bg-primary text-primary-foreground ml-auto' 
+                        : 'bg-muted'
+                      }
+                    `}
+                  >
+                    {msg.userId !== userId && (
+                      <div className="font-medium text-xs mb-1">{msg.username}</div>
+                    )}
+                    {msg.message && <div>{msg.message}</div>}
+                    
+                    {/* Toon bijlage indien aanwezig */}
+                    {msg.attachment && (
+                      <div className="mt-2">
+                        {msg.attachment.type.startsWith('image/') ? (
+                          <div className="relative">
+                            <img 
+                              src={msg.attachment.url}
+                              alt={msg.attachment.name}
+                              className="max-w-full max-h-48 rounded-md object-contain"
+                            />
+                            <a 
+                              href={msg.attachment.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              download={msg.attachment.name}
+                              className="absolute bottom-2 right-2 bg-black/60 text-white p-1 rounded-full"
+                            >
+                              <Download className="h-4 w-4" />
+                            </a>
                           </div>
-                          {msg.attachment && (
+                        ) : (
+                          <Card className="p-2 flex items-center gap-2 hover:bg-accent/50 cursor-pointer" onClick={() => msg.attachment ? window.open(msg.attachment.url, '_blank') : null}>
+                            {getFileIcon(msg.attachment.type)}
+                            <div className="flex-1 overflow-hidden">
+                              <div className="truncate text-sm font-medium">{msg.attachment.name}</div>
+                              <div className="text-xs text-muted-foreground">{formatFileSize(msg.attachment.size)}</div>
+                            </div>
                             <a 
                               href={msg.attachment.url}
                               download={msg.attachment.name}
@@ -445,159 +441,155 @@ export function ChatInterface({
                             >
                               <Download className="h-4 w-4" />
                             </a>
-                          )}
-                        </Card>
-                      )}
+                          </Card>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="text-xs opacity-70 mt-1 text-right">
+                      {formatTime(msg.timestamp)}
                     </div>
-                  )}
-                  
-                  <div className="text-xs opacity-70 mt-1 text-right">
-                    {formatTime(msg.timestamp)}
                   </div>
+                  
+                  {msg.userId === userId && (
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback style={{ backgroundColor: getRandomColor(msg.username) }}>
+                        {getInitials(msg.username)}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                 </div>
-                
-                {msg.userId === userId && (
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback style={{ backgroundColor: getRandomColor(msg.username) }}>
-                      {getInitials(msg.username)}
-                    </AvatarFallback>
-                  </Avatar>
-                )}
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </ScrollArea>
+        
+        <Separator />
+        
+        {/* Bestandsweergave */}
+        {selectedFile && (
+          <div className="px-4 py-2 border-t bg-muted/30">
+            <Card className="p-2 flex items-center gap-2">
+              {getFileIcon(selectedFile.type)}
+              <div className="flex-1 overflow-hidden">
+                <div className="truncate text-sm font-medium">{selectedFile.name}</div>
+                <div className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</div>
               </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-      </ScrollArea>
-      
-      <Separator />
-      
-      {/* Bestand voorbeeldweergave */}
-      {selectedFile && (
-        <div className="px-4 pt-2">
-          <Card className="p-2 flex items-center gap-2">
-            {getFileIcon(selectedFile.type)}
-            <div className="flex-1 overflow-hidden">
-              <div className="truncate text-sm font-medium">{selectedFile.name}</div>
-              <div className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</div>
-            </div>
-            <Button variant="ghost" size="icon" onClick={handleClearFile} disabled={isLoading || isUploading}>
-              <CloseIcon className="h-4 w-4" />
-            </Button>
-          </Card>
-        </div>
-      )}
-      
-      <div className="p-4">
-        <form 
-          className="flex gap-2" 
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSendMessage();
-          }}
-        >
-          <Input
-            ref={inputRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={isEnglish ? "Type your message..." : "Typ je bericht..."}
-            disabled={isLoading || isUploading}
-            className="flex-1"
-          />
-          
-          {/* Bestand upload knop */}
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="icon"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isLoading || isUploading}
+              <Button variant="ghost" size="icon" onClick={handleClearFile}>
+                <CloseIcon className="h-4 w-4" />
+              </Button>
+            </Card>
+          </div>
+        )}
+        
+        {/* Berichtinvoer */}
+        <div className="p-4 border-t">
+          <form 
+            className="flex items-center gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendMessage();
+            }}
           >
-            <FileUp className="h-4 w-4" />
-            <span className="sr-only">
-              {isEnglish ? "Upload file" : "Bestand uploaden"}
-            </span>
             <input
-              ref={fileInputRef}
               type="file"
+              ref={fileInputRef}
               className="hidden"
               onChange={handleFileSelect}
-              accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,application/zip,application/x-zip-compressed"
             />
-          </Button>
-          
-          <Button 
-            type="submit" 
-            disabled={isLoading || isUploading || (!message.trim() && !selectedFile)}
-          >
-            {isUploading ? (
-              <span className="flex items-center gap-2">
-                <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                {isEnglish ? "Uploading..." : "Uploaden..."}
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading || isUploading}
+            >
+              <FileUp className="h-4 w-4" />
+              <span className="sr-only">
+                {isEnglish ? "Upload file" : "Bestand uploaden"}
               </span>
-            ) : (
-              <>
-                <Send className="h-4 w-4" />
-                <span className="sr-only">
-                  {isEnglish ? "Send" : "Versturen"}
-                </span>
-              </>
-            )}
-          </Button>
-        </form>
-      </div>
-    </div>
-    
-    {/* Notificatie dialog */}
-    <Dialog open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{isEnglish ? "New Messages" : "Nieuwe Berichten"}</DialogTitle>
-          <DialogDescription>
-            {isEnglish 
-              ? "You have unread messages from the admin team." 
-              : "Je hebt ongelezen berichten van het admin team."}
-          </DialogDescription>
-        </DialogHeader>
-        
-        <div className="max-h-[300px] overflow-y-auto py-4">
-          {notifications
-            .filter(notification => !notification.read)
-            .map((notification, index) => (
-              <div key={index} className="mb-4 last:mb-0 p-3 border rounded-lg">
-                <div className="flex items-center gap-2 mb-1">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback style={{ backgroundColor: getRandomColor(notification.fromUsername) }}>
-                      {getInitials(notification.fromUsername)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium text-sm">{notification.fromUsername}</span>
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {formatTime(notification.timestamp)}
-                  </span>
-                </div>
-                <p className="text-sm pl-8">{notification.message}</p>
-              </div>
-            ))}
-          
-          {notifications.filter(n => !n.read).length === 0 && (
-            <p className="text-center text-muted-foreground py-4">
-              {isEnglish ? "No unread messages" : "Geen ongelezen berichten"}
-            </p>
-          )}
-        </div>
-        
-        <DialogFooter className="sm:justify-between">
-          <DialogClose asChild>
-            <Button variant="secondary">
-              {isEnglish ? "Close" : "Sluiten"}
             </Button>
-          </DialogClose>
-          <Button onClick={handleMarkNotificationsAsRead}>
-            {isEnglish ? "Mark all as read" : "Alles als gelezen markeren"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            
+            <Input
+              ref={inputRef}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder={isEnglish ? "Type a message..." : "Typ een bericht..."}
+              disabled={isLoading || isUploading}
+              className="flex-1"
+            />
+            
+            <Button
+              type="submit"
+              disabled={(!message.trim() && !selectedFile) || isLoading || isUploading}
+            >
+              {isLoading || isUploading ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  <span className="sr-only">
+                    {isEnglish ? "Send" : "Versturen"}
+                  </span>
+                </>
+              )}
+            </Button>
+          </form>
+        </div>
+      </div>
+      
+      {/* Notificatie dialog */}
+      <Dialog open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{isEnglish ? "New Messages" : "Nieuwe Berichten"}</DialogTitle>
+            <DialogDescription>
+              {isEnglish 
+                ? "You have unread messages from the admin team." 
+                : "Je hebt ongelezen berichten van het admin team."}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="max-h-[300px] overflow-y-auto py-4">
+            {notifications
+              .filter(notification => !notification.read)
+              .map((notification, index) => (
+                <div key={index} className="mb-4 last:mb-0 p-3 border rounded-lg">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Avatar className="h-6 w-6">
+                      <AvatarFallback style={{ backgroundColor: getRandomColor(notification.fromUsername) }}>
+                        {getInitials(notification.fromUsername)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium text-sm">{notification.fromUsername}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {formatTime(notification.timestamp)}
+                    </span>
+                  </div>
+                  <p className="text-sm pl-8">{notification.message}</p>
+                </div>
+              ))}
+            
+            {notifications.filter(n => !n.read).length === 0 && (
+              <p className="text-center text-muted-foreground py-4">
+                {isEnglish ? "No unread messages" : "Geen ongelezen berichten"}
+              </p>
+            )}
+          </div>
+          
+          <DialogFooter className="sm:justify-between">
+            <DialogClose asChild>
+              <Button variant="secondary">
+                {isEnglish ? "Close" : "Sluiten"}
+              </Button>
+            </DialogClose>
+            <Button onClick={handleMarkNotificationsAsRead}>
+              {isEnglish ? "Mark all as read" : "Alles als gelezen markeren"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
