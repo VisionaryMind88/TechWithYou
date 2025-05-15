@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
 import { useTranslation } from "@/hooks/use-translation";
 import { useEffect } from "react";
 
