@@ -1,0 +1,30 @@
+Kernvereisten:
+
+Cliënt Dashboard:
+Implementeer een systeem waarbij nieuw aangemaakte projecten vanuit de cliëntzijde in de status 'in afwachting' op hun dashboard verschijnen.
+Zodra de admin een project goedkeurt, moet de status bij de cliënt automatisch geüpdatet worden naar 'geaccepteerd' of een vergelijkbare statusindicatie.
+Admin Dashboard:
+Ontwikkel een duidelijk en overzichtelijk systeem voor de admin om nieuwe projectaanvragen te bekijken en te beheren.
+Inclusief functies voor het accepteren of afwijzen van projecten, waarbij beslissingen direct zichtbaar zijn voor de betreffende cliënt.
+Chatfunctie:
+Implementeer een moderne, realtime chatfunctie voor communicatie binnen het team.
+Voeg een notificatiesysteem toe waarbij gebruikers kunnen zien wanneer hun berichten gelezen zijn en wanneer iemand begint met typen.
+Zorg ervoor dat de chat interface gebruiksvriendelijk is zowel op desktop als mobiele apparaten.
+Additionele Eisen:
+
+Het systeem moet intuïtief en gebruikersvriendelijk zijn.
+Alle knoppen en doorgangen moeten duidelijk gedefinieerd en gemakkelijk navigeerbaar zijn.
+Het ontwerp van het dashboard moet modern en esthetisch aantrekkelijk zijn, consistent met de huidige webdesign trends.
+Suggesties voor Verbetering:
+Daarnaast verzoek ik ook om 20 suggesties die de functionaliteit, gebruikerservaring of algehele efficiëntie van onze dashboards kunnen verbeteren. Deze kunnen betrekking hebben op UI/UX design, technische functies, veiligheidsoptimalisaties of elk ander aspect dat volgens jou waardevol zou zijn voor ons platform.
+
+Technische Specificaties:
+
+[Voeg hier de specifieke frameworks, libraries, of technologieën toe die je wilt dat de ontwikkelaar gebruikt, gebaseerd op jouw huidige stack.]
+Instructies voor Ontwikkelaar op Replit:
+
+Bekijk de huidige website en dashboard functionaliteiten grondig om de scope van het project volledig te begrijpen.
+Start met het ontwerpen van een plan of schema voor de implementatie van de verzoeken.
+Houd tijdens het ontwikkelingsproces regelmatig contact voor updates en feedback.
+Test uitvoerig alle nieuwe features op zowel desktop als mobiele versies van de site voordat deze live gaan.
+Zorg ervoor dat de code netjes, goed gedocumenteerd en onderhoudbaar is.

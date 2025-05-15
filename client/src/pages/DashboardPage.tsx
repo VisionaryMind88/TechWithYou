@@ -188,7 +188,7 @@ export default function DashboardPage() {
       const projectData = {
         ...data,
         userId: user?.id,
-        status: "proposal", // Gebruik dezelfde status als in het schema
+        status: "pending", // Project start als 'pending' en wacht op goedkeuring door admin
         metaData: {
           notifyAdmin: true,
           submittedAt: new Date().toISOString(),
@@ -341,19 +341,25 @@ export default function DashboardPage() {
 
   const getProjectStatusColor = (status: string) => {
     switch (status) {
-      case "new":
-        return "bg-orange-100 text-orange-800";
+      case "pending":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "approved":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "rejected":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "new": // Oude status, behouden voor backward compatibility
+        return "bg-orange-100 text-orange-800 border-orange-200";
       case "planning":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "in-progress":
       case "in_progress":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "review":
-        return "bg-purple-100 text-purple-800";
+        return "bg-purple-100 text-purple-800 border-purple-200";
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 border-green-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -364,8 +370,14 @@ export default function DashboardPage() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "new":
-        return isEnglish ? "Pending" : "In Afwachting";
+      case "pending":
+        return isEnglish ? "Pending Approval" : "Wacht op Goedkeuring";
+      case "approved":
+        return isEnglish ? "Approved" : "Goedgekeurd";
+      case "rejected":
+        return isEnglish ? "Changes Requested" : "Wijzigingen Gevraagd";
+      case "new": // Oude status, behouden voor backward compatibility
+        return isEnglish ? "Pending Approval" : "Wacht op Goedkeuring";
       case "planning":
         return isEnglish ? "Planning" : "Planning";
       case "in_progress":
@@ -376,7 +388,7 @@ export default function DashboardPage() {
       case "completed":
         return isEnglish ? "Completed" : "Voltooid";
       default:
-        return status;
+        return status.charAt(0).toUpperCase() + status.slice(1); // Capitalize first letter
     }
   };
 

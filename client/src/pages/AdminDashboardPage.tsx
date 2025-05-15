@@ -152,7 +152,7 @@ export default function AdminDashboardPage() {
   const approveProjectMutation = useMutation({
     mutationFn: async (projectId: number) => {
       const res = await apiRequest("PUT", `/api/admin/projects/${projectId}`, {
-        status: "planning"
+        status: "approved" // Nieuwe status: 'approved' in plaats van 'planning'
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -162,13 +162,15 @@ export default function AdminDashboardPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
+      // Ook de client projecten query invalideren, zodat de status update meteen zichtbaar is
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/projects"] });
       setIsProjectDetailDialogOpen(false);
       setSelectedProject(null);
       toast({
         title: isEnglish ? "Project Approved" : "Project Goedgekeurd",
         description: isEnglish 
-          ? "The project has been approved and moved to planning stage" 
-          : "Het project is goedgekeurd en verplaatst naar de planningsfase",
+          ? "The project has been approved and client has been notified" 
+          : "Het project is goedgekeurd en de klant is op de hoogte gebracht",
         className: "bg-green-50 border-green-200",
       });
       trackEvent("project_approved", "admin", "project_management");
@@ -176,6 +178,42 @@ export default function AdminDashboardPage() {
     onError: (error: Error) => {
       toast({
         title: isEnglish ? "Failed to approve project" : "Project goedkeuring mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Reject project mutation
+  const rejectProjectMutation = useMutation({
+    mutationFn: async (projectId: number) => {
+      const res = await apiRequest("PUT", `/api/admin/projects/${projectId}`, {
+        status: "rejected"
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to reject project");
+      }
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
+      // Ook de client projecten query invalideren, zodat de status update meteen zichtbaar is
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/projects"] });
+      setIsProjectDetailDialogOpen(false);
+      setSelectedProject(null);
+      toast({
+        title: isEnglish ? "Project Requires Changes" : "Project Heeft Wijzigingen Nodig",
+        description: isEnglish 
+          ? "The client has been notified that the project requires changes" 
+          : "De klant is op de hoogte gebracht dat het project wijzigingen vereist",
+        variant: "default",
+      });
+      trackEvent("project_rejected", "admin", "project_management");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: isEnglish ? "Failed to update project" : "Project update mislukt",
         description: error.message,
         variant: "destructive",
       });

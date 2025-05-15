@@ -708,22 +708,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update a project (admin access)
   app.put('/api/admin/projects/:id', requireAdmin, async (req: Request, res: Response) => {
     try {
+      const admin = req.user;
       const projectId = parseInt(req.params.id, 10);
+      
+      console.log(`PUT /api/admin/projects/${projectId}: Admin ${admin?.username} updating project`);
+      console.log('Update data:', JSON.stringify(req.body, null, 2));
+      
       const project = await storage.getProject(projectId);
       
       if (!project) {
+        console.log(`Project with ID ${projectId} not found`);
         return res.status(404).json({ error: 'Project not found' });
       }
       
+      console.log(`Found project: "${project.name}" (ID: ${project.id}) with current status: ${project.status}`);
+      
+      // Update project
       const updatedProject = await storage.updateProject(projectId, req.body);
       
-      if (updatedProject && req.body.status === 'planning' && project.status === 'new') {
-        // Create notification for project owner that project was approved
+      console.log(`Project updated successfully, new status: ${req.body.status || project.status}`);
+      
+      // Als status is approved, stuur een speciale bericht
+      if (req.body.status === 'approved' && req.body.status !== project.status) {
+        console.log(`Creating 'project approved' notification for user ${project.userId}`);
+        
+        await storage.createNotification({
+          userId: project.userId,
+          title: 'Project Approved!',
+          message: `Good news! Your project '${project.name}' has been approved and will move forward.`,
+          type: 'success',
+          link: `/dashboard/projects/${project.id}`
+        });
+      }
+      // Als status is planning (oude versie van approval), stuur approval bericht
+      else if (req.body.status === 'planning' && project.status === 'pending') {
+        console.log(`Creating 'project approved (planning)' notification for user ${project.userId}`);
+        
         await storage.createNotification({
           userId: project.userId,
           title: 'Project Approved',
           message: `Your project '${project.name}' has been approved and moved to planning phase.`,
-          type: 'success'
+          type: 'success',
+          link: `/dashboard/projects/${project.id}`
+        });
+      }
+      // Als status is rejected, stuur een speciale bericht
+      else if (req.body.status === 'rejected' && req.body.status !== project.status) {
+        console.log(`Creating 'project rejected' notification for user ${project.userId}`);
+        
+        await storage.createNotification({
+          userId: project.userId,
+          title: 'Project Requires Changes',
+          message: `Your project '${project.name}' needs some adjustments before we can proceed.`,
+          type: 'warning',
+          link: `/dashboard/projects/${project.id}`
+        });
+      }
+      // Voor andere statuswijzigingen
+      else if (req.body.status && req.body.status !== project.status) {
+        console.log(`Creating status update notification for user ${project.userId}`);
+        
+        await storage.createNotification({
+          userId: project.userId,
+          title: 'Project Status Updated',
+          message: `Your project '${project.name}' status has been updated to '${req.body.status}'.`,
+          type: 'info',
+          link: `/dashboard/projects/${project.id}`
         });
       }
       

@@ -57,7 +57,7 @@ export const projects = pgTable("projects", {
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  status: text("status").notNull().default("proposal"), // proposal, in-progress, review, completed
+  status: text("status").notNull().default("pending"), // pending, approved, in-progress, review, completed, rejected
   type: text("type").notNull(), // website, application, dashboard, etc.
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
