@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { getQueryFn, queryClient, apiRequest } from "@/lib/queryClient";
 import { useTranslation } from "@/hooks/use-translation";
+import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
 import { Redirect } from "wouter";
 import { SEO } from "@/components/SEO";
@@ -69,6 +70,7 @@ export default function AdminDashboardPage() {
   const { t } = useTranslation();
   const isEnglish = t('language') === 'en';
   const { user, logoutMutation } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("clients");
   const [isAddClientDialogOpen, setIsAddClientDialogOpen] = useState(false);
   const [clientSearchQuery, setClientSearchQuery] = useState("");
@@ -138,13 +140,32 @@ export default function AdminDashboardPage() {
       password: string 
     }) => {
       const res = await apiRequest("POST", "/api/admin/clients", clientData);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to create client");
+      }
       return await res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
       setIsAddClientDialogOpen(false);
+      form.reset();
+      toast({
+        title: isEnglish ? "Client created successfully" : "Klant succesvol aangemaakt",
+        description: isEnglish 
+          ? `${data.name} can now log in using their credentials` 
+          : `${data.name} kan nu inloggen met deze gegevens`,
+        variant: "default",
+      });
       trackEvent("create_client", "admin", "client_management", 1);
     },
+    onError: (error: Error) => {
+      toast({
+        title: isEnglish ? "Failed to create client" : "Klant aanmaken mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   });
 
   // Handle logout
@@ -155,16 +176,16 @@ export default function AdminDashboardPage() {
   // Define client form schema inside component
   const clientFormSchema = z.object({
     username: z.string().min(3, {
-      message: isEnglish ? "Username must be at least 3 characters" : "Gebruikersnaam moet minimaal 3 tekens bevatten",
+      message: "Username must be at least 3 characters"
     }),
     email: z.string().email({
-      message: isEnglish ? "Please enter a valid email address" : "Voer een geldig e-mailadres in",
+      message: "Please enter a valid email address"
     }),
     name: z.string().min(2, {
-      message: isEnglish ? "Name must be at least 2 characters" : "Naam moet minimaal 2 tekens bevatten",
+      message: "Name must be at least 2 characters"
     }),
     password: z.string().min(6, {
-      message: isEnglish ? "Password must be at least 6 characters" : "Wachtwoord moet minimaal 6 tekens bevatten",
+      message: "Password must be at least 6 characters"
     }),
   });
   
@@ -197,7 +218,12 @@ export default function AdminDashboardPage() {
       />
       
       {/* Add Client Dialog */}
-      <Dialog open={isAddClientDialogOpen} onOpenChange={setIsAddClientDialogOpen}>
+      <Dialog 
+        open={isAddClientDialogOpen} 
+        onOpenChange={(open) => {
+          setIsAddClientDialogOpen(open);
+          if (!open) form.reset();
+        }}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{isEnglish ? "Add New Client" : "Nieuwe Klant Toevoegen"}</DialogTitle>
