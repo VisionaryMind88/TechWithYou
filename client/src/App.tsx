@@ -46,6 +46,9 @@ function Router() {
       <Route path="/portfolio">
         {() => <PortfolioPage />}
       </Route>
+      <Route path="/portfolio/:slug">
+        {() => <PortfolioDetailPage />}
+      </Route>
       <Route path="/about">
         {() => <AboutPage />}
       </Route>

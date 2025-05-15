@@ -98,7 +98,7 @@ const PortfolioPage = () => {
                 "description": item.description,
                 "creator": {
                   "@type": "Organization",
-                  "name": "Digitaal Atelier"
+                  "name": "TechWithYou"
                 },
                 "image": item.image
               }
@@ -154,7 +154,7 @@ const PortfolioPage = () => {
                     description={item.description}
                     image={item.image}
                     technologies={item.technologies}
-                    link={item.link}
+                    link={`/portfolio/${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                   />
                 </motion.div>
               ))}
