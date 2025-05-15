@@ -9,6 +9,7 @@ import { useTranslation } from "@/hooks/use-translation";
 import { trackEvent } from "@/lib/analytics";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { DashboardTour } from "@/components/DashboardTour";
+import { ChatInterface } from "@/components/ChatInterface";
 import { Project, InsertProject } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
