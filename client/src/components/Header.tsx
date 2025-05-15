@@ -118,19 +118,19 @@ export const Header = () => {
                   <>
                     {/* Logged-in navigation */}
                     {user.role === 'admin' ? (
-                      <a
+                      <Link
                         href="/admin"
                         className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
                       >
                         Admin
-                      </a>
+                      </Link>
                     ) : (
-                      <a
+                      <Link
                         href="/dashboard"
                         className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
                       >
                         {t('header.clientArea')}
-                      </a>
+                      </Link>
                     )}
                     <Button 
                       onClick={handleLogout} 
@@ -150,12 +150,12 @@ export const Header = () => {
                 ) : (
                   <>
                     {/* Logged-out navigation - één klantenomgeving knop */}
-                    <a
+                    <Link
                       href="/auth"
                       className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
                     >
                       {t('header.clientArea')}
-                    </a>
+                    </Link>
                   </>
                 )}
               </div>
@@ -185,41 +185,41 @@ export const Header = () => {
             transition={{ duration: 0.2 }}
           >
             <nav className="flex flex-col space-y-4">
-              <a
+              <Link
                 href="/services"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.services')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/portfolio"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.portfolio')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/about"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.about')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/faq"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 FAQ
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.contact')}
-              </a>
+              </Link>
 
               <div className="pt-2 border-t border-neutral-100">
                 <div className="flex items-center gap-2 mt-2">
@@ -232,21 +232,21 @@ export const Header = () => {
                     {/* Logged-in user navigation */}
                     <div className="grid grid-cols-1 gap-2 mt-3">
                       {user.role === 'admin' ? (
-                        <a
+                        <Link
                           href="/admin"
                           onClick={closeMobileMenu}
                           className="flex items-center justify-center bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200"
                         >
                           Admin
-                        </a>
+                        </Link>
                       ) : (
-                        <a
+                        <Link
                           href="/dashboard"
                           onClick={closeMobileMenu}
                           className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
                         >
                           {t('header.clientArea')}
-                        </a>
+                        </Link>
                       )}
                       
                       <Button 
@@ -271,13 +271,13 @@ export const Header = () => {
                   <>
                     {/* Logged-out navigation - één klantenomgeving knop */}
                     <div className="mt-3">
-                      <a
+                      <Link
                         href="/auth"
                         onClick={closeMobileMenu}
                         className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
                       >
                         {t('header.clientArea')}
-                      </a>
+                      </Link>
                     </div>
                   </>
                 )}
