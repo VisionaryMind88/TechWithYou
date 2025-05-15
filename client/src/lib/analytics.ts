@@ -1,16 +1,35 @@
 import { isClient } from "@/lib/utils";
 
-// Google Analytics measurement ID
-// Normally this would be set in an environment variable
-const GA_MEASUREMENT_ID = "G-PLACEHOLDER"; // Replace with actual GA ID when ready
+// Function to check if Google Analytics is configured
+export const isGAConfigured = (): boolean => {
+  return !!import.meta.env.VITE_GA_MEASUREMENT_ID;
+};
+
+// Get the measurement ID
+export const getMeasurementId = (): string => {
+  return import.meta.env.VITE_GA_MEASUREMENT_ID || "G-PLACEHOLDER";
+};
 
 // Initialize Google Analytics
 export const initGA = () => {
   if (!isClient) return;
   
+  const measurementId = getMeasurementId();
+  
+  if (!isGAConfigured()) {
+    console.warn('Missing required Google Analytics key: VITE_GA_MEASUREMENT_ID');
+    return;
+  }
+  
+  // Check if GA is already initialized
+  if (typeof window.gtag === 'function') {
+    console.log('Google Analytics already initialized.');
+    return;
+  }
+  
   // Load the GA script dynamically
   const script = document.createElement("script");
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
   script.async = true;
   document.head.appendChild(script);
   
@@ -20,22 +39,29 @@ export const initGA = () => {
     window.dataLayer.push(arguments);
   }
   gtag('js', new Date());
-  gtag('config', GA_MEASUREMENT_ID, {
+  gtag('config', measurementId, {
     send_page_view: false, // We'll handle page views manually
   });
   
   // Make gtag globally available
   window.gtag = gtag;
+  
+  console.log('Google Analytics initialized with ID:', measurementId);
 };
 
 // Track page views
 export const trackPageView = (url: string) => {
   if (!isClient || !window.gtag) return;
+  if (!isGAConfigured()) return;
   
-  window.gtag('event', 'page_view', {
+  const measurementId = getMeasurementId();
+  
+  window.gtag('config', measurementId, {
     page_path: url,
     page_title: document.title,
   });
+  
+  console.log('Page view tracked:', url);
 };
 
 // Track custom events
@@ -45,13 +71,17 @@ export const trackEvent = (
   label?: string,
   value?: number
 ) => {
-  if (!isClient || !window.gtag) return;
+  if (!isClient) return;
+  if (!isGAConfigured()) return;
+  if (typeof window.gtag !== 'function') return;
   
   window.gtag('event', action, {
     event_category: category,
     event_label: label,
     value: value,
   });
+  
+  console.log('Event tracked:', { action, category, label, value });
 };
 
 // Define types for Google Analytics

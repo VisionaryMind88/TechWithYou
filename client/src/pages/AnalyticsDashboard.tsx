@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { TrendingUp, TrendingDown, Users, MousePointerClick, Clock, Activity, AlertCircle } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "@/hooks/use-translation";
@@ -33,7 +34,7 @@ const StatsCard = ({ title, value, change, isPositive, isLoading = false }: Stat
         <div className="text-2xl font-bold">
           {isLoading ? <Skeleton className="h-8 w-[100px]" /> : value}
         </div>
-        <p className="text-xs text-muted-foreground flex gap-1 items-center mt-1">
+        <div className="text-xs text-muted-foreground flex gap-1 items-center mt-1">
           {isLoading ? (
             <Skeleton className="h-4 w-[80px]" />
           ) : (
@@ -48,7 +49,7 @@ const StatsCard = ({ title, value, change, isPositive, isLoading = false }: Stat
               </span>
             </>
           )}
-        </p>
+        </div>
       </CardContent>
     </Card>
   );
@@ -62,6 +63,7 @@ const AnalyticsDashboard = () => {
   
   // Check if Google Analytics key is available
   useEffect(() => {
+    // Check for the Google Analytics key
     const gaKey = import.meta.env.VITE_GA_MEASUREMENT_ID;
     setHasGaKey(!!gaKey);
     
@@ -69,6 +71,13 @@ const AnalyticsDashboard = () => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1500);
+    
+    // Track page view with additional event for dashboard access
+    if (gaKey) {
+      setTimeout(() => {
+        trackEvent('dashboard_visit', 'admin', 'analytics', 1);
+      }, 500);
+    }
     
     return () => clearTimeout(timer);
   }, []);
@@ -105,11 +114,27 @@ const AnalyticsDashboard = () => {
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>{isEnglish ? "Google Analytics Not Configured" : "Google Analytics Niet Geconfigureerd"}</AlertTitle>
-            <AlertDescription>
-              {isEnglish 
-                ? "Please add your Google Analytics Measurement ID to access real analytics data."
-                : "Voeg je Google Analytics Measurement ID toe om echte analysegegevens te bekijken."
-              }
+            <AlertDescription className="flex flex-col gap-4">
+              <div>
+                {isEnglish 
+                  ? "To use the analytics dashboard, you need to add your Google Analytics Measurement ID to the project's environment variables."
+                  : "Om het analytics dashboard te gebruiken, moet je je Google Analytics Measurement ID toevoegen aan de omgevingsvariabelen van het project."
+                }
+              </div>
+              <div className="bg-neutral-100 p-3 rounded-md">
+                <p className="text-xs font-mono mb-2">Add this to your Replit Secrets:</p>
+                <div className="flex items-center">
+                  <code className="bg-neutral-200 p-1 rounded text-xs">VITE_GA_MEASUREMENT_ID</code>
+                  <span className="mx-2">=</span>
+                  <code className="bg-neutral-200 p-1 rounded text-xs">G-XXXXXXXXXX</code>
+                </div>
+                <p className="text-xs mt-2">
+                  {isEnglish 
+                    ? "You can find your Measurement ID in your Google Analytics account under Admin > Property > Data Streams > Web"
+                    : "Je kunt je Measurement ID vinden in je Google Analytics-account onder Admin > Property > Data Streams > Web"
+                  }
+                </p>
+              </div>
             </AlertDescription>
           </Alert>
         )}
