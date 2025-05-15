@@ -309,8 +309,10 @@ export default function DashboardPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                {isEnglish ? "View Details" : "Bekijk Details"}
+                              <DropdownMenuItem asChild>
+                                <Link href={`/project/${project.id}`}>
+                                  {isEnglish ? "View Details" : "Bekijk Details"}
+                                </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem>
                                 {isEnglish ? "Edit Project" : "Project Bewerken"}
@@ -349,9 +351,11 @@ export default function DashboardPage() {
                         </div>
                       </CardContent>
                       <CardFooter className="p-4 pt-0 flex justify-end">
-                        <Button variant="outline" size="sm" className="gap-1">
-                          {isEnglish ? "View Project" : "Bekijk Project"} 
-                          <ChevronRight className="h-3 w-3" />
+                        <Button variant="outline" size="sm" className="gap-1" asChild>
+                          <Link href={`/project/${project.id}`}>
+                            {isEnglish ? "View Project" : "Bekijk Project"} 
+                            <ChevronRight className="h-3 w-3" />
+                          </Link>
                         </Button>
                       </CardFooter>
                     </Card>

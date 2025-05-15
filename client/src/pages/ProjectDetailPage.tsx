@@ -121,10 +121,11 @@ export default function ProjectDetailPage() {
   }, [projectId]);
   
   // Redirect if no projectId
-  if (!projectId) {
-    navigate("/dashboard");
-    return null;
-  }
+  useEffect(() => {
+    if (!projectId) {
+      navigate("/dashboard");
+    }
+  }, [projectId, navigate]);
   
   // Fetch project details
   const {

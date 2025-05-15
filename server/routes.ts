@@ -158,6 +158,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Project files API routes
+  app.get('/api/dashboard/projects/:projectId/files', requireAuth, async (req: Request, res: Response) => {
+    try {
+      const projectId = parseInt(req.params.projectId, 10);
+      const project = await storage.getProject(projectId);
+      
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+      
+      // Ensure user owns this project or is an admin
+      if (project.userId !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Access denied' });
+      }
+      
+      const files = await storage.getProjectFiles(projectId);
+      res.json(files);
+    } catch (error) {
+      console.error('Error fetching project files:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   // Milestones API routes
   app.get('/api/dashboard/projects/:projectId/milestones', requireAuth, async (req: Request, res: Response) => {
     try {
