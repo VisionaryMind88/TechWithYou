@@ -50,6 +50,8 @@ export default function AdminDashboardPage() {
   const isEnglish = t('language') === 'en';
   const { user, logoutMutation } = useAuth();
   const [activeTab, setActiveTab] = useState("clients");
+  const [isAddClientDialogOpen, setIsAddClientDialogOpen] = useState(false);
+  const [clientSearchQuery, setClientSearchQuery] = useState("");
   
   // Tracking analytics on page visit
   useEffect(() => {
@@ -104,6 +106,24 @@ export default function AdminDashboardPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/contacts"] });
       trackEvent("mark_contact_read", "admin", "contact_management", 1);
+    },
+  });
+  
+  // Create new client account mutation
+  const createClientMutation = useMutation({
+    mutationFn: async (clientData: { 
+      username: string; 
+      email: string; 
+      name: string; 
+      password: string 
+    }) => {
+      const res = await apiRequest("POST", "/api/admin/clients", clientData);
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/clients"] });
+      setIsAddClientDialogOpen(false);
+      trackEvent("create_client", "admin", "client_management", 1);
     },
   });
 

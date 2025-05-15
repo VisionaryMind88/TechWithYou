@@ -279,6 +279,154 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to fetch clients' });
     }
   });
+  
+  // Create a new client account
+  app.post('/api/admin/clients', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const { username, email, name, password } = req.body;
+      
+      // Check if username already exists
+      const existingUsername = await storage.getUserByUsername(username);
+      if (existingUsername) {
+        return res.status(400).json({ error: 'Username already exists' });
+      }
+      
+      // Check if email already exists
+      const existingEmail = await storage.getUserByEmail(email);
+      if (existingEmail) {
+        return res.status(400).json({ error: 'Email already exists' });
+      }
+      
+      // Create client user
+      const newClient = await storage.createUser({
+        username,
+        email,
+        name,
+        password, // Password will be hashed in auth.ts
+        role: 'client',
+        avatarUrl: null
+      });
+      
+      // Remove password from response
+      const { password: _, ...clientWithoutPassword } = newClient;
+      
+      res.status(201).json(clientWithoutPassword);
+    } catch (error) {
+      console.error('Error creating client:', error);
+      res.status(500).json({ error: 'Failed to create client' });
+    }
+  });
+  
+  // Get a specific client
+  app.get('/api/admin/clients/:id', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: 'Client not found' });
+      }
+      
+      if (user.role !== 'client') {
+        return res.status(400).json({ error: 'User is not a client' });
+      }
+      
+      // Don't expose password to frontend
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error('Error fetching client:', error);
+      res.status(500).json({ error: 'Failed to fetch client' });
+    }
+  });
+  
+  // Update a client
+  app.put('/api/admin/clients/:id', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { username, email, name } = req.body;
+      
+      // Verify user exists and is a client
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'Client not found' });
+      }
+      
+      if (user.role !== 'client') {
+        return res.status(400).json({ error: 'User is not a client' });
+      }
+      
+      // Check if new username already exists (if changing username)
+      if (username && username !== user.username) {
+        const existingUsername = await storage.getUserByUsername(username);
+        if (existingUsername && existingUsername.id !== userId) {
+          return res.status(400).json({ error: 'Username already exists' });
+        }
+      }
+      
+      // Check if new email already exists (if changing email)
+      if (email && email !== user.email) {
+        const existingEmail = await storage.getUserByEmail(email);
+        if (existingEmail && existingEmail.id !== userId) {
+          return res.status(400).json({ error: 'Email already exists' });
+        }
+      }
+      
+      // Update user
+      const updatedUser = await storage.updateUser(userId, {
+        username,
+        email,
+        name
+      });
+      
+      if (!updatedUser) {
+        return res.status(500).json({ error: 'Failed to update client' });
+      }
+      
+      // Don't expose password to frontend
+      const { password: _, ...userWithoutPassword } = updatedUser;
+      
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error('Error updating client:', error);
+      res.status(500).json({ error: 'Failed to update client' });
+    }
+  });
+  
+  // Reset client password
+  app.post('/api/admin/clients/:id/reset-password', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { newPassword } = req.body;
+      
+      if (!newPassword || newPassword.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters' });
+      }
+      
+      // Verify user exists and is a client
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'Client not found' });
+      }
+      
+      if (user.role !== 'client') {
+        return res.status(400).json({ error: 'User is not a client' });
+      }
+      
+      // Update user password (hashing will be done in auth.ts)
+      const updatedUser = await storage.updateUserPassword(userId, newPassword);
+      
+      if (!updatedUser) {
+        return res.status(500).json({ error: 'Failed to reset password' });
+      }
+      
+      res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+      console.error('Error resetting client password:', error);
+      res.status(500).json({ error: 'Failed to reset password' });
+    }
+  });
 
   // Get all projects (across all clients)
   app.get('/api/admin/projects', requireAdmin, async (req: Request, res: Response) => {
