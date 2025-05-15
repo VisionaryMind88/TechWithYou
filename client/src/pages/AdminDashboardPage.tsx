@@ -568,7 +568,50 @@ export default function AdminDashboardPage() {
           )}
           
           <DialogFooter className="flex justify-between items-center">
-            <div>
+            <div className="flex gap-2">
+              {selectedProject?.status === "pending" && (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                    disabled={rejectProjectMutation.isPending || approveProjectMutation.isPending}
+                    onClick={() => {
+                      if (selectedProject && selectedProject.id) {
+                        rejectProjectMutation.mutate(selectedProject.id);
+                      }
+                    }}
+                  >
+                    {rejectProjectMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {isEnglish ? "Processing..." : "Verwerken..."}
+                      </>
+                    ) : (
+                      isEnglish ? "Request Changes" : "Wijzigingen Vragen"
+                    )}
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    className="bg-green-600 hover:bg-green-700"
+                    disabled={approveProjectMutation.isPending || rejectProjectMutation.isPending}
+                    onClick={() => {
+                      if (selectedProject && selectedProject.id) {
+                        approveProjectMutation.mutate(selectedProject.id);
+                      }
+                    }}
+                  >
+                    {approveProjectMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {isEnglish ? "Approving..." : "Goedkeuren..."}
+                      </>
+                    ) : (
+                      isEnglish ? "Approve Project" : "Project Goedkeuren"
+                    )}
+                  </Button>
+                </>
+              )}
+              
               {selectedProject?.status === "new" && (
                 <Button 
                   variant="default" 
@@ -589,6 +632,19 @@ export default function AdminDashboardPage() {
                     isEnglish ? "Approve Project" : "Project Goedkeuren"
                   )}
                 </Button>
+              )}
+              
+              {(selectedProject?.status === "approved" || selectedProject?.status === "rejected") && (
+                <div className={`h-9 px-4 py-2 rounded-md text-sm font-medium inline-flex items-center border ${
+                  selectedProject.status === "approved" 
+                    ? "bg-green-100 text-green-800 border-green-200" 
+                    : "bg-red-100 text-red-800 border-red-200"
+                }`}>
+                  {selectedProject.status === "approved" 
+                    ? (isEnglish ? "Approved" : "Goedgekeurd") 
+                    : (isEnglish ? "Changes Requested" : "Wijzigingen Gevraagd")
+                  }
+                </div>
               )}
             </div>
             <Button 
@@ -827,17 +883,51 @@ export default function AdminDashboardPage() {
                                       >
                                         {isEnglish ? "View Details" : "Bekijk Details"}
                                       </Button>
-                                      <Button 
-                                        variant="default" 
-                                        size="sm" 
-                                        onClick={() => approveProjectMutation.mutate(project.id)}
-                                        disabled={approveProjectMutation.isPending}
-                                      >
-                                        {approveProjectMutation.isPending ? (
-                                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                        ) : null}
-                                        {isEnglish ? "Approve" : "Goedkeuren"}
-                                      </Button>
+                                      {project.status === "pending" ? (
+                                        <>
+                                          <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                            onClick={() => rejectProjectMutation.mutate(project.id)}
+                                            disabled={rejectProjectMutation.isPending || approveProjectMutation.isPending}
+                                          >
+                                            {rejectProjectMutation.isPending ? (
+                                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            ) : null}
+                                            {isEnglish ? "Request Changes" : "Wijzigingen Vragen"}
+                                          </Button>
+                                          <Button 
+                                            variant="default" 
+                                            size="sm"
+                                            className="bg-green-600 hover:bg-green-700"
+                                            onClick={() => approveProjectMutation.mutate(project.id)}
+                                            disabled={approveProjectMutation.isPending || rejectProjectMutation.isPending}
+                                          >
+                                            {approveProjectMutation.isPending ? (
+                                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            ) : null}
+                                            {isEnglish ? "Approve" : "Goedkeuren"}
+                                          </Button>
+                                        </>
+                                      ) : (
+                                        <div className={`px-2 py-1 rounded-md text-xs font-medium inline-flex items-center border ${
+                                          project.status === "approved" 
+                                            ? "bg-green-100 text-green-800 border-green-200" 
+                                            : (project.status === "rejected" 
+                                                ? "bg-red-100 text-red-800 border-red-200"
+                                                : "bg-gray-100 text-gray-800 border-gray-200"
+                                              )
+                                        }`}>
+                                          {project.status === "approved" 
+                                            ? (isEnglish ? "Approved" : "Goedgekeurd") 
+                                            : (project.status === "rejected" 
+                                                ? (isEnglish ? "Changes Requested" : "Wijzigingen Gevraagd")
+                                                : project.status
+                                              )
+                                          }
+                                        </div>
+                                      )}
                                     </div>
                                   </TableCell>
                                 </TableRow>
