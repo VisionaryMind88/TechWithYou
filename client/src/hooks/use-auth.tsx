@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Registration successful",
-        description: `Welcome to Digitaal Atelier, ${user.name || user.username}!`,
+        description: `Welcome to TechWithYou, ${user.name || user.username}!`,
         variant: "default",
       });
     },

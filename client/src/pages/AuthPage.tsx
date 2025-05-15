@@ -12,6 +12,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
 import { signInWithGoogle, signInWithGithub } from "@/lib/firebase";
+import { queryClient } from "@/lib/queryClient";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
@@ -129,7 +130,11 @@ export default function AuthPage() {
       if (response.ok) {
         // Na succesvolle authenticatie, werk de gebruiker state bij
         trackEvent("login", "auth", "google_login");
-        window.location.href = "/"; // Forceer een refresh om de authenticatie state bij te werken
+        // We gebruiken queryClient om de data in te stellen en redirecten via de router in plaats van een harde refresh
+        const userData = await response.json();
+        queryClient.setQueryData(["/api/user"], userData);
+        // Redirect naar dashboard na succesvolle login
+        setTimeout(() => { window.location.href = "/"; }, 500); // Kleine vertraging om de state bij te werken
       } else {
         const errorData = await response.json();
         console.error("Server authentication error:", errorData);
@@ -185,7 +190,9 @@ export default function AuthPage() {
       if (response.ok) {
         // Na succesvolle authenticatie, werk de gebruiker state bij
         trackEvent("login", "auth", "github_login");
-        window.location.href = "/"; // Forceer een refresh om de authenticatie state bij te werken
+        // We gebruiken queryClient om de data in te stellen en redirecten via de router in plaats van een harde refresh
+        const userData = await response.json();
+        queryClient.setQueryData(["/api/user"], userData);
       } else {
         const errorData = await response.json();
         console.error("Server authentication error:", errorData);
