@@ -20,7 +20,8 @@ import { Loader2, Upload } from "lucide-react";
 const fileUploadSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().optional(),
-  file: z.instanceof(File, { message: "File is required" })
+  file: z.instanceof(File, { message: "File is required" }),
+  fileUrl: z.string().optional()
 });
 
 type FileUploadFormValues = z.infer<typeof fileUploadSchema>;
@@ -46,23 +47,27 @@ export function UploadFileForm({ projectId, onSuccess }: UploadFileFormProps) {
   
   // File upload mutation
   const uploadFileMutation = useMutation({
-    mutationFn: async (data: FileUploadFormValues) => {
+    mutationFn: async (data: any) => {
       if (!projectId) {
         throw new Error("Project ID is required");
       }
       
-      // Gebruik FormData om het bestand te uploaden
+      // Gebruik FormData om de bestandsinformatie te uploaden
       const formData = new FormData();
       formData.append("name", data.name);
       if (data.description) {
         formData.append("description", data.description);
       }
-      formData.append("file", data.file);
-      formData.append("projectId", projectId.toString());
+      
+      // Gebruik de echte URL en bestandsgegevens in plaats van het bestand zelf
+      formData.append("fileUrl", data.fileUrl);
+      formData.append("fileType", data.file.type);
+      formData.append("fileSize", data.file.size.toString());
       formData.append("notifyAdmin", "true"); // Notificatie voor admin activeren
       
       // Log voor debugging
-      console.log("Uploading file:", data.file.name, "for project:", projectId);
+      console.log("Registering uploaded file:", data.name, "for project:", projectId);
+      console.log("File URL:", data.fileUrl);
       
       const res = await fetch(`/api/dashboard/projects/${projectId}/files`, {
         method: "POST",
@@ -72,7 +77,7 @@ export function UploadFileForm({ projectId, onSuccess }: UploadFileFormProps) {
       
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to upload file");
+        throw new Error(errorData.error || "Failed to register uploaded file");
       }
       
       return await res.json();

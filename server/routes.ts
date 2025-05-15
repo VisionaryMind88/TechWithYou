@@ -426,23 +426,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ error: 'You do not have permission to access this project' });
       }
       
-      // Simuleer bestandupload, omdat we nog geen echte bestandsupload hebben geïmplementeerd
-      // In een echte implementatie zou je hier multer gebruiken voor het verwerken van het bestand
-      const { name, description, notifyAdmin } = req.body;
+      // Verwerk bestandsinformatie van de client
+      const { name, description, fileUrl, fileType, fileSize, notifyAdmin } = req.body;
       
       // Validatie
       if (!name) {
         return res.status(400).json({ error: 'File name is required' });
       }
       
-      // Maak een nieuw projectbestand aan
+      if (!fileUrl) {
+        return res.status(400).json({ error: 'File URL is required' });
+      }
+      
+      // Maak een nieuw projectbestand aan met de echte URL
       const newFile = await storage.createProjectFile({
         projectId,
         name,
         description: description || '',
-        fileUrl: 'https://example.com/dummy-file.pdf', // Plaats hier de echte URL in productie
-        fileType: 'pdf', // Bepaal hier het echte bestandstype in productie
-        fileSize: 1024, // Bepaal hier de echte bestandsgrootte in productie
+        fileUrl: fileUrl, // We gebruiken nu de echte URL van Firebase Storage
+        fileType: fileType || 'application/octet-stream', // Gebruik het echte bestandstype
+        fileSize: parseInt(fileSize) || 0, // Gebruik de echte bestandsgrootte
         uploadedBy: user.id,
         createdAt: new Date(),
       });
