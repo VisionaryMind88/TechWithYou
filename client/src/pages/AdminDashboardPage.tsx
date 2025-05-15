@@ -134,10 +134,11 @@ export default function AdminDashboardPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
       toast({
-        title: isEnglish ? "Project approved" : "Project goedgekeurd",
+        title: isEnglish ? "Project Approved" : "Project Goedgekeurd",
         description: isEnglish 
           ? "The project has been approved and moved to planning stage" 
           : "Het project is goedgekeurd en verplaatst naar de planningsfase",
+        className: "bg-green-50 border-green-200",
       });
       trackEvent("project_approved", "admin", "project_management");
     },

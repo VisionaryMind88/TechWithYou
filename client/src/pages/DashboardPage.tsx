@@ -331,8 +331,11 @@ export default function DashboardPage() {
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case "proposal":
-        return isEnglish ? "Proposal" : "Voorstel";
+      case "new":
+        return isEnglish ? "Pending" : "In Afwachting";
+      case "planning":
+        return isEnglish ? "Planning" : "Planning";
+      case "in_progress":
       case "in-progress":
         return isEnglish ? "In Progress" : "In Uitvoering";
       case "review":
