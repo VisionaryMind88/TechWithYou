@@ -75,32 +75,32 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#services" className="text-neutral-400 hover:text-white transition">
+                <a href="/services" className="text-neutral-400 hover:text-white transition">
                   {t('header.services')}
                 </a>
               </li>
               <li>
-                <a href="#portfolio" className="text-neutral-400 hover:text-white transition">
+                <a href="/portfolio" className="text-neutral-400 hover:text-white transition">
                   {t('header.portfolio')}
                 </a>
               </li>
               <li>
-                <a href="#about" className="text-neutral-400 hover:text-white transition">
+                <a href="/about" className="text-neutral-400 hover:text-white transition">
                   {t('header.about')}
                 </a>
               </li>
               <li>
-                <a href="#team" className="text-neutral-400 hover:text-white transition">
+                <a href="/about#team" className="text-neutral-400 hover:text-white transition">
                   Team
                 </a>
               </li>
               <li>
-                <a href="#faq" className="text-neutral-400 hover:text-white transition">
+                <a href="/faq" className="text-neutral-400 hover:text-white transition">
                   FAQ
                 </a>
               </li>
               <li>
-                <a href="#contact" className="text-neutral-400 hover:text-white transition">
+                <a href="/contact" className="text-neutral-400 hover:text-white transition">
                   {t('header.contact')}
                 </a>
               </li>
