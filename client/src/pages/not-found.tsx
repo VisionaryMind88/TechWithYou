@@ -22,6 +22,36 @@ export default function NotFound() {
           ? "The page you are looking for doesn't exist or has been moved. Please navigate back to our homepage."
           : "De pagina die u zoekt bestaat niet of is verplaatst. Ga terug naar onze homepagina."
         }
+        noIndex={true}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": t('language') === 'en' ? "404 - Page Not Found" : "404 - Pagina Niet Gevonden",
+          "description": t('language') === 'en' 
+            ? "The page you are looking for doesn't exist or has been moved. Please navigate back to our homepage."
+            : "De pagina die u zoekt bestaat niet of is verplaatst. Ga terug naar onze homepagina.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "url": "https://digitaalatelier.com/"
+          },
+          "breadcrumb": {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://digitaalatelier.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": t('language') === 'en' ? "404 - Page Not Found" : "404 - Pagina Niet Gevonden"
+              }
+            ]
+          }
+        }}
       />
       <Header />
       <div className="min-h-[70vh] w-full flex flex-col items-center justify-center bg-white py-20">

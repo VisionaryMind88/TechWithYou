@@ -110,7 +110,7 @@ const AnalyticsDashboard = () => {
       <div className="flex-1 container max-w-6xl mx-auto py-8 px-4 md:px-8">
         <h1 className="text-3xl font-bold mb-6">{isEnglish ? "Analytics Dashboard" : "Analytics Dashboard"}</h1>
         
-        {!hasGaKey && (
+        {!hasGaKey ? (
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>{isEnglish ? "Google Analytics Not Configured" : "Google Analytics Niet Geconfigureerd"}</AlertTitle>
@@ -135,6 +135,21 @@ const AnalyticsDashboard = () => {
                   }
                 </p>
               </div>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Alert variant="default" className="mb-6 bg-green-50 border-green-100">
+            <div className="flex items-center">
+              <div className="h-4 w-4 text-green-500 mr-2">✓</div>
+              <AlertTitle className="text-green-700">
+                {isEnglish ? "Google Analytics Connected" : "Google Analytics Verbonden"}
+              </AlertTitle>
+            </div>
+            <AlertDescription className="text-green-600">
+              {isEnglish 
+                ? "Your Google Analytics account is properly configured. You're now tracking visitor data and website performance metrics."
+                : "Je Google Analytics-account is correct geconfigureerd. Je houdt nu bezoekersgegevens en websiteprestatiemetrieken bij."
+              }
             </AlertDescription>
           </Alert>
         )}
