@@ -118,20 +118,21 @@ export const Header = () => {
                 {user ? (
                   <>
                     {/* Logged-in navigation */}
-                    {user.role === 'admin' && (
+                    {user.role === 'admin' ? (
                       <a
                         href="/admin"
                         className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
                       >
                         Admin
                       </a>
+                    ) : (
+                      <a
+                        href="/dashboard"
+                        className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
+                      >
+                        {t('header.clientArea')}
+                      </a>
                     )}
-                    <a
-                      href="/dashboard"
-                      className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
-                    >
-                      {t('header.clientArea')}
-                    </a>
                     <Button 
                       onClick={handleLogout} 
                       disabled={logoutMutation.isPending}
@@ -149,24 +150,12 @@ export const Header = () => {
                   </>
                 ) : (
                   <>
-                    {/* Logged-out navigation */}
+                    {/* Logged-out navigation - één klantenomgeving knop */}
                     <a
                       href="/auth"
-                      className="text-sm border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1 rounded-md transition duration-200 ml-2"
-                    >
-                      {t('header.login')}
-                    </a>
-                    <a
-                      href="/dashboard"
                       className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
                     >
                       {t('header.clientArea')}
-                    </a>
-                    <a
-                      href="/admin"
-                      className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
-                    >
-                      Admin
                     </a>
                   </>
                 )}
@@ -243,21 +232,21 @@ export const Header = () => {
                   <>
                     {/* Logged-in user navigation */}
                     <div className="grid grid-cols-1 gap-2 mt-3">
-                      <a
-                        href="/dashboard"
-                        onClick={closeMobileMenu}
-                        className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
-                      >
-                        {t('header.clientArea')}
-                      </a>
-                      
-                      {user.role === 'admin' && (
+                      {user.role === 'admin' ? (
                         <a
                           href="/admin"
                           onClick={closeMobileMenu}
                           className="flex items-center justify-center bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200"
                         >
                           Admin
+                        </a>
+                      ) : (
+                        <a
+                          href="/dashboard"
+                          onClick={closeMobileMenu}
+                          className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
+                        >
+                          {t('header.clientArea')}
                         </a>
                       )}
                       
@@ -281,30 +270,16 @@ export const Header = () => {
                   </>
                 ) : (
                   <>
-                    {/* Logged-out navigation */}
-                    <div className="grid grid-cols-2 gap-2 mt-3">
+                    {/* Logged-out navigation - één klantenomgeving knop */}
+                    <div className="mt-3">
                       <a
                         href="/auth"
-                        onClick={closeMobileMenu}
-                        className="flex items-center justify-center border border-primary text-primary hover:bg-primary hover:text-white px-3 py-2 rounded-md transition duration-200"
-                      >
-                        {t('header.login')}
-                      </a>
-                      <a
-                        href="/dashboard"
                         onClick={closeMobileMenu}
                         className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
                       >
                         {t('header.clientArea')}
                       </a>
                     </div>
-                    <a
-                      href="/admin"
-                      onClick={closeMobileMenu}
-                      className="flex items-center justify-center w-full bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200 mt-2"
-                    >
-                      Admin
-                    </a>
                   </>
                 )}
               </div>

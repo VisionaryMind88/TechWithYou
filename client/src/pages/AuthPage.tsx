@@ -88,9 +88,13 @@ export default function AuthPage() {
     setShowForgotPassword(false);
   };
 
-  // Redirect if already logged in
+  // Redirect if already logged in - admin naar admin dashboard, client naar client dashboard
   if (user) {
-    return <Redirect to="/dashboard" />;
+    if (user.role === 'admin') {
+      return <Redirect to="/admin" />;
+    } else {
+      return <Redirect to="/dashboard" />;
+    }
   }
 
   return (
