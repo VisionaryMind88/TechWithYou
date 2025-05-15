@@ -13,7 +13,7 @@ import { FAQ } from "@/components/FAQ";
 import { CallToAction } from "@/components/CallToAction";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
-import { SEO } from "@/components/SEO";
+import { SEOHead } from "@/components/SEOHead";
 import { useEffect } from "react";
 import { useTranslation } from "@/hooks/use-translation";
 
@@ -52,12 +52,30 @@ export default function Home({ initialSection }: HomeProps) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <SEO 
+      <SEOHead 
         title={isEnglish ? "Professional Web Development" : "Professionele Web Ontwikkeling"}
         description={isEnglish 
           ? "We build high-quality, professional websites, applications, and dashboards for businesses ready for the future."
           : "Wij bouwen high-quality, professionele websites, applicaties, en dashboards voor bedrijven die klaar zijn voor de toekomst."
         }
+        canonical="https://digitaalatelier.com/"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Digitaal Atelier",
+          "url": "https://digitaalatelier.com/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
+          "sameAs": [
+            "https://www.facebook.com/digitaalatelier",
+            "https://www.instagram.com/digitaalatelier",
+            "https://twitter.com/digatelier",
+            "https://www.linkedin.com/company/digitaal-atelier"
+          ]
+        }}
       />
       <Header />
       <main>

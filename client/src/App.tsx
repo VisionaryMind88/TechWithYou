@@ -10,6 +10,7 @@ import PortfolioPage from "@/pages/PortfolioPage";
 import AboutPage from "@/pages/AboutPage";
 import FAQPage from "@/pages/FAQPage";
 import ContactPage from "@/pages/ContactPage";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import { LanguageContext } from "@/hooks/use-translation";
 import { CookieConsent } from "@/components/CookieConsent";
 import { Chatbot } from "@/components/Chatbot";
@@ -38,6 +39,9 @@ function Router() {
       </Route>
       <Route path="/privacy-policy">
         {() => <PrivacyPolicy />}
+      </Route>
+      <Route path="/analytics-dashboard">
+        {() => <AnalyticsDashboard />}
       </Route>
       <Route>
         {() => <NotFound />}
