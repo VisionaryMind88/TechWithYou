@@ -222,9 +222,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) return;
       
       const userId = user.id;
+      console.log(`GET /api/dashboard/projects: Fetching projects for user ${user.username} (ID: ${userId})`);
+      
       const projects = await storage.getUserProjects(userId);
+      console.log(`GET /api/dashboard/projects: Found ${projects.length} projects for user ${userId}`);
+      
+      // Log de IDs en namen van de gevonden projecten
+      if (projects.length > 0) {
+        console.log('Projects found:', projects.map(p => ({ id: p.id, name: p.name, status: p.status })));
+      } else {
+        console.log('No projects found for this user');
+      }
+      
       res.json(projects);
     } catch (error) {
+      console.error('Error fetching projects:', error);
       res.status(500).json({ message: 'Failed to fetch projects' });
     }
   });
@@ -644,7 +656,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all projects (across all clients)
   app.get('/api/admin/projects', requireAdmin, async (req: Request, res: Response) => {
     try {
+      console.log(`GET /api/admin/projects: Admin (${req.user.username}) fetching all projects`);
+      
       const projects = await storage.getAllProjects();
+      
+      console.log(`GET /api/admin/projects: Found ${projects.length} projects total in system`);
+      
+      // Log de IDs en namen van de gevonden projecten
+      if (projects.length > 0) {
+        console.log('Projects found:', projects.map(p => ({ 
+          id: p.id, 
+          name: p.name, 
+          status: p.status,
+          userId: p.userId
+        })));
+      } else {
+        console.log('No projects found in the system');
+      }
+      
       res.json(projects);
     } catch (error) {
       console.error('Error fetching all projects:', error);

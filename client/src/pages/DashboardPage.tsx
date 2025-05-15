@@ -181,16 +181,49 @@ export default function DashboardPage() {
   // Mutation for creating a new project
   const createProjectMutation = useMutation({
     mutationFn: async (data: ProjectFormValues) => {
-      const res = await apiRequest("POST", "/api/dashboard/projects", {
+      console.log("Creating project with data:", data);
+      console.log("User ID:", user?.id);
+      
+      // Creëer het juiste formaat voor de API
+      const projectData = {
         ...data,
         userId: user?.id,
-        status: "new", // Markeer als nieuwe projectaanvraag
-        notifyAdmin: true, // Onmiddellijke notificatie voor admin
-        submittedAt: new Date().toISOString(), // Tijdstempel toevoegen
-      });
+        status: "proposal", // Gebruik dezelfde status als in het schema
+        metaData: {
+          notifyAdmin: true,
+          submittedAt: new Date().toISOString(),
+          services: {
+            needsHosting: data.needsHosting,
+            needsDesign: data.needsDesign,
+            needsDevelopment: data.needsDevelopment,
+            needsSEO: data.needsSEO,
+            needsMaintenance: data.needsMaintenance
+          },
+          domain: {
+            needsDomain: data.needsDomain,
+            hasDomain: data.hasDomain,
+            domainName: data.domainName
+          },
+          logo: {
+            needsLogo: data.needsLogo,
+            hasLogo: data.hasLogo
+          },
+          contact: {
+            person: data.contactPerson,
+            email: data.contactEmail,
+            phone: data.contactPhone
+          }
+        }
+      };
+      
+      console.log("Formatted project data:", projectData);
+      
+      const res = await apiRequest("POST", "/api/dashboard/projects", projectData);
       return await res.json();
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      console.log("Project created successfully:", response);
+      
       // Reset form and close dialog
       form.reset();
       setIsCreateProjectOpen(false);

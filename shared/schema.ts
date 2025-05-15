@@ -150,18 +150,40 @@ export type Contact = typeof contacts.$inferSelect;
 export type InsertChatSession = z.infer<typeof insertChatSessionSchema>;
 export type ChatSession = typeof chatSessions.$inferSelect;
 
-export const insertProjectSchema = createInsertSchema(projects).pick({
-  userId: true,
-  name: true,
-  description: true,
-  status: true,
-  type: true,
-  startDate: true,
-  endDate: true,
-  budget: true,
-  thumbnailUrl: true,
-  metaData: true,
-});
+export const insertProjectSchema = createInsertSchema(projects)
+  .pick({
+    userId: true,
+    name: true,
+    description: true,
+    status: true,
+    type: true,
+    startDate: true,
+    endDate: true,
+    budget: true,
+    thumbnailUrl: true,
+    metaData: true,
+  })
+  .transform((data) => {
+    console.log("Schema transforming project data:", data);
+    
+    // Als metaData een string is, parse het als JSON
+    if (typeof data.metaData === 'string') {
+      try {
+        data.metaData = JSON.parse(data.metaData);
+        console.log("Parsed metaData from string:", data.metaData);
+      } catch (e) {
+        console.error("Failed to parse metaData JSON string:", e);
+      }
+    }
+    
+    // Als userId een string is, convert naar number
+    if (typeof data.userId === 'string') {
+      data.userId = parseInt(data.userId, 10);
+      console.log("Converted userId from string to number:", data.userId);
+    }
+    
+    return data;
+  });
 
 export const insertMilestoneSchema = createInsertSchema(milestones).pick({
   projectId: true,
