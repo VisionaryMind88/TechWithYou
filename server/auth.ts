@@ -223,19 +223,26 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
+    console.log(`Login request received for: ${req.body.username}`);
+    
     passport.authenticate("local", (err: Error | null, user: SelectUser | false, info: { message: string } | undefined) => {
       if (err) {
+        console.error(`Login error: ${err.message}`);
         return next(err);
       }
       
       if (!user) {
+        console.log(`Login failed: ${info?.message || "Authentication failed"}`);
         return res.status(401).json({ message: info?.message || "Authentication failed" });
       }
       
       req.login(user, (loginErr: Error | null | undefined) => {
         if (loginErr) {
+          console.error(`Login session error: ${loginErr.message}`);
           return next(loginErr);
         }
+        
+        console.log(`Login successful for user: ${user.username}, role: ${user.role}, id: ${user.id}`);
         
         // Return the user without password
         const { password, ...userWithoutPassword } = user;
