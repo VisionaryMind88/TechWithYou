@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useScroll } from "@/hooks/use-scroll";
 import { LanguageToggle } from "./LanguageToggle";
 import { useTranslation } from "@/hooks/use-translation";
+import { SearchBar } from "./SearchBar";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -102,7 +103,10 @@ export const Header = () => {
                 {t('header.contact')}
               </a>
 
-              <LanguageToggle />
+              <div className="flex items-center gap-2">
+                <SearchBar />
+                <LanguageToggle />
+              </div>
             </nav>
           </div>
 
@@ -166,7 +170,10 @@ export const Header = () => {
               </a>
 
               <div className="pt-2 border-t border-neutral-100">
-                <LanguageToggle />
+                <div className="flex items-center gap-2 mt-2">
+                  <SearchBar />
+                  <LanguageToggle />
+                </div>
               </div>
             </nav>
           </motion.div>

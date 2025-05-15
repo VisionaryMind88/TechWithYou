@@ -17,7 +17,7 @@ export const SearchBar = () => {
   const { t } = useTranslation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [_, navigate] = useNavigate();
+  const [_, setLocation] = useLocation();
 
   const searchData: Record<string, SearchResult[]> = {
     en: [
@@ -99,11 +99,12 @@ export const SearchBar = () => {
   };
 
   const language = t('language') as 'en' | 'nl';
-  const searchResults = searchData[language].filter(item => 
-    searchQuery.length > 1 && 
-    (item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-     item.description.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const searchResults = searchQuery.length > 1 
+    ? (searchData[language] || []).filter(item => 
+        (item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+         item.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : [];
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -113,7 +114,7 @@ export const SearchBar = () => {
   };
 
   const handleSearchClick = (path: string) => {
-    navigate(path);
+    setLocation(path);
     setSearchQuery("");
     setSearchOpen(false);
   };
