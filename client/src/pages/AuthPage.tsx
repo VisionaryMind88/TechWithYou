@@ -106,8 +106,47 @@ export default function AuthPage() {
   });
 
   const handleLogin = (values: LoginFormValues) => {
-    loginMutation.mutate(values);
+    loginMutation.mutate({
+      username: values.username,
+      password: values.password
+    });
+    
+    // Save remember me preference
+    if (values.rememberMe) {
+      localStorage.setItem("rememberUser", values.username);
+    } else {
+      localStorage.removeItem("rememberUser");
+    }
+    
     trackEvent("login_attempt", "auth", "login_form", 1);
+  };
+  
+  const handleRegister = (values: RegisterFormValues) => {
+    // Registration mutation
+    registerMutation.mutate({
+      username: values.username,
+      email: values.email,
+      password: values.password,
+      name: values.username, // Using username as name for simplicity
+      role: 'client'
+    });
+    
+    // Track registration attempt
+    trackEvent("register_attempt", "auth", "register_form", 1);
+  };
+  
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    // Calculate password strength (0-4)
+    let strength = 0;
+    
+    if (password.length >= 8) strength += 1;
+    if (/[a-z]/.test(password)) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[0-9]/.test(password)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    
+    setPasswordStrength(strength);
   };
 
   const handleForgotPassword = (values: ForgotPasswordFormValues) => {
@@ -126,6 +165,15 @@ export default function AuthPage() {
     forgotPasswordForm.reset();
     setShowForgotPassword(false);
   };
+
+  // Add effect to remember user
+  useEffect(() => {
+    const rememberedUser = localStorage.getItem("rememberUser");
+    if (rememberedUser) {
+      loginForm.setValue("username", rememberedUser);
+      loginForm.setValue("rememberMe", true);
+    }
+  }, [loginForm]);
 
   // Redirect if already logged in - admin naar admin dashboard, client naar client dashboard
   if (user) {
