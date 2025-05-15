@@ -6,13 +6,18 @@ export const Hero = () => {
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image with overlay */}
+      {/* Background video with overlay */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-          alt="Digital workspace background"
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="object-cover w-full h-full"
-        />
+        >
+          <source src="/attached_assets/3c848900-ee24-477b-86c0-d8fc3d26c5b1.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
         <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/80 to-primary/40"></div>
       </div>
 
