@@ -101,8 +101,12 @@ export default function AuthPage() {
       // Debug Firebase configuratie
       console.log("Firebase login poging met configuratie:", {
         apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: "techwithyouu.firebaseapp.com",
         projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID
+        storageBucket: "techwithyouu.firebasestorage.app",
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+        measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
       });
       
       const result = await signInWithGoogle();
@@ -153,8 +157,12 @@ export default function AuthPage() {
       // Debug Firebase configuratie
       console.log("GitHub login poging met configuratie:", {
         apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: "techwithyouu.firebaseapp.com",
         projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID
+        storageBucket: "techwithyouu.firebasestorage.app",
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+        measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
       });
       
       const result = await signInWithGithub();

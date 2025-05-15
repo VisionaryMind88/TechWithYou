@@ -32,8 +32,16 @@ console.log("Firebase Config:", {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 });
 
-// Firebase initialiseren
-const app = initializeApp(firebaseConfig);
+// Firebase initialiseren met volledige configuratie
+const app = initializeApp({
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: "techwithyouu.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: "techwithyouu.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "161803725978",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+});
 const auth = getAuth(app);
 
 // Auth providers instellen
