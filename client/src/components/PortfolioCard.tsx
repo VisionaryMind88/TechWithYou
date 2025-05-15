@@ -7,6 +7,7 @@ interface PortfolioCardProps {
   image: string;
   category: string;
   technologies: string[];
+  link?: string;
 }
 
 export const PortfolioCard = ({
@@ -15,6 +16,7 @@ export const PortfolioCard = ({
   image,
   category,
   technologies,
+  link = "#"
 }: PortfolioCardProps) => {
   const { t } = useTranslation();
 
@@ -44,7 +46,7 @@ export const PortfolioCard = ({
           ))}
         </div>
         <a
-          href="#"
+          href={link}
           className="inline-flex items-center text-primary-light hover:text-primary font-medium"
         >
           {t('portfolio.viewCase')}

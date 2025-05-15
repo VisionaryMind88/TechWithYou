@@ -90,6 +90,7 @@ const ServicePage = () => {
         ogType="website"
       />
       
+      <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}
         {/* Hero */}
         <section className="relative py-24 bg-neutral-900 text-white overflow-hidden">
@@ -142,7 +143,7 @@ const ServicePage = () => {
                   {t('service_detail.offer_description')}
                 </p>
                 <ul className="space-y-4">
-                  {service.features.map((feature, index) => (
+                  {Array.isArray(service.features) && service.features.map((feature: string, index: number) => (
                     <li key={index} className="flex items-start">
                       <div className="bg-primary/10 rounded-full p-1 mt-1 mr-3">
                         <i className="ri-check-line text-primary"></i>
@@ -201,6 +202,7 @@ const ServicePage = () => {
         <CallToAction />
         <Contact />
       </div>
+      <Footer />
     </>
   );
 };
