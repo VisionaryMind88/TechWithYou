@@ -33,11 +33,6 @@ export const Chatbot = () => {
                           location.includes("/admin") || 
                           location.includes("/project");
                           
-  // Don't render chatbot on dashboard pages
-  if (isDashboardPage) {
-    return null;
-  }
-
   // Auto-open chat after 10 seconds (only if it hasn't been closed by user)
   useEffect(() => {
     if (!hasShownAutomatically && !hasBeenClosedByUser) {
@@ -200,6 +195,11 @@ export const Chatbot = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Don't render on dashboard pages
+  if (isDashboardPage) {
+    return null;
+  }
+  
   return (
     <>
       {/* Chat Button */}
