@@ -132,14 +132,11 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>{t('footer.rights')}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-neutral-300 transition">
+              <a href="/privacy-policy" className="hover:text-neutral-300 transition">
                 {t('footer.privacy')}
               </a>
-              <a href="#" className="hover:text-neutral-300 transition">
+              <a href="/terms-and-conditions" className="hover:text-neutral-300 transition">
                 {t('footer.terms')}
-              </a>
-              <a href="/privacy-policy" className="hover:text-neutral-300 transition">
-                {t('language') === 'en' ? 'Privacy Policy' : 'Privacybeleid'}
               </a>
             </div>
           </div>

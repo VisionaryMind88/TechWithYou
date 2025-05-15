@@ -10,6 +10,7 @@ import { queryClient } from "@/lib/queryClient";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsAndConditions from "@/pages/TermsAndConditions";
 import ServicesPage from "@/pages/ServicesPage";
 import PortfolioPage from "@/pages/PortfolioPage";
 import AboutPage from "@/pages/AboutPage";
@@ -55,6 +56,9 @@ function Router() {
       </Route>
       <Route path="/privacy-policy">
         {() => <PrivacyPolicy />}
+      </Route>
+      <Route path="/terms-and-conditions">
+        {() => <TermsAndConditions />}
       </Route>
       <Route path="/analytics-dashboard">
         {() => <AnalyticsDashboard />}

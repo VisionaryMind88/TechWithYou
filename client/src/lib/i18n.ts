@@ -301,7 +301,7 @@ const enTranslations = {
       placeholder: 'Your email address',
       subscribe: 'Subscribe'
     },
-    rights: '© 2023 Digitaal Atelier. All rights reserved.',
+    rights: '© 2023 TechWithYou. All rights reserved.',
     privacy: 'Privacy Policy',
     terms: 'Terms & Conditions',
     cookies: 'Cookies'
