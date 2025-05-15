@@ -25,6 +25,12 @@ import { Chatbot } from "@/components/Chatbot";
 import { initGA, trackPageView } from "@/lib/analytics";
 
 function Router() {
+  // Track page views when location changes
+  const [location] = useLocation();
+  useEffect(() => {
+    trackPageView(location);
+  }, [location]);
+  
   return (
     <Switch>
       <Route path="/">
@@ -51,6 +57,11 @@ function Router() {
       <Route path="/analytics-dashboard">
         {() => <AnalyticsDashboard />}
       </Route>
+      {/* Auth routes */}
+      <Route path="/auth">
+        {() => <AuthPage />}
+      </Route>
+      <ProtectedRoute path="/dashboard" component={DashboardPage} />
       <Route>
         {() => <NotFound />}
       </Route>
@@ -60,7 +71,6 @@ function Router() {
 
 function App() {
   const [language, setLanguage] = useState<"nl" | "en">("nl");
-  const [location] = useLocation();
 
   // Update HTML lang attribute when language changes
   useEffect(() => {
@@ -71,21 +81,20 @@ function App() {
   useEffect(() => {
     initGA();
   }, []);
-  
-  // Track page views when location changes
-  useEffect(() => {
-    trackPageView(location);
-  }, [location]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-        <Chatbot />
-        <CookieConsent />
-      </TooltipProvider>
-    </LanguageContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <LanguageContext.Provider value={{ language, setLanguage }}>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+            <Chatbot />
+            <CookieConsent />
+          </TooltipProvider>
+        </LanguageContext.Provider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

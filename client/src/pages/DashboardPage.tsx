@@ -65,7 +65,7 @@ export default function DashboardPage() {
     isLoading: isLoadingProjects,
   } = useQuery<Project[]>({
     queryKey: ["/api/dashboard/projects"],
-    queryFn: getQueryFn<Project[]>(),
+    queryFn: getQueryFn<Project[]>({ on401: "throw" }),
     enabled: !!user,
   });
 
@@ -84,7 +84,7 @@ export default function DashboardPage() {
     isLoading: isLoadingNotifications,
   } = useQuery<Notification[]>({
     queryKey: ["/api/dashboard/notifications"],
-    queryFn: getQueryFn<Notification[]>(),
+    queryFn: getQueryFn<Notification[]>({ on401: "throw" }),
     enabled: !!user,
   });
 
