@@ -14,6 +14,11 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/services" component={() => <Home initialSection="services" />} />
+      <Route path="/portfolio" component={() => <Home initialSection="portfolio" />} />
+      <Route path="/about" component={() => <Home initialSection="about" />} />
+      <Route path="/faq" component={() => <Home initialSection="faq" />} />
+      <Route path="/contact" component={() => <Home initialSection="contact" />} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route component={NotFound} />
     </Switch>

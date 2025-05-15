@@ -17,14 +17,34 @@ import { SEO } from "@/components/SEO";
 import { useEffect } from "react";
 import { useTranslation } from "@/hooks/use-translation";
 
-export default function Home() {
+interface HomeProps {
+  initialSection?: string;
+}
+
+export default function Home({ initialSection }: HomeProps) {
   const { t } = useTranslation();
   const isEnglish = t('language') === 'en';
   
-  // Scroll to top on initial load
+  // Handle navigation to section or top of page on load
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (initialSection) {
+      const sectionElement = document.getElementById(initialSection);
+      if (sectionElement) {
+        setTimeout(() => {
+          const headerOffset = 120; // Adjusted for header height
+          const elementPosition = sectionElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [initialSection]);
 
   return (
     <motion.div

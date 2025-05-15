@@ -53,7 +53,7 @@ export const Header = () => {
           <div className="hidden md:block">
             <nav className="flex items-center space-x-8">
               <a
-                href="#services"
+                href="/services"
                 className={`font-medium ${
                   scrolledPast50
                     ? "text-neutral-700"
@@ -63,7 +63,7 @@ export const Header = () => {
                 {t('header.services')}
               </a>
               <a
-                href="#portfolio"
+                href="/portfolio"
                 className={`font-medium ${
                   scrolledPast50
                     ? "text-neutral-700"
@@ -73,7 +73,7 @@ export const Header = () => {
                 {t('header.portfolio')}
               </a>
               <a
-                href="#about"
+                href="/about"
                 className={`font-medium ${
                   scrolledPast50
                     ? "text-neutral-700"
@@ -83,7 +83,7 @@ export const Header = () => {
                 {t('header.about')}
               </a>
               <a
-                href="#faq"
+                href="/faq"
                 className={`font-medium ${
                   scrolledPast50
                     ? "text-neutral-700"
@@ -93,7 +93,7 @@ export const Header = () => {
                 FAQ
               </a>
               <a
-                href="#contact"
+                href="/contact"
                 className={`font-medium ${
                   scrolledPast50
                     ? "text-neutral-700"
@@ -134,35 +134,35 @@ export const Header = () => {
           >
             <nav className="flex flex-col space-y-4">
               <a
-                href="#services"
+                href="/services"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.services')}
               </a>
               <a
-                href="#portfolio"
+                href="/portfolio"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.portfolio')}
               </a>
               <a
-                href="#about"
+                href="/about"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.about')}
               </a>
               <a
-                href="#faq"
+                href="/faq"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 FAQ
               </a>
               <a
-                href="#contact"
+                href="/contact"
                 onClick={closeMobileMenu}
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
