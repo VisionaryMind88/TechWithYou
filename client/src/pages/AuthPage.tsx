@@ -516,11 +516,9 @@ export default function AuthPage() {
                         <TabsContent value="login">
                           <Card>
                             <CardHeader>
-                              <CardTitle className="text-2xl">{isEnglish ? "Welcome Back" : "Welkom Terug"}</CardTitle>
+                              <CardTitle className="text-2xl">{t('auth.loginTitle')}</CardTitle>
                               <CardDescription>
-                                {isEnglish 
-                                  ? "Enter your credentials to access your account" 
-                                  : "Voer je gegevens in om toegang te krijgen tot je account"}
+                                {t('auth.loginDescription')}
                               </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -531,11 +529,11 @@ export default function AuthPage() {
                                     name="username"
                                     render={({ field }) => (
                                       <FormItem>
-                                        <FormLabel>{isEnglish ? "Username" : "Gebruikersnaam"}</FormLabel>
+                                        <FormLabel>{t('auth.username')}</FormLabel>
                                         <FormControl>
                                           <Input 
                                             type="text" 
-                                            placeholder={isEnglish ? "Enter your username" : "Voer je gebruikersnaam in"}
+                                            placeholder={t('auth.username')}
                                             {...field} 
                                           />
                                         </FormControl>
@@ -550,20 +548,20 @@ export default function AuthPage() {
                                     render={({ field }) => (
                                       <FormItem>
                                         <div className="flex items-center justify-between">
-                                          <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
+                                          <FormLabel>{t('auth.password')}</FormLabel>
                                           <Button
                                             variant="link"
                                             type="button"
                                             className="p-0 h-auto text-xs"
                                             onClick={() => setShowForgotPassword(true)}
                                           >
-                                            {isEnglish ? "Forgot password?" : "Wachtwoord vergeten?"}
+                                            {t('auth.forgotPassword')}
                                           </Button>
                                         </div>
                                         <FormControl>
                                           <Input 
                                             type="password" 
-                                            placeholder={isEnglish ? "Enter your password" : "Voer je wachtwoord in"}
+                                            placeholder={t('auth.password')}
                                             {...field} 
                                           />
                                         </FormControl>
@@ -585,7 +583,7 @@ export default function AuthPage() {
                                         </FormControl>
                                         <div className="space-y-1 leading-none">
                                           <FormLabel>
-                                            {isEnglish ? "Remember me" : "Onthoud mij"}
+                                            {t('auth.rememberMe')}
                                           </FormLabel>
                                         </div>
                                       </FormItem>
@@ -594,9 +592,9 @@ export default function AuthPage() {
                                   
                                   <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
                                     {loginMutation.isPending ? (
-                                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {isEnglish ? "Logging in..." : "Inloggen..."}</>
+                                      <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('auth.login')}...</>
                                     ) : (
-                                      <>{isEnglish ? "Login" : "Inloggen"}</>
+                                      <>{t('auth.signIn')}</>
                                     )}
                                   </Button>
                                   
