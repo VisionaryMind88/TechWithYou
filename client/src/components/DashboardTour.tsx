@@ -29,7 +29,12 @@ const defaultTourSteps: TourStep[] = [
   },
   {
     target: ".dashboard-projects",
-    fallbackTargets: ["[value='projects']", "[data-value='projects']", ".TabsContent:first-of-type"],
+    fallbackTargets: [
+      "[data-tour-target='projects-title']", 
+      "[data-tour-target='projects-tab-trigger']", 
+      "[value='projects']", 
+      ".TabsContent:first-of-type"
+    ],
     title: "Your Projects",
     titleNL: "Je Projecten",
     content: "Here you can see all your active projects and their status.",
@@ -38,7 +43,12 @@ const defaultTourSteps: TourStep[] = [
   },
   {
     target: ".dashboard-milestones",
-    fallbackTargets: ["[value='activity']", "[data-value='activity']", ".TabsContent:nth-of-type(3)"],
+    fallbackTargets: [
+      "[data-tour-target='activity-tab']", 
+      "[data-tour-target='activity-title']", 
+      "[data-tour-target='activity-tab-trigger']", 
+      "[value='activity']"
+    ],
     title: "Recent Activity",
     titleNL: "Recente Activiteit",
     content: "Here you can see recent activity and track the progress of your projects.",
@@ -47,7 +57,12 @@ const defaultTourSteps: TourStep[] = [
   },
   {
     target: ".dashboard-files",
-    fallbackTargets: ["[value='files']", "[data-value='files']", ".TabsContent:nth-of-type(2)"],
+    fallbackTargets: [
+      "[data-tour-target='files-tab']", 
+      "[data-tour-target='files-title']", 
+      "[data-tour-target='files-tab-trigger']", 
+      "[value='files']"
+    ],
     title: "Project Files",
     titleNL: "Project Bestanden",
     content: "Access and manage all files related to your projects.",

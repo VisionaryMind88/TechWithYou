@@ -543,15 +543,15 @@ export default function DashboardPage() {
 
           <Tabs defaultValue="projects">
             <TabsList className="grid w-full md:w-auto grid-cols-3 mb-8">
-              <TabsTrigger value="projects">
+              <TabsTrigger value="projects" data-tour-target="projects-tab-trigger">
                 <Briefcase className="h-4 w-4 mr-2" />
                 {isEnglish ? "Projects" : "Projecten"}
               </TabsTrigger>
-              <TabsTrigger value="files">
+              <TabsTrigger value="files" data-tour-target="files-tab-trigger">
                 <FileText className="h-4 w-4 mr-2" />
                 {isEnglish ? "Documents" : "Documenten"}
               </TabsTrigger>
-              <TabsTrigger value="activity">
+              <TabsTrigger value="activity" data-tour-target="activity-tab-trigger">
                 <Clock className="h-4 w-4 mr-2" />
                 {isEnglish ? "Activity" : "Activiteit"}
               </TabsTrigger>
@@ -664,10 +664,10 @@ export default function DashboardPage() {
             </TabsContent>
 
             {/* Files Tab */}
-            <TabsContent value="files" className="dashboard-files">
+            <TabsContent value="files" className="dashboard-files" data-tour-target="files-tab">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">{isEnglish ? "Project Documents" : "Projectdocumenten"}</h2>
-                <Button>
+                <h2 className="text-xl font-semibold" data-tour-target="files-title">{isEnglish ? "Project Documents" : "Projectdocumenten"}</h2>
+                <Button className="upload-document-button">
                   <PlusCircle className="h-4 w-4 mr-2" />
                   {isEnglish ? "Upload Document" : "Document Uploaden"}
                 </Button>
@@ -692,9 +692,9 @@ export default function DashboardPage() {
             </TabsContent>
 
             {/* Activity Tab */}
-            <TabsContent value="activity" className="dashboard-milestones">
+            <TabsContent value="activity" className="dashboard-milestones" data-tour-target="activity-tab">
               <div className="mb-6">
-                <h2 className="text-xl font-semibold">{isEnglish ? "Recent Activity" : "Recente Activiteit"}</h2>
+                <h2 className="text-xl font-semibold" data-tour-target="activity-title">{isEnglish ? "Recent Activity" : "Recente Activiteit"}</h2>
               </div>
 
               <Card>
