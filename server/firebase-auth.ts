@@ -41,8 +41,8 @@ export async function verifyFirebaseToken(token: string) {
     
     // Als gebruiker bestaat, Firebase UID updaten indien nodig
     if (user) {
-      if (!user.firebase_uid) {
-        await storage.updateUser(user.id, { firebase_uid: uid });
+      if (!user.firebaseUid) {
+        await storage.updateUser(user.id, { firebaseUid: uid });
       }
       return user;
     }
@@ -68,9 +68,9 @@ export async function verifyFirebaseToken(token: string) {
       password: '', // Geen wachtwoord nodig voor sociale login
       name: name || uniqueUsername,
       role: 'client',
-      firebase_uid: uid,
+      firebaseUid: uid,
       verified: true, // Social login gebruikers zijn al geverifieerd
-      profile_image: picture || null,
+      profileImage: picture || null,
     };
     
     return await storage.createUser(newUser);
