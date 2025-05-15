@@ -58,22 +58,22 @@ export default function Home({ initialSection }: HomeProps) {
           ? "We build high-quality, professional websites, applications, and dashboards for businesses ready for the future."
           : "Wij bouwen high-quality, professionele websites, applicaties, en dashboards voor bedrijven die klaar zijn voor de toekomst."
         }
-        canonical="https://digitaalatelier.com/"
+        canonical="https://techwithyou.nl/"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "WebSite",
-          "name": "Digitaal Atelier",
-          "url": "https://digitaalatelier.com/",
+          "name": "TechWithYou",
+          "url": "https://techwithyou.nl/",
           "potentialAction": {
             "@type": "SearchAction",
             "target": "{search_term_string}",
             "query-input": "required name=search_term_string"
           },
           "sameAs": [
-            "https://www.facebook.com/digitaalatelier",
-            "https://www.instagram.com/digitaalatelier",
-            "https://twitter.com/digatelier",
-            "https://www.linkedin.com/company/digitaal-atelier"
+            "https://www.facebook.com/techwithyou",
+            "https://www.instagram.com/techwithyou",
+            "https://twitter.com/techwithyou",
+            "https://www.linkedin.com/company/techwithyou"
           ]
         }}
       />

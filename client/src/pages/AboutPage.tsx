@@ -28,11 +28,11 @@ const AboutPage = () => {
           "description": t('about.description'),
           "publisher": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
-            "url": "https://digitaalatelier.com/",
+            "name": "TechWithYou",
+            "url": "https://techwithyou.nl/",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://digitaalatelier.com/logo.png"
+              "url": "https://techwithyou.nl/assets/techwithyou-logo.svg"
             },
             "contactPoint": {
               "@type": "ContactPoint",
@@ -41,14 +41,14 @@ const AboutPage = () => {
               "availableLanguage": ["English", "Dutch"]
             },
             "sameAs": [
-              "https://facebook.com/digitaalatelier",
-              "https://twitter.com/digatelier",
-              "https://linkedin.com/company/digitaal-atelier"
+              "https://facebook.com/techwithyou",
+              "https://twitter.com/techwithyou",
+              "https://linkedin.com/company/techwithyou"
             ]
           },
           "about": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
+            "name": "TechWithYou",
             "description": t('about.description'),
             "foundingDate": "2020",
             "foundingLocation": "Amsterdam, Netherlands"
