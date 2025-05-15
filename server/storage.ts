@@ -17,9 +17,12 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUsersByRole(role: string): Promise<User[]>;
+  getUserByVerificationToken(token: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, data: Partial<Omit<InsertUser, 'password'>>): Promise<User | undefined>;
   updateUserPassword(id: number, password: string): Promise<User | undefined>;
+  verifyUser(id: number): Promise<User | undefined>;
+  setVerificationToken(id: number, token: string, expires: Date): Promise<User | undefined>;
   
   // Contact form submissions
   createContact(contact: InsertContact): Promise<Contact>;

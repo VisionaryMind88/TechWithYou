@@ -11,6 +11,9 @@ export const users = pgTable("users", {
   company: text("company"),
   role: text("role").notNull().default("client"), // client, admin
   avatarUrl: text("avatar_url"),
+  verified: boolean("verified").notNull().default(false),
+  verificationToken: text("verification_token"),
+  verificationExpires: timestamp("verification_expires"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   lastLogin: timestamp("last_login"),
   preferences: jsonb("preferences").default({}),
