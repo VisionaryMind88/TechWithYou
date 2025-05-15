@@ -79,8 +79,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    try {
+      console.log(`DatabaseStorage.getUserByUsername: zoeken naar gebruiker met username="${username}"`);
+      
+      // Directe SQL query om te debuggen
+      const query = `SELECT * FROM users WHERE username = $1`;
+      const values = [username];
+      
+      const { rows } = await db.execute(query, values);
+      console.log(`DatabaseStorage.getUserByUsername: SQL resultaat:`, rows.length ? 'Gebruiker gevonden' : 'Geen gebruiker gevonden');
+      
+      if (rows.length > 0) {
+        console.log(`DatabaseStorage.getUserByUsername: gebruiker gevonden met ID ${rows[0].id}`);
+        return rows[0] as User;
+      }
+      
+      // Als we hier komen, proberen we ook de Drizzle ORM methode
+      console.log(`DatabaseStorage.getUserByUsername: proberen met Drizzle ORM`);
+      const drizzleResult = await db.select().from(users).where(eq(users.username, username));
+      console.log(`DatabaseStorage.getUserByUsername: Drizzle resultaat:`, drizzleResult.length ? 'Gebruiker gevonden' : 'Geen gebruiker gevonden');
+      
+      const [user] = drizzleResult;
+      return user || undefined;
+    } catch (error) {
+      console.error(`DatabaseStorage.getUserByUsername: Fout bij ophalen gebruiker:`, error);
+      throw error;
+    }
   }
   
   async getUserByEmail(email: string): Promise<User | undefined> {
