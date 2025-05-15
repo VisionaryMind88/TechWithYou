@@ -43,7 +43,7 @@ export const SEOHead = ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: siteName,
-    url: canonical || 'https://digitaalatelier.com/',
+    url: canonical || 'https://techwithyou.nl/',
     description: metaDescription,
     potentialAction: {
       '@type': 'SearchAction',

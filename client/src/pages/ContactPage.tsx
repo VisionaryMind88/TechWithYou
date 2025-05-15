@@ -25,16 +25,16 @@ const ContactPage = () => {
           "description": t('contact.description'),
           "publisher": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
-            "url": "https://digitaalatelier.com/",
+            "name": "TechWithYou",
+            "url": "https://techwithyou.nl/",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://digitaalatelier.com/logo.png"
+              "url": "https://techwithyou.nl/assets/techwithyou-logo.svg"
             }
           },
           "mainEntity": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
+            "name": "TechWithYou",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "Prinsengracht 123",
@@ -43,12 +43,12 @@ const ContactPage = () => {
               "addressCountry": "NL"
             },
             "telephone": "+31-20-1234567",
-            "email": "info@digitaalatelier.com",
+            "email": "info@techwithyou.nl",
             "contactPoint": {
               "@type": "ContactPoint",
               "contactType": "customer service",
               "telephone": "+31-20-1234567",
-              "email": "info@digitaalatelier.com",
+              "email": "info@techwithyou.nl",
               "availableLanguage": ["English", "Dutch"]
             }
           }

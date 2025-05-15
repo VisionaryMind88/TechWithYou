@@ -57,7 +57,7 @@ const ServicesPage = () => {
           "provider": {
             "@type": "Organization",
             "name": "Digitaal Atelier",
-            "url": "https://digitaalatelier.com/"
+            "url": "https://techwithyou.nl/"
           },
           "serviceType": ["Web Development", "App Development", "Dashboard Development"],
           "areaServed": {
