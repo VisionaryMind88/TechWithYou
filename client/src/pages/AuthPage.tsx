@@ -11,8 +11,10 @@ import { SEO } from "@/components/SEO";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
+import { signInWithGoogle, signInWithGithub } from "@/lib/firebase";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 
 import {
   Form,
@@ -33,7 +35,8 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { Loader2, CheckCircle2 as CheckCircle2Icon, Mail, RefreshCw } from "lucide-react";
+import { Loader2, CheckCircle2 as CheckCircle2Icon, Mail, RefreshCw, Github } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const loginSchema = z.object({
@@ -87,7 +90,82 @@ export default function AuthPage() {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
+  const [isSocialLoading, setIsSocialLoading] = useState<"google" | "github" | null>(null);
   const isEnglish = t('language') === 'en';
+  
+  // Handle Google Sign In
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsSocialLoading("google");
+      const result = await signInWithGoogle();
+      const idToken = await result.user.getIdToken();
+      
+      // Verstuur het token naar de server voor verificatie
+      const response = await fetch("/api/auth/firebase", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: idToken }),
+      });
+      
+      if (response.ok) {
+        // Na succesvolle authenticatie, werk de gebruiker state bij
+        trackEvent("login", "auth", "google_login");
+        window.location.href = "/"; // Forceer een refresh om de authenticatie state bij te werken
+      } else {
+        throw new Error("Authentication failed");
+      }
+    } catch (error) {
+      console.error("Google sign in error:", error);
+      toast({
+        title: isEnglish ? "Login Failed" : "Inloggen Mislukt",
+        description: isEnglish 
+          ? "Could not log in with Google. Please try again." 
+          : "Kon niet inloggen met Google. Probeer het opnieuw.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSocialLoading(null);
+    }
+  };
+  
+  // Handle GitHub Sign In
+  const handleGithubSignIn = async () => {
+    try {
+      setIsSocialLoading("github");
+      const result = await signInWithGithub();
+      const idToken = await result.user.getIdToken();
+      
+      // Verstuur het token naar de server voor verificatie
+      const response = await fetch("/api/auth/firebase", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: idToken }),
+      });
+      
+      if (response.ok) {
+        // Na succesvolle authenticatie, werk de gebruiker state bij
+        trackEvent("login", "auth", "github_login");
+        window.location.href = "/"; // Forceer een refresh om de authenticatie state bij te werken
+      } else {
+        throw new Error("Authentication failed");
+      }
+    } catch (error) {
+      console.error("GitHub sign in error:", error);
+      toast({
+        title: isEnglish ? "Login Failed" : "Inloggen Mislukt",
+        description: isEnglish 
+          ? "Could not log in with GitHub. Please try again." 
+          : "Kon niet inloggen met GitHub. Probeer het opnieuw.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSocialLoading(null);
+    }
+  };
   
   // Function to handle resending verification email
   const handleResendVerification = async () => {
