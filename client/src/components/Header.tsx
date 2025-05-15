@@ -107,10 +107,22 @@ export const Header = () => {
                 <SearchBar />
                 <LanguageToggle />
                 <a
-                  href="/analytics-dashboard"
-                  className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200 ml-2"
+                  href="/auth"
+                  className="text-sm border border-primary text-primary hover:bg-primary hover:text-white px-3 py-1 rounded-md transition duration-200 ml-2"
                 >
-                  {t('language') === 'en' ? 'Analytics' : 'Analytics'}
+                  {t('header.login')}
+                </a>
+                <a
+                  href="/dashboard"
+                  className="text-sm bg-primary/90 hover:bg-primary text-white px-3 py-1 rounded-md transition duration-200"
+                >
+                  {t('header.clientArea')}
+                </a>
+                <a
+                  href="/admin"
+                  className="text-sm bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-1 rounded-md transition duration-200"
+                >
+                  Admin
                 </a>
               </div>
             </nav>
@@ -180,12 +192,28 @@ export const Header = () => {
                   <SearchBar />
                   <LanguageToggle />
                 </div>
+                <div className="grid grid-cols-2 gap-2 mt-3">
+                  <a
+                    href="/auth"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-center border border-primary text-primary hover:bg-primary hover:text-white px-3 py-2 rounded-md transition duration-200"
+                  >
+                    {t('header.login')}
+                  </a>
+                  <a
+                    href="/dashboard"
+                    onClick={closeMobileMenu}
+                    className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200"
+                  >
+                    {t('header.clientArea')}
+                  </a>
+                </div>
                 <a
-                  href="/analytics-dashboard"
+                  href="/admin"
                   onClick={closeMobileMenu}
-                  className="flex items-center justify-center w-full bg-primary/90 hover:bg-primary text-white px-3 py-2 rounded-md transition duration-200 mt-3"
+                  className="flex items-center justify-center w-full bg-neutral-800 hover:bg-neutral-900 text-white px-3 py-2 rounded-md transition duration-200 mt-2"
                 >
-                  {t('language') === 'en' ? 'Analytics Dashboard' : 'Analytics Dashboard'}
+                  Admin
                 </a>
               </div>
             </nav>
