@@ -727,6 +727,23 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </TabsContent>
+            
+            {/* Chat Tab */}
+            <TabsContent value="chat" className="dashboard-chat" data-tour-target="chat-tab">
+              <Card className="h-[calc(80vh-10rem)]">
+                <CardHeader>
+                  <CardTitle>{isEnglish ? "Team Chat" : "Team Chat"}</CardTitle>
+                  <CardDescription>
+                    {isEnglish 
+                      ? "Chat with your team members in real-time" 
+                      : "Chat in realtime met je teamleden"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0 flex flex-col h-[calc(100%-8rem)] overflow-hidden">
+                  <ChatInterface userId={user?.id || null} username={user?.username || ""} />
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         </div>
       </main>
