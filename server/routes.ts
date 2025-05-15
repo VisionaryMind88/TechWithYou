@@ -20,6 +20,15 @@ function requireAuth(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+// Helper function to assert user exists in authenticated routes
+function assertUser(req: Request, res: Response): Express.User | null {
+  if (!req.user) {
+    res.status(401).json({ message: "Authentication required" });
+    return null;
+  }
+  return req.user;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
@@ -57,10 +66,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard API routes
   app.get('/api/dashboard/projects', requireAuth, async (req: Request, res: Response) => {
     try {
-      if (!req.user) {
-        return res.status(401).json({ message: "Authentication required" });
-      }
-      const userId = req.user.id;
+      const user = assertUser(req, res);
+      if (!user) return;
+      
+      const userId = user.id;
       const projects = await storage.getUserProjects(userId);
       res.json(projects);
     } catch (error) {
