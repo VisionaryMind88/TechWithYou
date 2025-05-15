@@ -66,10 +66,22 @@ export const signInWithGoogle = async (): Promise<UserCredential> => {
   try {
     // Eerst proberen met Popup (meest gebruikelijke manier)
     return await signInWithPopup(auth, googleProvider);
-  } catch (error) {
-    console.log("Popup failed, trying redirect...", error);
-    // Als Popup mislukt, probeer met redirect
-    // We moeten hier de browser URL opslaan, want we worden omgeleid
+  } catch (error: any) {
+    console.log("Popup failed, analyzing error...", error);
+    
+    // Check voor specifieke error: unauthorized domain
+    if (error.code === 'auth/unauthorized-domain') {
+      console.error("Firebase authentication domain error:", error);
+      throw new Error(`
+        De huidige domain is niet geautoriseerd in Firebase. 
+        Voeg ${window.location.origin} toe aan de lijst van geautoriseerde domeinen in Firebase Console:
+        1. Ga naar Firebase Console > Authentication > Settings > Authorized domains
+        2. Voeg dit domein toe: ${window.location.origin}
+      `);
+    }
+    
+    // Als het een andere fout is, probeer redirect methode
+    console.log("Attempting redirect authentication...");
     sessionStorage.setItem('authRedirectPath', window.location.pathname);
     // Redirect flow starten
     await signInWithRedirect(auth, googleProvider);
@@ -82,9 +94,22 @@ export const signInWithGithub = async (): Promise<UserCredential> => {
   try {
     // Eerst proberen met Popup (meest gebruikelijke manier)
     return await signInWithPopup(auth, githubProvider);
-  } catch (error) {
-    console.log("Popup failed, trying redirect...", error);
-    // Als Popup mislukt, probeer met redirect
+  } catch (error: any) {
+    console.log("Popup failed, analyzing error...", error);
+    
+    // Check voor specifieke error: unauthorized domain
+    if (error.code === 'auth/unauthorized-domain') {
+      console.error("Firebase authentication domain error:", error);
+      throw new Error(`
+        De huidige domain is niet geautoriseerd in Firebase. 
+        Voeg ${window.location.origin} toe aan de lijst van geautoriseerde domeinen in Firebase Console:
+        1. Ga naar Firebase Console > Authentication > Settings > Authorized domains
+        2. Voeg dit domein toe: ${window.location.origin}
+      `);
+    }
+    
+    // Als het een andere fout is, probeer redirect methode
+    console.log("Attempting redirect authentication...");
     sessionStorage.setItem('authRedirectPath', window.location.pathname);
     // Redirect flow starten
     await signInWithRedirect(auth, githubProvider);

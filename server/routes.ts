@@ -37,6 +37,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
   
+  // API endpoints for checking username and email existence (for registration validation)
+  app.get('/api/check-username', async (req: Request, res: Response) => {
+    try {
+      const { username } = req.query;
+      
+      if (!username || typeof username !== 'string') {
+        return res.status(400).json({ message: "Username parameter is required" });
+      }
+      
+      const existingUser = await storage.getUserByUsername(username);
+      
+      if (existingUser) {
+        // Username exists, return conflict status
+        return res.status(409).json({ message: "Username already exists" });
+      }
+      
+      // Username doesn't exist, return success
+      return res.status(200).json({ message: "Username is available" });
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return res.status(500).json({ message: "Error checking username availability" });
+    }
+  });
+  
+  app.get('/api/check-email', async (req: Request, res: Response) => {
+    try {
+      const { email } = req.query;
+      
+      if (!email || typeof email !== 'string') {
+        return res.status(400).json({ message: "Email parameter is required" });
+      }
+      
+      const existingUser = await storage.getUserByEmail(email);
+      
+      if (existingUser) {
+        // Email exists, return conflict status
+        return res.status(409).json({ message: "Email already exists" });
+      }
+      
+      // Email doesn't exist, return success
+      return res.status(200).json({ message: "Email is available" });
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return res.status(500).json({ message: "Error checking email availability" });
+    }
+  });
+  
   // Firebase authentication endpoint
   app.post('/api/auth/firebase', async (req: Request, res: Response) => {
     try {
