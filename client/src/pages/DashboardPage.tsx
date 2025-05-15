@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -7,10 +7,14 @@ import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/use-auth";
 import { useTranslation } from "@/hooks/use-translation";
 import { trackEvent } from "@/lib/analytics";
-import { Project } from "@shared/schema";
-import { getQueryFn } from "@/lib/queryClient";
+import { Project, InsertProject } from "@shared/schema";
+import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
 
 import {
   Card,
@@ -48,13 +52,87 @@ import { Loader2, MoreVertical, Bell, User, LogOut, Briefcase, Clock, FileText, 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+// Projectformulier validatieschema
+const projectFormSchema = z.object({
+  name: z.string().min(3, {
+    message: "Project name must be at least 3 characters.",
+  }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+  type: z.string().min(1, {
+    message: "Please select a project type.",
+  }),
+  budget: z.string().optional(),
+  deadline: z.string().optional(),
+});
+
+type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
 export default function DashboardPage() {
   const { t } = useTranslation();
   const isEnglish = t('language') === 'en';
   const { user, logoutMutation } = useAuth();
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const locale = isEnglish ? enUS : nl;
+  const { toast } = useToast();
+
+  const form = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      type: "",
+      budget: "",
+      deadline: "",
+    },
+  });
+
+  // Mutation for creating a new project
+  const createProjectMutation = useMutation({
+    mutationFn: async (data: ProjectFormValues) => {
+      const res = await apiRequest("POST", "/api/dashboard/projects", {
+        ...data,
+        userId: user?.id,
+        status: "proposal",
+      });
+      return await res.json();
+    },
+    onSuccess: () => {
+      // Reset form and close dialog
+      form.reset();
+      setIsCreateProjectOpen(false);
+      
+      // Invalidate the projects query to refetch the list
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/projects"] });
+      
+      // Show success toast
+      toast({
+        title: isEnglish ? "Project Created" : "Project Aangemaakt",
+        description: isEnglish 
+          ? "Your project request has been submitted successfully."
+          : "Je projectaanvraag is succesvol ingediend.",
+        variant: "default",
+      });
+      
+      // Track event
+      trackEvent("project_created", "engagement", "dashboard");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: isEnglish ? "Failed to Create Project" : "Project Aanmaken Mislukt",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   // Track dashboard visit
   useState(() => {
@@ -427,8 +505,11 @@ export default function DashboardPage() {
       </main>
       
       {/* Create Project Dialog */}
-      <AlertDialog open={isCreateProjectOpen} onOpenChange={setIsCreateProjectOpen}>
-        <AlertDialogContent>
+      <AlertDialog open={isCreateProjectOpen} onOpenChange={(open) => {
+        setIsCreateProjectOpen(open);
+        if (!open) form.reset();
+      }}>
+        <AlertDialogContent className="max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>
               {isEnglish ? "Create New Project" : "Nieuw Project Aanmaken"}
@@ -439,21 +520,118 @@ export default function DashboardPage() {
                 : "Dit maakt een nieuw projectverzoek aan dat door ons team zal worden beoordeeld."}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="py-4">
-            <p className="text-sm text-muted-foreground">
-              {isEnglish
-                ? "Project creation form would be here. Currently, this is a placeholder as we need to implement the full form."
-                : "Hier zou het formulier voor het aanmaken van projecten staan. Dit is momenteel een tijdelijke aanduiding, omdat we het volledige formulier nog moeten implementeren."}
-            </p>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {isEnglish ? "Cancel" : "Annuleren"}
-            </AlertDialogCancel>
-            <AlertDialogAction>
-              {isEnglish ? "Submit Project Request" : "Projectaanvraag Indienen"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit((data) => createProjectMutation.mutate(data))} className="space-y-4 py-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Project Name" : "Projectnaam"}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={isEnglish ? "My New Website" : "Mijn Nieuwe Website"} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Project Type" : "Projecttype"}</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={isEnglish ? "Select project type" : "Selecteer projecttype"} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="website">{isEnglish ? "Website" : "Website"}</SelectItem>
+                        <SelectItem value="webapp">{isEnglish ? "Web Application" : "Webapplicatie"}</SelectItem>
+                        <SelectItem value="ecommerce">{isEnglish ? "E-commerce" : "E-commerce"}</SelectItem>
+                        <SelectItem value="dashboard">{isEnglish ? "Dashboard" : "Dashboard"}</SelectItem>
+                        <SelectItem value="mobile">{isEnglish ? "Mobile App" : "Mobiele App"}</SelectItem>
+                        <SelectItem value="other">{isEnglish ? "Other" : "Anders"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Description" : "Omschrijving"}</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder={isEnglish ? "Describe your project requirements..." : "Beschrijf je projectvereisten..."} 
+                        className="min-h-[100px]" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="budget"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{isEnglish ? "Budget (Optional)" : "Budget (Optioneel)"}</FormLabel>
+                      <FormControl>
+                        <Input placeholder="€" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="deadline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{isEnglish ? "Deadline (Optional)" : "Deadline (Optioneel)"}</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <AlertDialogFooter className="pt-4">
+                <AlertDialogCancel type="button">
+                  {isEnglish ? "Cancel" : "Annuleren"}
+                </AlertDialogCancel>
+                <AlertDialogAction type="submit" disabled={createProjectMutation.isPending || !form.formState.isValid}>
+                  {createProjectMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isEnglish ? "Submitting..." : "Bezig met indienen..."}
+                    </>
+                  ) : (
+                    isEnglish ? "Submit Project Request" : "Projectaanvraag Indienen"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
+          </Form>
         </AlertDialogContent>
       </AlertDialog>
       
