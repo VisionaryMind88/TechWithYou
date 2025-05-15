@@ -1,4 +1,5 @@
 import { useTranslation } from "@/hooks/use-translation";
+import { Link } from "wouter";
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -15,18 +16,18 @@ export const Footer = () => {
               {t('footer.description')}
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-neutral-400 hover:text-white transition">
+              <Link href="https://linkedin.com" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-linkedin-fill text-xl"></i>
-              </a>
-              <a href="#" className="text-neutral-400 hover:text-white transition">
+              </Link>
+              <Link href="https://twitter.com" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-twitter-fill text-xl"></i>
-              </a>
-              <a href="#" className="text-neutral-400 hover:text-white transition">
+              </Link>
+              <Link href="https://instagram.com" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-instagram-fill text-xl"></i>
-              </a>
-              <a href="#" className="text-neutral-400 hover:text-white transition">
+              </Link>
+              <Link href="https://facebook.com" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-facebook-fill text-xl"></i>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -34,34 +35,34 @@ export const Footer = () => {
             <h3 className="text-lg font-semibold mb-6">{t('footer.services')}</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/services#website-development" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   Website Development
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services#web-applications" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   Web Applicaties
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services#dashboards" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   Dashboards & Data Visualisatie
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services#ux-ui-design" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   UX/UI Design
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services#performance-optimization" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   Performance Optimalisatie
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services#security-maintenance" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   Beveiliging & Onderhoud
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -70,39 +71,39 @@ export const Footer = () => {
             <h3 className="text-lg font-semibold mb-6">{t('footer.navigation')}</h3>
             <ul className="space-y-3">
               <li>
-                <a href="/" className="text-neutral-400 hover:text-white transition">
+                <Link href="/" className="text-neutral-400 hover:text-white transition">
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/services" className="text-neutral-400 hover:text-white transition">
+                <Link href="/services" className="text-neutral-400 hover:text-white transition">
                   {t('header.services')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/portfolio" className="text-neutral-400 hover:text-white transition">
+                <Link href="/portfolio" className="text-neutral-400 hover:text-white transition">
                   {t('header.portfolio')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/about" className="text-neutral-400 hover:text-white transition">
+                <Link href="/about" className="text-neutral-400 hover:text-white transition">
                   {t('header.about')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/about#team" className="text-neutral-400 hover:text-white transition">
+                <Link href="/about" className="text-neutral-400 hover:text-white transition">
                   Team
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/faq" className="text-neutral-400 hover:text-white transition">
+                <Link href="/faq" className="text-neutral-400 hover:text-white transition">
                   FAQ
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="text-neutral-400 hover:text-white transition">
+                <Link href="/contact" className="text-neutral-400 hover:text-white transition">
                   {t('header.contact')}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -132,12 +133,12 @@ export const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p>{t('footer.rights')}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="/privacy-policy" className="hover:text-neutral-300 transition">
+              <Link href="/privacy-policy" className="hover:text-neutral-300 transition">
                 {t('footer.privacy')}
-              </a>
-              <a href="/terms-and-conditions" className="hover:text-neutral-300 transition">
+              </Link>
+              <Link href="/terms-and-conditions" className="hover:text-neutral-300 transition">
                 {t('footer.terms')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>
