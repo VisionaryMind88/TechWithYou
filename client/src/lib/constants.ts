@@ -9,7 +9,7 @@ export const TECH_STACK = [
   },
   {
     name: "Node.js",
-    icon: "ri-nodejs-line"
+    icon: "ri-server-fill"
   },
   {
     name: "MongoDB",

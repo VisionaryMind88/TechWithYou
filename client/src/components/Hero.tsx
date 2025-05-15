@@ -45,14 +45,14 @@ export const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <a
-              href="#contact"
+              href="/auth"
               className="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150"
             >
               {t('hero.cta')}
               <i className="ri-arrow-right-line ml-2"></i>
             </a>
             <a
-              href="#portfolio"
+              href="/portfolio"
               className="inline-flex justify-center items-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-150"
             >
               {t('hero.viewWork')}

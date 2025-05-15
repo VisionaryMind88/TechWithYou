@@ -72,7 +72,7 @@ export const Portfolio = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <a
-            href="#"
+            href="/portfolio"
             className="inline-flex justify-center items-center px-6 py-3 border border-primary text-base font-medium rounded-md text-white bg-transparent hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150"
           >
             {t('portfolio.viewAll')}
