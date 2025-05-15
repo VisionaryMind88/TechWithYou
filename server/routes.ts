@@ -234,32 +234,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = assertUser(req, res);
       if (!user) return;
       
+      console.log(`Creating project for user ${user.username} (ID: ${user.id})`);
+      console.log('Project data received:', JSON.stringify(req.body, null, 2));
+      
       const userId = user.id;
-      const projectData = insertProjectSchema.parse({
-        ...req.body,
-        userId
-      });
       
-      const project = await storage.createProject(projectData);
-      
-      // Create a notification about the new project
-      await storage.createNotification({
-        userId,
-        title: 'New Project Created',
-        message: `Your project '${project.name}' has been created successfully.`,
-        type: 'success'
-      });
-      
-      res.status(201).json(project);
-    } catch (error: any) {
-      if (error.name === 'ZodError') {
-        const validationError = fromZodError(error as ZodError);
-        return res.status(400).json({
-          message: 'Invalid project data',
-          errors: validationError.details
+      try {
+        const projectData = insertProjectSchema.parse({
+          ...req.body,
+          userId
         });
+        
+        console.log('Project data after validation:', JSON.stringify(projectData, null, 2));
+        
+        const project = await storage.createProject(projectData);
+        console.log('Project created successfully:', JSON.stringify(project, null, 2));
+        
+        // Create a notification about the new project
+        await storage.createNotification({
+          userId,
+          title: 'New Project Created',
+          message: `Your project '${project.name}' has been created successfully.`,
+          type: 'success'
+        });
+        
+        console.log('Notification created for project');
+        
+        res.status(201).json(project);
+      } catch (validationError) {
+        console.error('Project validation error:', validationError);
+        
+        if (validationError.name === 'ZodError') {
+          const formattedError = fromZodError(validationError as ZodError);
+          return res.status(400).json({
+            message: 'Invalid project data',
+            errors: formattedError.details
+          });
+        }
+        
+        throw validationError; // Rethrow if not a validation error
       }
-      
+    } catch (error: any) {
+      console.error('Project creation failed:', error);
       res.status(500).json({ message: 'Failed to create project' });
     }
   });

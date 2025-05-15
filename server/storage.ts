@@ -277,51 +277,128 @@ export class DatabaseStorage implements IStorage {
   
   // Project methods
   async createProject(insertProject: InsertProject): Promise<Project> {
-    const [project] = await db.insert(projects)
-      .values({
-        ...insertProject,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      })
-      .returning();
-    return project;
+    try {
+      console.log(`DatabaseStorage.createProject: creating project with name "${insertProject.name}" for user ID ${insertProject.userId}`);
+      
+      // Loggen van alle velden in het project
+      console.log(`DatabaseStorage.createProject: project data:`, JSON.stringify(insertProject, null, 2));
+      
+      const [project] = await db.insert(projects)
+        .values({
+          ...insertProject,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        .returning();
+      
+      if (project) {
+        console.log(`DatabaseStorage.createProject: project succesvol aangemaakt met ID ${project.id}`);
+      } else {
+        console.error(`DatabaseStorage.createProject: project aangemaakt, maar geen project teruggegeven`);
+      }
+      
+      return project;
+    } catch (error) {
+      console.error(`DatabaseStorage.createProject: fout bij aanmaken project:`, error);
+      throw error;
+    }
   }
   
   async getProject(id: number): Promise<Project | undefined> {
-    const [project] = await db.select()
-      .from(projects)
-      .where(eq(projects.id, id));
-    return project || undefined;
+    try {
+      console.log(`DatabaseStorage.getProject: ophalen project met ID ${id}`);
+      
+      const [project] = await db.select()
+        .from(projects)
+        .where(eq(projects.id, id));
+      
+      if (project) {
+        console.log(`DatabaseStorage.getProject: project gevonden met ID ${id}: "${project.name}"`);
+      } else {
+        console.log(`DatabaseStorage.getProject: geen project gevonden met ID ${id}`);
+      }
+      
+      return project || undefined;
+    } catch (error) {
+      console.error(`DatabaseStorage.getProject: fout bij ophalen project:`, error);
+      throw error;
+    }
   }
   
   async getUserProjects(userId: number): Promise<Project[]> {
-    const userProjects = await db.select()
-      .from(projects)
-      .where(eq(projects.userId, userId))
-      .orderBy(desc(projects.updatedAt));
-    return userProjects;
+    try {
+      console.log(`DatabaseStorage.getUserProjects: ophalen projecten voor gebruiker met ID ${userId}`);
+      
+      const userProjects = await db.select()
+        .from(projects)
+        .where(eq(projects.userId, userId))
+        .orderBy(desc(projects.updatedAt));
+      
+      console.log(`DatabaseStorage.getUserProjects: ${userProjects.length} projecten gevonden voor gebruiker ${userId}`);
+      
+      return userProjects;
+    } catch (error) {
+      console.error(`DatabaseStorage.getUserProjects: fout bij ophalen projecten:`, error);
+      throw error;
+    }
   }
   
   async getAllProjects(): Promise<Project[]> {
-    const allProjects = await db.select()
-      .from(projects)
-      .orderBy(desc(projects.updatedAt));
-    return allProjects;
+    try {
+      console.log(`DatabaseStorage.getAllProjects: ophalen alle projecten`);
+      
+      const allProjects = await db.select()
+        .from(projects)
+        .orderBy(desc(projects.updatedAt));
+      
+      console.log(`DatabaseStorage.getAllProjects: ${allProjects.length} projecten gevonden`);
+      
+      return allProjects;
+    } catch (error) {
+      console.error(`DatabaseStorage.getAllProjects: fout bij ophalen alle projecten:`, error);
+      throw error;
+    }
   }
   
   async updateProject(id: number, data: Partial<InsertProject>): Promise<Project | undefined> {
-    const [updatedProject] = await db.update(projects)
-      .set({ ...data, updatedAt: new Date() })
-      .where(eq(projects.id, id))
-      .returning();
-    return updatedProject || undefined;
+    try {
+      console.log(`DatabaseStorage.updateProject: bijwerken project met ID ${id}`);
+      console.log(`DatabaseStorage.updateProject: update data:`, JSON.stringify(data, null, 2));
+      
+      const [updatedProject] = await db.update(projects)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(projects.id, id))
+        .returning();
+      
+      if (updatedProject) {
+        console.log(`DatabaseStorage.updateProject: project bijgewerkt met ID ${id}: "${updatedProject.name}"`);
+      } else {
+        console.log(`DatabaseStorage.updateProject: geen project gevonden met ID ${id} om bij te werken`);
+      }
+      
+      return updatedProject || undefined;
+    } catch (error) {
+      console.error(`DatabaseStorage.updateProject: fout bij bijwerken project:`, error);
+      throw error;
+    }
   }
   
   async deleteProject(id: number): Promise<boolean> {
-    const result = await db.delete(projects)
-      .where(eq(projects.id, id))
-      .returning();
-    return result.length > 0;
+    try {
+      console.log(`DatabaseStorage.deleteProject: verwijderen project met ID ${id}`);
+      
+      const result = await db.delete(projects)
+        .where(eq(projects.id, id))
+        .returning();
+      
+      const success = result.length > 0;
+      console.log(`DatabaseStorage.deleteProject: project ${success ? 'succesvol verwijderd' : 'niet gevonden'}`);
+      
+      return success;
+    } catch (error) {
+      console.error(`DatabaseStorage.deleteProject: fout bij verwijderen project:`, error);
+      throw error;
+    }
   }
   
   // Milestone methods
