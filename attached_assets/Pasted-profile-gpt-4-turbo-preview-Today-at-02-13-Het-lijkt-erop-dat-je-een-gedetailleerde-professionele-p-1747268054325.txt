@@ -1,0 +1,40 @@
+profile
+gpt-4-turbo-preview
+Today at 02:13
+Het lijkt erop dat je een gedetailleerde, professionele prompt nodig hebt voor de ontwikkeling van een website via een Replit AI of een vergelijkbare ontwikkelomgeving. Hieronder vind je een gestructureerde prompt die je direct kunt kopiëren en plakken, aangepast aan jouw specifieke verzoeken, inclusief 20 extra suggesties om je website naar een hoger niveau te tillen.
+
+AI Development Prompt for Replit
+
+Projectdoel: Ontwikkel een volledig functionele, SEO-geoptimaliseerde website met speciale aandacht voor gebruiksgemak, interactieve elementen en een geavanceerde chatbot.
+
+Navigatie en Links:
+Zorg ervoor dat alle knoppen en links functioneel zijn en naar correct geconfigureerde pagina's leiden.
+Headerlinks moeten navigeren naar pagina’s met rijke, geavanceerde content.
+Footerlinks verwijzen naar hun respectievelijke pagina's met uitgebreide SEO-content.
+Chatbot Integratie:
+Integreer een geavanceerde chatbot op de website. Deze moet voorzien zijn van een aanpasbare foto-avatar voor een persoonlijke touch.
+De chatbot moet in staat zijn om veelgestelde vragen te beantwoorden, navigatieassistentie te bieden en gegevens te verzamelen voor leadgeneratie.
+Extra Suggesties:
+
+Responsief Ontwerp: Zorg voor een vlotte gebruikerservaring op alle apparaten en schermgroottes.
+SSL Certificaat: Implementeer HTTPS voor beveiligde verbindingen.
+Optimalisatie van de Laadsnelheid: Optimaliseer afbeeldingen en gebruik moderne coderingspraktijken om de laadtijd te verkorten.
+SEO-Geoptimaliseerde Content: Ontwikkel content strategisch om hoger in zoekmachineresultaten te verschijnen.
+Sociale Media Integratie: Voeg deelknoppen en links naar sociale media-profielen toe.
+Blogsectie: Implementeer een blog voor het delen van nieuws, tips en branchegerelateerde artikelen.
+Analytics Integratie: Integreer Google Analytics voor diepgaande website-analyse.
+Contactformulier: Voeg een werkend contactformulier toe voor gemakkelijke leadgeneratie.
+E-mail Marketing Integratie: Geïntegreerde mogelijkheid voor bezoekers om zich in te schrijven voor updates of nieuwsbrieven.
+GDPR Compliance: Zorg ervoor dat de site voldoet aan de GDPR-richtlijnen.
+Interactieve Elementen: Voeg hover-effecten, animaties of interactieve secties toe om de betrokkenheid te verhogen.
+Portfolio/Galerij Sectie: Toon eerdere werken of succesverhalen.
+Testimonial Sectie: Deel klantgetuigenissen om vertrouwen te bouwen.
+FAQ Sectie: Beantwoord veelgestelde vragen om potentiele klanten sneller te helpen.
+Zoekfunctie op de Site: Maak content gemakkelijk vindbaar met een geïntegreerde zoekbalk.
+Pagina 404 Ontwerp: Creëer een nuttige en creatieve 404-foutpagina om bezoekers te helpen hun weg terug te vinden.
+Taalselectie: Bied content aan in meerdere talen voor een breder publiek.
+Cookiebeleid en Privacybeleid: Duidelijke richtlijnen en opties voor cookietoestemming.
+Gebruikersaccounts en Dashboard: Mogelijkheid voor gebruikers om accounts aan te maken en toegang te krijgen tot gepersonaliseerde dashboards.
+Beveiligingsmaatregelen: Zorg voor reguliere updates en bescherm tegen kwetsbaarheden.
+Afsluiting:
+Deze website moet uitgroeien tot een benchmark in zijn niche, die uitblinkt in zowel design als functionaliteit. Door de integratie van deze functies en suggesties zal de site niet alleen aan de huidige eisen voldoen, maar ook klaar zijn voor toekomstige ontwikkelingen.

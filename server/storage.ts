@@ -1,7 +1,6 @@
 import { users, type User, type InsertUser, contacts, type Contact, type InsertContact } from "@shared/schema";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -15,69 +14,51 @@ export interface IStorage {
   markContactAsRead(id: number): Promise<Contact | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private contacts: Map<number, Contact>;
-  currentUserId: number;
-  currentContactId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.contacts = new Map();
-    this.currentUserId = 1;
-    this.currentContactId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   // Contact methods
   async createContact(insertContact: InsertContact): Promise<Contact> {
-    const id = this.currentContactId++;
-    const createdAt = new Date().toISOString();
-    const contact: Contact = { 
-      ...insertContact, 
-      id, 
-      createdAt,
+    const [contact] = await db.insert(contacts).values({
+      ...insertContact,
+      createdAt: new Date().toISOString(),
       read: false
-    };
-    this.contacts.set(id, contact);
+    }).returning();
     return contact;
   }
 
   async getContacts(): Promise<Contact[]> {
-    return Array.from(this.contacts.values()).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return db.select()
+      .from(contacts)
+      .orderBy(db.sql`${contacts.createdAt} DESC`);
   }
 
   async getContact(id: number): Promise<Contact | undefined> {
-    return this.contacts.get(id);
+    const [contact] = await db.select().from(contacts).where(eq(contacts.id, id));
+    return contact || undefined;
   }
 
   async markContactAsRead(id: number): Promise<Contact | undefined> {
-    const contact = this.contacts.get(id);
-    if (!contact) return undefined;
-    
-    const updatedContact = { ...contact, read: true };
-    this.contacts.set(id, updatedContact);
-    return updatedContact;
+    const [updatedContact] = await db.update(contacts)
+      .set({ read: true })
+      .where(eq(contacts.id, id))
+      .returning();
+    return updatedContact || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
