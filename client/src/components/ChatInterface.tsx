@@ -38,6 +38,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
+  DialogClose
 } from "@/components/ui/dialog";
 
 // Define extended interface for chat messages
@@ -352,6 +354,22 @@ export function ChatInterface({
         </div>
       )}
       
+      {/* Notificatie indicator voor klanten */}
+      {!isAdmin && unreadCount > 0 && (
+        <div className="px-4 py-2 border-b flex items-center justify-between">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-2"
+            onClick={() => setIsNotificationOpen(true)}
+          >
+            <Bell className="h-4 w-4 text-orange-500 animate-pulse" />
+            {isEnglish ? "New messages" : "Nieuwe berichten"}
+            <Badge variant="destructive">{unreadCount}</Badge>
+          </Button>
+        </div>
+      )}
+      
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
           {messages.length === 0 ? (
@@ -529,5 +547,57 @@ export function ChatInterface({
         </form>
       </div>
     </div>
+    
+    {/* Notificatie dialog */}
+    <Dialog open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>{isEnglish ? "New Messages" : "Nieuwe Berichten"}</DialogTitle>
+          <DialogDescription>
+            {isEnglish 
+              ? "You have unread messages from the admin team." 
+              : "Je hebt ongelezen berichten van het admin team."}
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="max-h-[300px] overflow-y-auto py-4">
+          {notifications
+            .filter(notification => !notification.read)
+            .map((notification, index) => (
+              <div key={index} className="mb-4 last:mb-0 p-3 border rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <Avatar className="h-6 w-6">
+                    <AvatarFallback style={{ backgroundColor: getRandomColor(notification.fromUsername) }}>
+                      {getInitials(notification.fromUsername)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium text-sm">{notification.fromUsername}</span>
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    {formatTime(notification.timestamp)}
+                  </span>
+                </div>
+                <p className="text-sm pl-8">{notification.message}</p>
+              </div>
+            ))}
+          
+          {notifications.filter(n => !n.read).length === 0 && (
+            <p className="text-center text-muted-foreground py-4">
+              {isEnglish ? "No unread messages" : "Geen ongelezen berichten"}
+            </p>
+          )}
+        </div>
+        
+        <DialogFooter className="sm:justify-between">
+          <DialogClose asChild>
+            <Button variant="secondary">
+              {isEnglish ? "Close" : "Sluiten"}
+            </Button>
+          </DialogClose>
+          <Button onClick={handleMarkNotificationsAsRead}>
+            {isEnglish ? "Mark all as read" : "Alles als gelezen markeren"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
