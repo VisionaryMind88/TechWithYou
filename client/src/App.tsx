@@ -18,6 +18,7 @@ import ContactPage from "@/pages/ContactPage";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
+import ProjectDetailPage from "@/pages/ProjectDetailPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
 
 import { LanguageContext } from "@/hooks/use-translation";
@@ -63,6 +64,7 @@ function Router() {
         {() => <AuthPage />}
       </Route>
       <ProtectedRoute path="/dashboard" component={DashboardPage} />
+      <ProtectedRoute path="/project/:id" component={ProjectDetailPage} />
       <ProtectedRoute path="/admin" component={AdminDashboardPage} />
       <Route>
         {() => <NotFound />}
