@@ -18,6 +18,7 @@ import ContactPage from "@/pages/ContactPage";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import AuthPage from "@/pages/AuthPage";
 import DashboardPage from "@/pages/DashboardPage";
+import AdminDashboardPage from "@/pages/AdminDashboardPage";
 
 import { LanguageContext } from "@/hooks/use-translation";
 import { CookieConsent } from "@/components/CookieConsent";
@@ -62,6 +63,7 @@ function Router() {
         {() => <AuthPage />}
       </Route>
       <ProtectedRoute path="/dashboard" component={DashboardPage} />
+      <ProtectedRoute path="/admin" component={AdminDashboardPage} />
       <Route>
         {() => <NotFound />}
       </Route>

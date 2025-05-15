@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Redirect } from "wouter";
+import { Redirect, Link } from "wouter";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
 import { useTranslation } from "@/hooks/use-translation";
@@ -37,22 +37,18 @@ const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
-const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
-  name: z.string().min(1, "Name is required"),
-  company: z.string().optional(),
-  role: z.enum(["client", "admin"]).default("client"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 export default function AuthPage() {
   const { t } = useTranslation();
-  const { user, loginMutation, registerMutation } = useAuth();
+  const { user, loginMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const isEnglish = t('language') === 'en';
 
   const loginForm = useForm<LoginFormValues>({
@@ -63,26 +59,33 @@ export default function AuthPage() {
     },
   });
 
-  const registerForm = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+  const forgotPasswordForm = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      username: "",
-      password: "",
       email: "",
-      name: "",
-      company: "",
-      role: "client",
     },
   });
 
   const handleLogin = (values: LoginFormValues) => {
     loginMutation.mutate(values);
-    trackEvent("login_attempt", "auth", "login_form");
+    trackEvent("login_attempt", "auth", "login_form", 1);
   };
 
-  const handleRegister = (values: RegisterFormValues) => {
-    registerMutation.mutate(values);
-    trackEvent("register_attempt", "auth", "register_form");
+  const handleForgotPassword = (values: ForgotPasswordFormValues) => {
+    // In a real implementation, this would call an API endpoint to send a reset email
+    console.log('Password reset requested for:', values.email);
+    
+    // Show a success message to the user
+    alert(isEnglish 
+      ? `Password reset instructions sent to ${values.email}`
+      : `Wachtwoord reset instructies verzonden naar ${values.email}`);
+    
+    // Track the event
+    trackEvent("forgot_password_attempt", "auth", "forgot_password_form", 1);
+    
+    // Reset the form and return to login
+    forgotPasswordForm.reset();
+    setShowForgotPassword(false);
   };
 
   // Redirect if already logged in
@@ -115,198 +118,129 @@ export default function AuthPage() {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl text-center">
-                      {activeTab === "login"
+                      {!showForgotPassword 
                         ? (isEnglish ? "Welcome back" : "Welkom terug")
-                        : (isEnglish ? "Create an account" : "Maak een account aan")}
+                        : (isEnglish ? "Reset Password" : "Wachtwoord Resetten")}
                     </CardTitle>
                     <CardDescription className="text-center">
-                      {activeTab === "login"
+                      {!showForgotPassword 
                         ? (isEnglish 
                             ? "Sign in to access your dashboard"
                             : "Log in om toegang te krijgen tot je dashboard")
                         : (isEnglish 
-                            ? "Join Digitaal Atelier to manage your projects"
-                            : "Word lid van Digitaal Atelier om je projecten te beheren")}
+                            ? "Enter your email to receive reset instructions"
+                            : "Voer je e-mail in om reset-instructies te ontvangen")}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Tabs defaultValue="login" value={activeTab} onValueChange={setActiveTab}>
-                      <TabsList className="grid w-full grid-cols-2 mb-6">
-                        <TabsTrigger value="login">{isEnglish ? "Login" : "Inloggen"}</TabsTrigger>
-                        <TabsTrigger value="register">{isEnglish ? "Register" : "Registreren"}</TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="login">
-                        <Form {...loginForm}>
-                          <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
-                            <FormField
-                              control={loginForm.control}
-                              name="username"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Username or Email" : "Gebruikersnaam of E-mail"}</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder={isEnglish ? "Enter your username" : "Voer je gebruikersnaam in"} {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={loginForm.control}
-                              name="password"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      type="password" 
-                                      placeholder={isEnglish ? "Enter your password" : "Voer je wachtwoord in"} 
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                    {!showForgotPassword ? (
+                      // Login Form
+                      <Form {...loginForm}>
+                        <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
+                          <FormField
+                            control={loginForm.control}
+                            name="username"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{isEnglish ? "Username or Email" : "Gebruikersnaam of E-mail"}</FormLabel>
+                                <FormControl>
+                                  <Input placeholder={isEnglish ? "Enter your username" : "Voer je gebruikersnaam in"} {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={loginForm.control}
+                            name="password"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="password" 
+                                    placeholder={isEnglish ? "Enter your password" : "Voer je wachtwoord in"} 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex justify-end">
                             <Button 
-                              type="submit" 
-                              className="w-full" 
-                              disabled={loginMutation.isPending}
+                              type="button" 
+                              variant="link" 
+                              className="p-0 h-auto font-normal text-sm"
+                              onClick={() => setShowForgotPassword(true)}
                             >
-                              {loginMutation.isPending ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  {isEnglish ? "Logging in..." : "Inloggen..."}
-                                </>
-                              ) : (
-                                isEnglish ? "Login" : "Inloggen"
-                              )}
+                              {isEnglish ? "Forgot password?" : "Wachtwoord vergeten?"}
                             </Button>
-                          </form>
-                        </Form>
-                      </TabsContent>
-                      
-                      <TabsContent value="register">
-                        <Form {...registerForm}>
-                          <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
-                            <FormField
-                              control={registerForm.control}
-                              name="username"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Username" : "Gebruikersnaam"}</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      placeholder={isEnglish ? "Choose a username" : "Kies een gebruikersnaam"} 
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={registerForm.control}
-                              name="email"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Email" : "E-mail"}</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      type="email" 
-                                      placeholder={isEnglish ? "Enter your email" : "Voer je e-mail in"} 
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={registerForm.control}
-                              name="name"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Full Name" : "Volledige naam"}</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      placeholder={isEnglish ? "Enter your full name" : "Voer je volledige naam in"} 
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={registerForm.control}
-                              name="company"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Company (optional)" : "Bedrijf (optioneel)"}</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      placeholder={isEnglish ? "Enter your company name" : "Voer je bedrijfsnaam in"} 
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={registerForm.control}
-                              name="password"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      type="password" 
-                                      placeholder={isEnglish ? "Create a password" : "Maak een wachtwoord aan"} 
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          </div>
+                          <Button 
+                            type="submit" 
+                            className="w-full" 
+                            disabled={loginMutation.isPending}
+                          >
+                            {loginMutation.isPending ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                {isEnglish ? "Logging in..." : "Inloggen..."}
+                              </>
+                            ) : (
+                              isEnglish ? "Login" : "Inloggen"
+                            )}
+                          </Button>
+                        </form>
+                      </Form>
+                    ) : (
+                      // Forgot Password Form
+                      <Form {...forgotPasswordForm}>
+                        <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPassword)} className="space-y-4">
+                          <FormField
+                            control={forgotPasswordForm.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>{isEnglish ? "Email" : "E-mail"}</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    type="email" 
+                                    placeholder={isEnglish ? "Enter your email" : "Voer je e-mail in"} 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <div className="flex justify-between pt-2">
                             <Button 
-                              type="submit" 
-                              className="w-full" 
-                              disabled={registerMutation.isPending}
+                              type="button" 
+                              variant="outline"
+                              onClick={() => setShowForgotPassword(false)}
                             >
-                              {registerMutation.isPending ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  {isEnglish ? "Creating account..." : "Account aanmaken..."}
-                                </>
-                              ) : (
-                                isEnglish ? "Create Account" : "Account aanmaken"
-                              )}
+                              {isEnglish ? "Back to Login" : "Terug naar Inloggen"}
                             </Button>
-                          </form>
-                        </Form>
-                      </TabsContent>
-                    </Tabs>
+                            <Button type="submit">
+                              {isEnglish ? "Reset Password" : "Reset Wachtwoord"}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    )}
                   </CardContent>
                   <CardFooter className="flex justify-center text-sm text-muted-foreground">
-                    {activeTab === "login" ? (
-                      <p>
-                        {isEnglish ? "Don't have an account?" : "Nog geen account?"}{" "}
-                        <Button variant="link" className="p-0" onClick={() => setActiveTab("register")}>
-                          {isEnglish ? "Register" : "Registreer"}
+                    <p>
+                      {isEnglish 
+                        ? "For registration inquiries, please contact us" 
+                        : "Voor registratie-aanvragen, neem contact met ons op"}{" "}
+                      <Link href="/contact">
+                        <Button variant="link" className="p-0">
+                          {isEnglish ? "here" : "hier"}
                         </Button>
-                      </p>
-                    ) : (
-                      <p>
-                        {isEnglish ? "Already have an account?" : "Heb je al een account?"}{" "}
-                        <Button variant="link" className="p-0" onClick={() => setActiveTab("login")}>
-                          {isEnglish ? "Login" : "Log in"}
-                        </Button>
-                      </p>
-                    )}
+                      </Link>
+                    </p>
                   </CardFooter>
                 </Card>
               </motion.div>
