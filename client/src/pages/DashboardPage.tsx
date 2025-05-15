@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/Header";
@@ -7,6 +7,8 @@ import { SEO } from "@/components/SEO";
 import { useAuth } from "@/hooks/use-auth";
 import { useTranslation } from "@/hooks/use-translation";
 import { trackEvent } from "@/lib/analytics";
+import { WelcomeScreen } from "@/components/WelcomeScreen";
+import { DashboardTour } from "@/components/DashboardTour";
 import { Project, InsertProject } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
@@ -83,6 +85,26 @@ export default function DashboardPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const locale = isEnglish ? enUS : nl;
   const { toast } = useToast();
+  
+  // State voor welkomstscherm en tour
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState(false);
+  const [showTour, setShowTour] = useState(false);
+  
+  // Controleer of dit de eerste keer is dat de gebruiker inlogt
+  useEffect(() => {
+    // Controleer of de gebruiker de tour of welkomstscherm al heeft gezien
+    const hasSeenWelcome = localStorage.getItem(`welcome_seen_${user?.id}`);
+    const hasCompletedTour = localStorage.getItem(`tour_completed_${user?.id}`);
+    
+    if (user && !hasSeenWelcome) {
+      // Wacht even zodat de pagina eerst goed kan laden
+      const timer = setTimeout(() => {
+        setShowWelcomeScreen(true);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
@@ -170,6 +192,48 @@ export default function DashboardPage() {
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+  
+  // Handlers voor welkomstscherm en tour
+  const handleCloseWelcome = () => {
+    // Sla op dat de gebruiker het welkomstscherm heeft gezien
+    if (user?.id) {
+      localStorage.setItem(`welcome_seen_${user.id}`, 'true');
+    }
+    setShowWelcomeScreen(false);
+  };
+  
+  const handleStartTour = () => {
+    // Sluit welkomstscherm en start tour
+    setShowWelcomeScreen(false);
+    setShowTour(true);
+  };
+  
+  const handleCompleteTour = () => {
+    // Sla op dat de gebruiker de tour heeft voltooid
+    if (user?.id) {
+      localStorage.setItem(`tour_completed_${user.id}`, 'true');
+    }
+    setShowTour(false);
+    
+    // Toon een bericht dat de tour is voltooid
+    toast({
+      title: isEnglish ? "Tour Completed" : "Rondleiding Voltooid",
+      description: isEnglish 
+        ? "You're all set! Explore your dashboard to manage your projects." 
+        : "Je bent er helemaal klaar voor! Verken je dashboard om je projecten te beheren.",
+    });
+    
+    // Track gebeurtenis
+    trackEvent("tour_completed", "onboarding", "dashboard");
+  };
+  
+  const handleSkipTour = () => {
+    // Sla op dat de gebruiker de tour heeft overgeslagen
+    if (user?.id) {
+      localStorage.setItem(`tour_completed_${user.id}`, 'skipped');
+    }
+    setShowTour(false);
+  };
 
   const getProjectStatusColor = (status: string) => {
     switch (status) {
@@ -209,14 +273,30 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title={isEnglish ? "Client Dashboard | Digitaal Atelier" : "Klantendashboard | Digitaal Atelier"}
+        title={isEnglish ? "Client Dashboard | TechWithYou" : "Klantendashboard | TechWithYou"}
         description={
           isEnglish
-            ? "Manage your projects and access important information in your personal Digitaal Atelier dashboard."
-            : "Beheer je projecten en krijg toegang tot belangrijke informatie in je persoonlijke Digitaal Atelier dashboard."
+            ? "Manage your projects and access important information in your personal TechWithYou dashboard."
+            : "Beheer je projecten en krijg toegang tot belangrijke informatie in je persoonlijke TechWithYou dashboard."
         }
         noIndex={true}
       />
+      
+      {/* Welkomstscherm bij eerste login */}
+      {showWelcomeScreen && (
+        <WelcomeScreen 
+          onClose={handleCloseWelcome}
+          onStartTour={handleStartTour}
+        />
+      )}
+      
+      {/* Dashboard tour voor nieuwe gebruikers */}
+      {showTour && (
+        <DashboardTour
+          onComplete={handleCompleteTour}
+          onSkip={handleSkipTour}
+        />
+      )}
       <Header />
       <main className="flex-1 py-8">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
