@@ -138,8 +138,8 @@ export const Footer = () => {
               <a href="#" className="hover:text-neutral-300 transition">
                 {t('footer.terms')}
               </a>
-              <a href="#" className="hover:text-neutral-300 transition">
-                {t('footer.cookies')}
+              <a href="/privacy-policy" className="hover:text-neutral-300 transition">
+                {t('language') === 'en' ? 'Privacy Policy' : 'Privacybeleid'}
               </a>
             </div>
           </div>

@@ -6,105 +6,68 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/hooks/use-translation";
 
-interface SearchResult {
-  id: string;
-  title: string;
-  description: string;
-  path: string;
-}
-
 export const SearchBar = () => {
   const { t } = useTranslation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [_, setLocation] = useLocation();
 
-  const searchData: Record<string, SearchResult[]> = {
-    en: [
-      {
-        id: "home",
-        title: "Home",
-        description: "Main page of our website with all services",
-        path: "/"
-      },
-      {
-        id: "services",
-        title: "Services",
-        description: "Our web development, design and digital marketing services",
-        path: "/#services"
-      },
-      {
-        id: "portfolio",
-        title: "Portfolio",
-        description: "Explore our previous projects and case studies",
-        path: "/#portfolio"
-      },
-      {
-        id: "about",
-        title: "About Us",
-        description: "Learn more about our company and team",
-        path: "/#about"
-      },
-      {
-        id: "contact",
-        title: "Contact",
-        description: "Get in touch with our team for questions or quotes",
-        path: "/#contact"
-      },
-      {
-        id: "faq",
-        title: "FAQ",
-        description: "Frequently asked questions about our services",
-        path: "/#faq"
-      }
-    ],
-    nl: [
-      {
-        id: "home",
-        title: "Home",
-        description: "Hoofdpagina van onze website met alle diensten",
-        path: "/"
-      },
-      {
-        id: "services",
-        title: "Diensten",
-        description: "Onze webontwikkeling, design en digitale marketing diensten",
-        path: "/#services"
-      },
-      {
-        id: "portfolio",
-        title: "Portfolio",
-        description: "Ontdek onze eerdere projecten en casestudies",
-        path: "/#portfolio"
-      },
-      {
-        id: "about",
-        title: "Over Ons",
-        description: "Leer meer over ons bedrijf en team",
-        path: "/#about"
-      },
-      {
-        id: "contact",
-        title: "Contact",
-        description: "Neem contact op met ons team voor vragen of offertes",
-        path: "/#contact"
-      },
-      {
-        id: "faq",
-        title: "FAQ",
-        description: "Veelgestelde vragen over onze diensten",
-        path: "/#faq"
-      }
-    ]
-  };
-
-  const language = t('language') as 'en' | 'nl';
-  const searchResults = searchQuery.length > 1 
-    ? (searchData[language] || []).filter(item => 
-        (item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-         item.description.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
-    : [];
+  // Define search results based on current language and query
+  const isEnglish = t('language') === 'en';
+  
+  const searchResults = searchQuery.length > 1 ? [
+    {
+      id: "home",
+      title: isEnglish ? "Home" : "Home",
+      description: isEnglish 
+        ? "Main page of our website with all services" 
+        : "Hoofdpagina van onze website met alle diensten",
+      path: "/"
+    },
+    {
+      id: "services",
+      title: isEnglish ? "Services" : "Diensten",
+      description: isEnglish 
+        ? "Our web development, design and digital marketing services" 
+        : "Onze webontwikkeling, design en digitale marketing diensten",
+      path: "/#services"
+    },
+    {
+      id: "portfolio",
+      title: "Portfolio",
+      description: isEnglish 
+        ? "Explore our previous projects and case studies" 
+        : "Ontdek onze eerdere projecten en casestudies",
+      path: "/#portfolio"
+    },
+    {
+      id: "about",
+      title: isEnglish ? "About Us" : "Over Ons",
+      description: isEnglish 
+        ? "Learn more about our company and team" 
+        : "Leer meer over ons bedrijf en team",
+      path: "/#about"
+    },
+    {
+      id: "contact",
+      title: "Contact",
+      description: isEnglish 
+        ? "Get in touch with our team for questions or quotes" 
+        : "Neem contact op met ons team voor vragen of offertes",
+      path: "/#contact"
+    },
+    {
+      id: "faq",
+      title: "FAQ",
+      description: isEnglish 
+        ? "Frequently asked questions about our services" 
+        : "Veelgestelde vragen over onze diensten",
+      path: "/#faq"
+    }
+  ].filter(item => 
+    item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    item.description.toLowerCase().includes(searchQuery.toLowerCase())
+  ) : [];
 
   const toggleSearch = () => {
     setSearchOpen(!searchOpen);
@@ -148,7 +111,7 @@ export const SearchBar = () => {
           >
             <div className="p-3">
               <Input
-                placeholder={t('language') === 'en' ? "Search..." : "Zoeken..."}
+                placeholder={isEnglish ? "Search..." : "Zoeken..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full"
@@ -177,7 +140,7 @@ export const SearchBar = () => {
                   </div>
                 ) : (
                   <div className="p-4 text-center text-neutral-500">
-                    {t('language') === 'en' ? "No results found" : "Geen resultaten gevonden"}
+                    {isEnglish ? "No results found" : "Geen resultaten gevonden"}
                   </div>
                 )}
               </div>
