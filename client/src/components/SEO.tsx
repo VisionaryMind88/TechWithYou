@@ -24,7 +24,7 @@ export const SEO = ({
   const { t } = useTranslation();
   const isEnglish = t('language') === 'en';
   
-  const siteName = 'Digitaal Atelier';
+  const siteName = 'TechWithYou';
   const defaultTitle = isEnglish 
     ? 'Professional Web Development' 
     : 'Professionele Web Ontwikkeling';
@@ -86,7 +86,7 @@ export const SEO = ({
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="language" content={isEnglish ? 'English' : 'Dutch'} />
-      <meta name="author" content="Digitaal Atelier" />
+      <meta name="author" content="TechWithYou" />
     </Helmet>
   );
 };

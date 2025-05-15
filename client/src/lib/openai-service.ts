@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 // Website-specifieke kennis voor de chatbot
 const websiteInfo = `
-Digitaal Atelier is een professioneel webbureau gespecialiseerd in het bouwen van websites, applicaties, en dashboards voor bedrijven.
+TechWithYou is een professioneel webbureau gespecialiseerd in het bouwen van websites, applicaties, en dashboards voor bedrijven.
 
 Diensten die we aanbieden:
 1. Websiteontwikkeling: Moderne, responsieve en gebruiksvriendelijke websites op maat.
@@ -26,7 +26,7 @@ Procesaanpak:
 6. Ondersteuning: Doorlopende ondersteuning en updates.
 
 Contactinformatie:
-- E-mail: info@digitaalatelier.com
+- E-mail: info@techwithyou.nl
 - Telefoon: +31 (0)20 123 4567
 - Adres: Amsterdamseweg 123, 1234 AB Amsterdam
 
@@ -45,7 +45,7 @@ Levertijd:
 
 // System prompt voor de chatbot
 const chatbotSystemPrompt = `
-Je bent Dalia, de virtuele assistent van Digitaal Atelier, een professioneel webbureau.
+Je bent Dalia, de virtuele assistent van TechWithYou, een professioneel webbureau.
 Je bent vriendelijk, behulpzaam en professioneel. Je antwoorden zijn beknopt maar informatief.
 
 Gebruik deze informatie over het bedrijf om vragen te beantwoorden:

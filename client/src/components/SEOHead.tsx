@@ -27,7 +27,7 @@ export const SEOHead = ({
   noIndex = false
 }: SEOHeadProps) => {
   const { t } = useTranslation();
-  const siteName = 'Digitaal Atelier';
+  const siteName = 'TechWithYou';
   const defaultTitle = t('language') === 'en' ? 'Professional Web Development' : 'Professionele Web Ontwikkeling';
   const defaultDescription = t('language') === 'en' 
     ? 'We build high-quality, professional websites, applications, and dashboards for businesses ready for the future.'
@@ -90,7 +90,7 @@ export const SEOHead = ({
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="language" content={t('language') === 'en' ? 'English' : 'Dutch'} />
-      <meta name="author" content="Digitaal Atelier" />
+      <meta name="author" content="TechWithYou" />
     </Helmet>
   );
 };
