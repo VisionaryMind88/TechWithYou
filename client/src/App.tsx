@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
+import { queryClient } from "@/lib/queryClient";
+
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
@@ -11,6 +16,9 @@ import AboutPage from "@/pages/AboutPage";
 import FAQPage from "@/pages/FAQPage";
 import ContactPage from "@/pages/ContactPage";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import AuthPage from "@/pages/AuthPage";
+import DashboardPage from "@/pages/DashboardPage";
+
 import { LanguageContext } from "@/hooks/use-translation";
 import { CookieConsent } from "@/components/CookieConsent";
 import { Chatbot } from "@/components/Chatbot";
