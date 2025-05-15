@@ -4,7 +4,29 @@ import { useTranslation } from "@/hooks/use-translation";
 
 export const Services = () => {
   const { t } = useTranslation();
-  const services = t('services.items', { returnObjects: true }) as any[];
+  const services = [
+    {
+      id: 'website-development',
+      title: t('services.items.0.title'),
+      description: t('services.items.0.description'),
+      features: t('services.items.0.features', { returnObjects: true }) as string[],
+      icon: 'ri-layout-4-line'
+    },
+    {
+      id: 'web-applications',
+      title: t('services.items.1.title'),
+      description: t('services.items.1.description'),
+      features: t('services.items.1.features', { returnObjects: true }) as string[],
+      icon: 'ri-code-box-line'
+    },
+    {
+      id: 'dashboards',
+      title: t('services.items.2.title'),
+      description: t('services.items.2.description'),
+      features: t('services.items.2.features', { returnObjects: true }) as string[],
+      icon: 'ri-dashboard-3-line'
+    }
+  ];
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -58,6 +80,7 @@ export const Services = () => {
                 title={service.title}
                 description={service.description}
                 features={service.features}
+                id={service.id}
               />
             </motion.div>
           ))}

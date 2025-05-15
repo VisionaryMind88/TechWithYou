@@ -22,11 +22,8 @@ function Router() {
       <Route path="/services">
         {() => <Home initialSection="services" />}
       </Route>
-      <Route path="/services/:id">
-        {(params) => <ServicePage id={params.id} />}
-      </Route>
       <Route path="/portfolio">
-        {() => <PortfolioPage />}
+        {() => <Home initialSection="portfolio" />}
       </Route>
       <Route path="/about">
         {() => <Home initialSection="about" />}
@@ -35,7 +32,7 @@ function Router() {
         {() => <Home initialSection="faq" />}
       </Route>
       <Route path="/contact">
-        {() => <ContactPage />}
+        {() => <Home initialSection="contact" />}
       </Route>
       <Route path="/privacy-policy">
         {() => <PrivacyPolicy />}

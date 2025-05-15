@@ -8,7 +8,7 @@ interface ServiceCardProps {
   id?: string;
 }
 
-export const ServiceCard = ({ icon, title, description, features }: ServiceCardProps) => {
+export const ServiceCard = ({ icon, title, description, features, id }: ServiceCardProps) => {
   const { t } = useTranslation();
   
   return (
@@ -27,7 +27,7 @@ export const ServiceCard = ({ icon, title, description, features }: ServiceCardP
         ))}
       </ul>
       <a
-        href="#contact"
+        href={id ? `/services#${id}` : '/services'}
         className="inline-flex items-center text-primary hover:text-primary-dark font-medium"
       >
         {t('services.moreInfo')}
