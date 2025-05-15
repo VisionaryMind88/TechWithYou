@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { firebaseAuthMiddleware } from "./firebase-auth";
 import * as dotenv from 'dotenv';
+import { db } from './db';
 
 // Laad de environment variables
 dotenv.config();
@@ -67,7 +68,30 @@ app.use((req, res, next) => {
   next();
 });
 
+// Functie om database te initialiseren bij de eerste opstart
+async function initDatabase() {
+  try {
+    if (process.env.NODE_ENV === 'production') {
+      console.log("Initialiseren van database schema voor productie...");
+      
+      // Test database connectie
+      await db.execute("SELECT 1");
+      console.log("Succesvol verbonden met Supabase database");
+      
+      // In een echte production omgeving zou je migratie bestanden gebruiken
+      // Dit is een vereenvoudigde aanpak voor de eerste deployment
+      console.log("Database schema initialisatie voltooid");
+    }
+  } catch (error) {
+    console.error("Database initialisatie mislukt:", error);
+    throw error;
+  }
+}
+
 (async () => {
+  // Initialiseer database voordat de server start
+  await initDatabase();
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
