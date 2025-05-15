@@ -78,11 +78,10 @@ export function setupAuth(app: Express) {
           return done(null, false, { message: "Invalid credentials" });
         }
         
-        // TODO: Uncomment this when the database migration is complete
         // Check if user is verified
-        // if (!user.verified) {
-        //   return done(null, false, { message: "Please verify your email address before logging in" });
-        // }
+        if (!user.verified) {
+          return done(null, false, { message: "Please verify your email address before logging in" });
+        }
         
         // Update last login timestamp
         await storage.updateUser(user.id, {});
@@ -132,15 +131,15 @@ export function setupAuth(app: Express) {
       const verificationToken = generateToken();
       const verificationExpires = generateTokenExpiration();
       
-      // Create user (temporarily not setting verified=false until schema migration is complete)
+      // Create user with verified=false
       const user = await storage.createUser({
         ...userData,
         password: hashedPassword,
-        // verified: false, // Uncomment when schema migration is complete
+        verified: false,
       });
       
-      // Set verification token (temporarily commented until schema migration is complete)
-      // await storage.setVerificationToken(user.id, verificationToken, verificationExpires);
+      // Set verification token
+      await storage.setVerificationToken(user.id, verificationToken, verificationExpires);
       
       // Send verification email (temporarily commented until SendGrid API is set up)
       // await emailService.sendVerificationEmail(
@@ -156,8 +155,8 @@ export function setupAuth(app: Express) {
       await storage.createNotification({
         userId: user.id,
         title: "Welcome to Digitaal Atelier!",
-        message: "Thank you for registering. You are now logged in and can access your dashboard.",
-        type: "success",
+        message: "Thank you for registering. Please check your email to verify your account.",
+        type: "info",
       });
       
       // TODO: Restore this when email verification is fully implemented
