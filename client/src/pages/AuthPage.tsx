@@ -206,86 +206,19 @@ export default function AuthPage() {
                 transition={{ duration: 0.5 }}
                 className="w-full max-w-md"
               >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-2xl text-center">
-                      {!showForgotPassword 
-                        ? (isEnglish ? "Welcome back" : "Welkom terug")
-                        : (isEnglish ? "Reset Password" : "Wachtwoord Resetten")}
-                    </CardTitle>
-                    <CardDescription className="text-center">
-                      {!showForgotPassword 
-                        ? (isEnglish 
-                            ? "Sign in to access your dashboard"
-                            : "Log in om toegang te krijgen tot je dashboard")
-                        : (isEnglish 
-                            ? "Enter your email to receive reset instructions"
-                            : "Voer je e-mail in om reset-instructies te ontvangen")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {!showForgotPassword ? (
-                      // Login Form
-                      <Form {...loginForm}>
-                        <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
-                          <FormField
-                            control={loginForm.control}
-                            name="username"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{isEnglish ? "Username or Email" : "Gebruikersnaam of E-mail"}</FormLabel>
-                                <FormControl>
-                                  <Input placeholder={isEnglish ? "Enter your username" : "Voer je gebruikersnaam in"} {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={loginForm.control}
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    type="password" 
-                                    placeholder={isEnglish ? "Enter your password" : "Voer je wachtwoord in"} 
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="flex justify-end">
-                            <Button 
-                              type="button" 
-                              variant="link" 
-                              className="p-0 h-auto font-normal text-sm"
-                              onClick={() => setShowForgotPassword(true)}
-                            >
-                              {isEnglish ? "Forgot password?" : "Wachtwoord vergeten?"}
-                            </Button>
-                          </div>
-                          <Button 
-                            type="submit" 
-                            className="w-full" 
-                            disabled={loginMutation.isPending}
-                          >
-                            {loginMutation.isPending ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                {isEnglish ? "Logging in..." : "Inloggen..."}
-                              </>
-                            ) : (
-                              isEnglish ? "Login" : "Inloggen"
-                            )}
-                          </Button>
-                        </form>
-                      </Form>
-                    ) : (
-                      // Forgot Password Form
+                {showForgotPassword ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-center">
+                        {isEnglish ? "Reset Password" : "Wachtwoord Resetten"}
+                      </CardTitle>
+                      <CardDescription className="text-center">
+                        {isEnglish 
+                          ? "Enter your email to receive reset instructions"
+                          : "Voer je e-mail in om reset-instructies te ontvangen"}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
                       <Form {...forgotPasswordForm}>
                         <form onSubmit={forgotPasswordForm.handleSubmit(handleForgotPassword)} className="space-y-4">
                           <FormField
@@ -319,79 +252,329 @@ export default function AuthPage() {
                           </div>
                         </form>
                       </Form>
-                    )}
-                  </CardContent>
-                  <CardFooter className="flex justify-center text-sm text-muted-foreground">
-                    <p>
-                      {isEnglish 
-                        ? "For registration inquiries, please contact us" 
-                        : "Voor registratie-aanvragen, neem contact met ons op"}{" "}
-                      <Link href="/contact">
-                        <Button variant="link" className="p-0">
-                          {isEnglish ? "here" : "hier"}
-                        </Button>
-                      </Link>
-                    </p>
-                  </CardFooter>
-                </Card>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Tabs defaultValue="login" className="w-full" onValueChange={setActiveTab}>
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="login">{isEnglish ? "Login" : "Inloggen"}</TabsTrigger>
+                      <TabsTrigger value="register">{isEnglish ? "Register" : "Registreren"}</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="login">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-2xl text-center">
+                            {isEnglish ? "Welcome Back" : "Welkom Terug"}
+                          </CardTitle>
+                          <CardDescription className="text-center">
+                            {isEnglish 
+                              ? "Sign in to access your dashboard"
+                              : "Log in om toegang te krijgen tot je dashboard"}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Form {...loginForm}>
+                            <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
+                              <FormField
+                                control={loginForm.control}
+                                name="username"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{isEnglish ? "Username" : "Gebruikersnaam"}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder={isEnglish ? "Enter your username" : "Voer je gebruikersnaam in"}
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              <FormField
+                                control={loginForm.control}
+                                name="password"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="password" 
+                                        placeholder={isEnglish ? "Enter your password" : "Voer je wachtwoord in"}
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <FormField
+                                control={loginForm.control}
+                                name="rememberMe"
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                      />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                      <FormLabel>
+                                        {isEnglish ? "Remember me" : "Onthoud mij"}
+                                      </FormLabel>
+                                    </div>
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <div className="text-right">
+                                <Button 
+                                  type="button" 
+                                  variant="link" 
+                                  className="p-0 text-sm"
+                                  onClick={() => setShowForgotPassword(true)}
+                                >
+                                  {isEnglish ? "Forgot your password?" : "Wachtwoord vergeten?"}
+                                </Button>
+                              </div>
+                              <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+                                {loginMutation.isPending ? (
+                                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {isEnglish ? "Logging in..." : "Inloggen..."}</>
+                                ) : (
+                                  <>{isEnglish ? "Sign In" : "Inloggen"}</>
+                                )}
+                              </Button>
+                            </form>
+                          </Form>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    
+                    <TabsContent value="register">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-2xl text-center">
+                            {isEnglish ? "Create an Account" : "Account Aanmaken"}
+                          </CardTitle>
+                          <CardDescription className="text-center">
+                            {isEnglish 
+                              ? "Register to get access to the client dashboard"
+                              : "Registreer om toegang te krijgen tot het klantendashboard"}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Form {...registerForm}>
+                            <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
+                              <FormField
+                                control={registerForm.control}
+                                name="username"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{isEnglish ? "Username" : "Gebruikersnaam"}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        placeholder={isEnglish ? "Choose a username" : "Kies een gebruikersnaam"}
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <FormField
+                                control={registerForm.control}
+                                name="email"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{isEnglish ? "Email" : "E-mail"}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="email"
+                                        placeholder={isEnglish ? "Enter your email" : "Voer je e-mail in"}
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <FormField
+                                control={registerForm.control}
+                                name="password"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="password" 
+                                        placeholder={isEnglish ? "Create a password" : "Maak een wachtwoord"}
+                                        {...field} 
+                                        onChange={(e) => {
+                                          field.onChange(e);
+                                          handlePasswordChange(e);
+                                        }}
+                                      />
+                                    </FormControl>
+                                    
+                                    {/* Password strength indicator */}
+                                    <div className="mt-2">
+                                      <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                                        <div 
+                                          className={`h-full ${
+                                            passwordStrength === 0 ? 'w-0' :
+                                            passwordStrength === 1 ? 'w-1/4 bg-red-500' :
+                                            passwordStrength === 2 ? 'w-2/4 bg-orange-500' :
+                                            passwordStrength === 3 ? 'w-3/4 bg-yellow-500' :
+                                            'w-full bg-green-500'
+                                          }`}
+                                        ></div>
+                                      </div>
+                                      <p className="text-xs mt-1 text-gray-500">
+                                        {isEnglish ? "Password strength: " : "Wachtwoordsterkte: "}
+                                        {passwordStrength === 0 ? (isEnglish ? 'Very weak' : 'Zeer zwak') :
+                                         passwordStrength === 1 ? (isEnglish ? 'Weak' : 'Zwak') :
+                                         passwordStrength === 2 ? (isEnglish ? 'Medium' : 'Gemiddeld') :
+                                         passwordStrength === 3 ? (isEnglish ? 'Strong' : 'Sterk') :
+                                         (isEnglish ? 'Very strong' : 'Zeer sterk')}
+                                      </p>
+                                    </div>
+                                    
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <FormField
+                                control={registerForm.control}
+                                name="confirmPassword"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{isEnglish ? "Confirm Password" : "Bevestig Wachtwoord"}</FormLabel>
+                                    <FormControl>
+                                      <Input 
+                                        type="password" 
+                                        placeholder={isEnglish ? "Confirm your password" : "Bevestig je wachtwoord"}
+                                        {...field} 
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <FormField
+                                control={registerForm.control}
+                                name="terms"
+                                render={({ field }) => (
+                                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                      />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                      <FormLabel>
+                                        {isEnglish 
+                                          ? "I agree to the terms and conditions" 
+                                          : "Ik ga akkoord met de algemene voorwaarden"}
+                                      </FormLabel>
+                                    </div>
+                                  </FormItem>
+                                )}
+                              />
+                              
+                              <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+                                {registerMutation.isPending ? (
+                                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {isEnglish ? "Registering..." : "Registreren..."}</>
+                                ) : (
+                                  <>{isEnglish ? "Register" : "Registreren"}</>
+                                )}
+                              </Button>
+                            </form>
+                          </Form>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
+                )}
               </motion.div>
             </div>
             
             {/* Hero Section */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="order-first lg:order-last"
-            >
+            <div className="hidden lg:block">
               <div className="space-y-6">
-                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl">
-                  {isEnglish 
-                    ? "Your personal client dashboard" 
-                    : "Je persoonlijke klantendashboard"}
-                </h1>
-                <p className="text-lg text-muted-foreground max-w-prose">
-                  {isEnglish
-                    ? "Access your projects, track progress, and communicate with our team from one secure location."
-                    : "Krijg toegang tot je projecten, volg de voortgang en communiceer met ons team vanaf één veilige locatie."}
-                </p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <h3 className="font-medium mb-2">{isEnglish ? "Project Management" : "Projectbeheer"}</h3>
-                    <p className="text-muted-foreground text-sm">
-                      {isEnglish
-                        ? "Track your project milestones and stay informed on progress."
-                        : "Volg je projectmijlpalen en blijf op de hoogte van de voortgang."}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <h1 className="text-4xl font-bold tracking-tight">
+                    {isEnglish 
+                      ? "Welcome to Digitaal Atelier" 
+                      : "Welkom bij Digitaal Atelier"}
+                  </h1>
+                  <p className="mt-4 text-lg text-muted-foreground">
+                    {isEnglish 
+                      ? "Your partner for exceptional digital experiences. Log in to access your project dashboard and collaborate with our team."
+                      : "Uw partner voor uitzonderlijke digitale ervaringen. Log in om toegang te krijgen tot uw projectdashboard en samen te werken met ons team."}
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="space-y-4"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                      <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="font-medium">
+                      {isEnglish 
+                        ? "Secure access to your project dashboard" 
+                        : "Beveiligde toegang tot uw projectdashboard"}
                     </p>
                   </div>
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <h3 className="font-medium mb-2">{isEnglish ? "Document Sharing" : "Documenten delen"}</h3>
-                    <p className="text-muted-foreground text-sm">
-                      {isEnglish
-                        ? "Upload and access project documents in a secure environment."
-                        : "Upload en krijg toegang tot projectdocumenten in een veilige omgeving."}
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                      <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="font-medium">
+                      {isEnglish 
+                        ? "Track project progress in real-time" 
+                        : "Volg projectvoortgang in realtime"}
                     </p>
                   </div>
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <h3 className="font-medium mb-2">{isEnglish ? "Communication" : "Communicatie"}</h3>
-                    <p className="text-muted-foreground text-sm">
-                      {isEnglish
-                        ? "Direct messaging with our team for real-time updates."
-                        : "Directe berichten met ons team voor real-time updates."}
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                      <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="font-medium">
+                      {isEnglish 
+                        ? "Communicate directly with our team" 
+                        : "Communiceer direct met ons team"}
                     </p>
                   </div>
-                  <div className="p-4 rounded-lg bg-muted/50">
-                    <h3 className="font-medium mb-2">{isEnglish ? "Notifications" : "Meldingen"}</h3>
-                    <p className="text-muted-foreground text-sm">
-                      {isEnglish
-                        ? "Stay updated with important project notifications."
-                        : "Blijf op de hoogte met belangrijke projectmeldingen."}
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                      <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="font-medium">
+                      {isEnglish 
+                        ? "Access and approve design materials" 
+                        : "Bekijk en keur ontwerpmaterialen goed"}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </main>
