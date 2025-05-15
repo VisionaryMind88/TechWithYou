@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { useTranslation } from 'react-i18next';
+import { useTranslation as useI18nTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-// import { LanguageToggle } from '@/components/LanguageToggle';
 import { scrollToElement } from '@/lib/utils';
 
 const Header = () => {
   const [location] = useLocation();
-  const { t, language } = useTranslation();
+  const { t, i18n } = useI18nTranslation();
+  const [language, setLanguage] = useState(i18n.language);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isHomePage = location === '/';
@@ -25,6 +25,12 @@ const Header = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const handleLanguageToggle = () => {
+    const newLang = language === 'nl' ? 'en' : 'nl';
+    i18n.changeLanguage(newLang);
+    setLanguage(newLang);
+  };
 
   const handleNavClick = (sectionId: string) => {
     if (isHomePage) {
@@ -88,7 +94,14 @@ const Header = () => {
                 {t('nav.contact')}
               </button>
               
-              <LanguageToggle />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleLanguageToggle}
+                className={linkClass}
+              >
+                {language === 'nl' ? 'EN' : 'NL'}
+              </Button>
             </nav>
           </div>
           
@@ -97,57 +110,64 @@ const Header = () => {
               variant="ghost" 
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              className="text-neutral-700"
             >
               {isMobileMenuOpen ? (
-                <i className={`ri-close-line ${mobileIconClass}`}></i>
+                <i className="ri-close-line text-2xl"></i>
               ) : (
-                <i className={`ri-menu-line ${mobileIconClass}`}></i>
+                <i className="ri-menu-line text-2xl"></i>
               )}
             </Button>
           </div>
         </div>
       </div>
       
+      {/* Mobile menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white shadow-lg rounded-b-lg absolute w-full top-20 left-0 p-4 border-t border-neutral-100"
+            className="bg-white border-t border-neutral-100 md:hidden"
           >
-            <nav className="flex flex-col space-y-4">
-              <button 
-                onClick={() => handleNavClick('services')}
-                className="font-medium text-neutral-900 hover:text-primary transition duration-150 text-left"
-              >
-                {t('nav.services')}
-              </button>
-              <button 
-                onClick={() => handleNavClick('portfolio')}
-                className="font-medium text-neutral-900 hover:text-primary transition duration-150 text-left"
-              >
-                {t('nav.portfolio')}
-              </button>
-              <button 
-                onClick={() => handleNavClick('about')}
-                className="font-medium text-neutral-900 hover:text-primary transition duration-150 text-left"
-              >
-                {t('nav.about')}
-              </button>
-              <button 
-                onClick={() => handleNavClick('contact')}
-                className="font-medium text-neutral-900 hover:text-primary transition duration-150 text-left"
-              >
-                {t('nav.contact')}
-              </button>
-              
-              <div className="pt-2 border-t border-neutral-100">
-                <LanguageToggle />
-              </div>
-            </nav>
+            <div className="container mx-auto px-4 py-4">
+              <nav className="flex flex-col space-y-4">
+                <button
+                  onClick={() => handleNavClick('services')}
+                  className="font-medium text-neutral-700 hover:text-primary transition py-2"
+                >
+                  {t('nav.services')}
+                </button>
+                <button
+                  onClick={() => handleNavClick('portfolio')}
+                  className="font-medium text-neutral-700 hover:text-primary transition py-2"
+                >
+                  {t('nav.portfolio')}
+                </button>
+                <button
+                  onClick={() => handleNavClick('about')}
+                  className="font-medium text-neutral-700 hover:text-primary transition py-2"
+                >
+                  {t('nav.about')}
+                </button>
+                <button
+                  onClick={() => handleNavClick('contact')}
+                  className="font-medium text-neutral-700 hover:text-primary transition py-2"
+                >
+                  {t('nav.contact')}
+                </button>
+                
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLanguageToggle}
+                  className="w-fit font-medium text-neutral-700 hover:text-primary transition py-2"
+                >
+                  {language === 'nl' ? 'Switch to English' : 'Schakel naar Nederlands'}
+                </Button>
+              </nav>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
