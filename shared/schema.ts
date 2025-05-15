@@ -11,6 +11,8 @@ export const users = pgTable("users", {
   company: text("company"),
   role: text("role").notNull().default("client"), // client, admin
   avatarUrl: text("avatar_url"),
+  profileImage: text("profile_image"),
+  firebaseUid: text("firebase_uid").unique(), // Voor sociale login
   verified: boolean("verified").notNull().default(false),
   verificationToken: text("verification_token"),
   verificationExpires: timestamp("verification_expires"),
@@ -113,6 +115,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
   company: true,
   role: true,
   avatarUrl: true,
+  profileImage: true,
+  firebaseUid: true,
   preferences: true,
   verified: true,
 });
