@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { SearchBar } from "./SearchBar";
 import { LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -47,18 +48,18 @@ export const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <a href="/" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <div
                 className="text-2xl font-bold text-primary"
               >
                 TechWithYou
               </div>
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:block">
             <nav className="flex items-center space-x-8">
-              <a
+              <Link
                 href="/services"
                 className={`font-medium ${
                   scrolledPast50
@@ -67,8 +68,8 @@ export const Header = () => {
                 } hover:text-primary transition duration-150`}
               >
                 {t('header.services')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/portfolio"
                 className={`font-medium ${
                   scrolledPast50
@@ -77,8 +78,8 @@ export const Header = () => {
                 } hover:text-primary transition duration-150`}
               >
                 {t('header.portfolio')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/about"
                 className={`font-medium ${
                   scrolledPast50
@@ -87,8 +88,8 @@ export const Header = () => {
                 } hover:text-primary transition duration-150`}
               >
                 {t('header.about')}
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/faq"
                 className={`font-medium ${
                   scrolledPast50
@@ -97,8 +98,8 @@ export const Header = () => {
                 } hover:text-primary transition duration-150`}
               >
                 FAQ
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/contact"
                 className={`font-medium ${
                   scrolledPast50
@@ -107,7 +108,7 @@ export const Header = () => {
                 } hover:text-primary transition duration-150`}
               >
                 {t('header.contact')}
-              </a>
+              </Link>
 
               <div className="flex items-center gap-2">
                 <SearchBar />
