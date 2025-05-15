@@ -899,6 +899,278 @@ export default function DashboardPage() {
                   )}
                 />
               </div>
+
+              <Separator className="my-6" />
+
+              {/* TechWithYou Services Section */}
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-2">
+                  {isEnglish ? "TechWithYou Services" : "TechWithYou Diensten"}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {isEnglish 
+                    ? "Select which services you need from TechWithYou" 
+                    : "Selecteer welke diensten je nodig hebt van TechWithYou"}
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="needsDesign"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "Website Design" : "Website Ontwerp"}
+                          </FormLabel>
+                          <FormDescription>
+                            {isEnglish ? "UI/UX design for your project" : "UI/UX ontwerp voor je project"}
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="needsDevelopment"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "Development" : "Ontwikkeling"}
+                          </FormLabel>
+                          <FormDescription>
+                            {isEnglish ? "Full development of your project" : "Volledige ontwikkeling van je project"}
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="needsHosting"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "Hosting" : "Hosting"}
+                          </FormLabel>
+                          <FormDescription>
+                            {isEnglish ? "Managed hosting for your website" : "Beheerde hosting voor je website"}
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="needsSEO"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "SEO Optimization" : "SEO Optimalisatie"}
+                          </FormLabel>
+                          <FormDescription>
+                            {isEnglish ? "Improve search engine visibility" : "Verbeter zichtbaarheid in zoekmachines"}
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="needsMaintenance"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "Maintenance" : "Onderhoud"}
+                          </FormLabel>
+                          <FormDescription>
+                            {isEnglish ? "Ongoing maintenance and updates" : "Doorlopend onderhoud en updates"}
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator className="my-6" />
+
+              {/* Domain Name Section */}
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-2">
+                  {isEnglish ? "Domain Name" : "Domeinnaam"}
+                </h3>
+                
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="hasDomain"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "I already have a domain name" : "Ik heb al een domeinnaam"}
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {form.watch("hasDomain") && (
+                    <FormField
+                      control={form.control}
+                      name="domainName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{isEnglish ? "Your Domain Name" : "Je Domeinnaam"}</FormLabel>
+                          <FormControl>
+                            <Input placeholder="example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  
+                  {!form.watch("hasDomain") && (
+                    <FormField
+                      control={form.control}
+                      name="needsDomain"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              {isEnglish ? "I need TechWithYou to register a domain for me" : "Ik wil dat TechWithYou een domein voor me registreert"}
+                            </FormLabel>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
+              </div>
+              
+              <Separator className="my-6" />
+              
+              {/* Logo Section */}
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-2">
+                  {isEnglish ? "Logo" : "Logo"}
+                </h3>
+                
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="hasLogo"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            {isEnglish ? "I already have a logo" : "Ik heb al een logo"}
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {form.watch("hasLogo") && (
+                    <div className="grid gap-2">
+                      <Label htmlFor="logo-upload">
+                        {isEnglish ? "Upload your logo" : "Upload je logo"}
+                      </Label>
+                      <Input 
+                        id="logo-upload" 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            form.setValue("logoFile", file);
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
+                  
+                  {!form.watch("hasLogo") && (
+                    <FormField
+                      control={form.control}
+                      name="needsLogo"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              {isEnglish ? "I need TechWithYou to design a logo for me" : "Ik wil dat TechWithYou een logo voor me ontwerpt"}
+                            </FormLabel>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
+              </div>
               
               <div className="sticky bottom-0 bg-white dark:bg-gray-950 pt-2">
                 <AlertDialogFooter>
