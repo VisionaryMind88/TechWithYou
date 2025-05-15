@@ -376,6 +376,182 @@ export default function AdminDashboardPage() {
         </DialogContent>
       </Dialog>
       
+      {/* Project Details Dialog */}
+      <Dialog
+        open={isProjectDetailDialogOpen}
+        onOpenChange={(open) => {
+          setIsProjectDetailDialogOpen(open);
+          if (!open) setSelectedProject(null);
+        }}
+      >
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {isEnglish ? "Project Details" : "Project Details"}: {selectedProject?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {isEnglish 
+                ? "Detailed information about this project request" 
+                : "Gedetailleerde informatie over deze projectaanvraag"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedProject && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-md">{isEnglish ? "Project Information" : "Projectinformatie"}</h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Name" : "Naam"}:</div>
+                    <div className="col-span-2">{selectedProject.name}</div>
+                    
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Type" : "Type"}:</div>
+                    <div className="col-span-2">{selectedProject.type}</div>
+                    
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Status" : "Status"}:</div>
+                    <div className="col-span-2">
+                      <Badge variant={selectedProject.status === "new" ? "outline" : "default"}>
+                        {selectedProject.status === "new" 
+                          ? (isEnglish ? "Pending" : "In Afwachting") 
+                          : selectedProject.status}
+                      </Badge>
+                    </div>
+                    
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Created" : "Aangemaakt"}:</div>
+                    <div className="col-span-2">
+                      {selectedProject.createdAt 
+                        ? new Date(selectedProject.createdAt).toLocaleString() 
+                        : "-"}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-md">{isEnglish ? "Client Information" : "Klantinformatie"}</h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Client" : "Klant"}:</div>
+                    <div className="col-span-2">{selectedProject.userId}</div>
+                    
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Contact Person" : "Contactpersoon"}:</div>
+                    <div className="col-span-2">{selectedProject.metadata?.contactPerson || "-"}</div>
+                    
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Email" : "E-mail"}:</div>
+                    <div className="col-span-2">{selectedProject.metadata?.contactEmail || "-"}</div>
+                    
+                    <div className="font-medium text-muted-foreground">{isEnglish ? "Phone" : "Telefoon"}:</div>
+                    <div className="col-span-2">{selectedProject.metadata?.contactPhone || "-"}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <Separator />
+              
+              <div className="space-y-2">
+                <h3 className="font-semibold text-md">{isEnglish ? "Project Requirements" : "Projectvereisten"}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Services Required" : "Benodigde Diensten"}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProject.metadata?.services?.map((service, index) => (
+                        <Badge key={index} variant="secondary">{service}</Badge>
+                      )) || "-"}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Domain Information" : "Domein Informatie"}</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="font-medium text-muted-foreground">{isEnglish ? "Has Domain" : "Heeft Domein"}:</div>
+                      <div className="col-span-2">
+                        {selectedProject.metadata?.domain?.hasOwn 
+                          ? (isEnglish ? "Yes" : "Ja") 
+                          : (isEnglish ? "No" : "Nee")}
+                      </div>
+                      
+                      {selectedProject.metadata?.domain?.hasOwn && (
+                        <>
+                          <div className="font-medium text-muted-foreground">{isEnglish ? "Domain Name" : "Domeinnaam"}:</div>
+                          <div className="col-span-2">{selectedProject.metadata?.domain?.name || "-"}</div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Target Audience" : "Doelgroep"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.targetAudience || "-"}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Design Preferences" : "Designvoorkeuren"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.designPreferences || "-"}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Required Features" : "Gewenste Functionaliteiten"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.features || "-"}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Competitors" : "Concurrenten"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.competitors || "-"}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Budget" : "Budget"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.budget || "-"}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Deadline" : "Deadline"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.deadline || "-"}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="font-medium">{isEnglish ? "Timeframe" : "Tijdsbestek"}</h4>
+                    <p className="text-sm">{selectedProject.metadata?.timeframe || "-"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex justify-between items-center">
+            <div>
+              {selectedProject?.status === "new" && (
+                <Button 
+                  variant="default" 
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={() => {
+                    // TODO: Implement approve project functionality
+                    toast({
+                      title: isEnglish ? "Project Approved" : "Project Goedgekeurd",
+                      description: isEnglish 
+                        ? "The project status has been changed to planning" 
+                        : "De projectstatus is gewijzigd naar planning",
+                    });
+                  }}
+                >
+                  {isEnglish ? "Approve Project" : "Project Goedkeuren"}
+                </Button>
+              )}
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsProjectDetailDialogOpen(false)}
+            >
+              {isEnglish ? "Close" : "Sluiten"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <Header />
       
       <main className="py-16 px-4 min-h-screen">
