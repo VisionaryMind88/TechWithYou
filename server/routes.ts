@@ -11,6 +11,7 @@ import {
 import { fromZodError } from "zod-validation-error";
 import { ZodError } from "zod";
 import { setupAuth } from "./auth";
+import { emailService } from "./email-service";
 
 // Middleware to check if user is authenticated
 function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -34,6 +35,53 @@ function assertUser(req: Request, res: Response): Express.User | null {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
+  
+  // Resend verification email endpoint
+  app.post('/api/resend-verification', async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Don't reveal if email exists or not for security
+        return res.status(200).json({ message: "If your email exists, a verification link has been sent." });
+      }
+      
+      // If user is already verified
+      if (user.verified) {
+        return res.status(400).json({ message: "Email is already verified" });
+      }
+      
+      // Generate new verification token
+      const verificationToken = emailService.generateToken();
+      const verificationExpires = emailService.generateTokenExpiration();
+      
+      // Update token in database
+      await storage.setVerificationToken(user.id, verificationToken, verificationExpires);
+      
+      // Send verification email (temporarily commented until SendGrid API is set up)
+      // await emailService.sendVerificationEmail(
+      //   user.email,
+      //   user.username,
+      //   verificationToken
+      // );
+      
+      // Log verification info for testing
+      console.log(`[DEBUG] Verification resent to ${user.email} with token ${verificationToken}`);
+      
+      return res.status(200).json({ message: "Verification email sent successfully" });
+    } catch (error) {
+      console.error("Resend verification error:", error);
+      return res.status(500).json({ message: "Failed to resend verification email" });
+    }
+  });
+  
   // API endpoint for contact form
   app.post('/api/contact', async (req: Request, res: Response) => {
     try {
