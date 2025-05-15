@@ -65,14 +65,23 @@ const projectFormSchema = z.object({
   name: z.string().min(3, {
     message: "Project name must be at least 3 characters.",
   }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
   type: z.string().min(1, {
     message: "Please select a project type.",
   }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+  existingWebsite: z.string().optional(),
+  targetAudience: z.string().optional(),
+  designPreferences: z.string().optional(),
+  features: z.string().optional(),
+  competitors: z.string().optional(),
   budget: z.string().optional(),
   deadline: z.string().optional(),
+  timeframe: z.string().optional(),
+  contactPerson: z.string().optional(),
+  contactEmail: z.string().optional(),
+  contactPhone: z.string().optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -110,10 +119,19 @@ export default function DashboardPage() {
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
       name: "",
-      description: "",
       type: "",
+      description: "",
+      existingWebsite: "",
+      targetAudience: "",
+      designPreferences: "",
+      features: "",
+      competitors: "",
       budget: "",
       deadline: "",
+      timeframe: "",
+      contactPerson: "",
+      contactEmail: "",
+      contactPhone: "",
     },
   });
 
@@ -668,6 +686,98 @@ export default function DashboardPage() {
                 )}
               />
               
+              <FormField
+                control={form.control}
+                name="existingWebsite"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Existing Website (if any)" : "Bestaande Website (indien van toepassing)"}</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder={isEnglish ? "e.g. https://example.com" : "bijv. https://voorbeeld.nl"} 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {isEnglish ? "If you have an existing website you want to redesign" : "Als je een bestaande website hebt die je wilt vernieuwen"}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="targetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Target Audience" : "Doelgroep"}</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder={isEnglish ? "Describe your target audience..." : "Beschrijf je doelgroep..."} 
+                        className="min-h-[80px]" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="designPreferences"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Design Preferences" : "Design Voorkeuren"}</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder={isEnglish ? "Describe your design preferences, style, colors, etc..." : "Beschrijf je design voorkeuren, stijl, kleuren, etc..."} 
+                        className="min-h-[80px]" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="features"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Key Features Required" : "Gewenste Functionaliteiten"}</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder={isEnglish ? "List the main features your project needs..." : "Noem de belangrijkste functionaliteiten die je project nodig heeft..."} 
+                        className="min-h-[80px]" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="competitors"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Competitors or Reference Sites" : "Concurrenten of Referentie Websites"}</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder={isEnglish ? "List websites you like or competitors..." : "Noem websites die je leuk vindt of concurrenten..."} 
+                        className="min-h-[80px]" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -691,6 +801,67 @@ export default function DashboardPage() {
                       <FormLabel>{isEnglish ? "Deadline (Optional)" : "Deadline (Optioneel)"}</FormLabel>
                       <FormControl>
                         <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <FormField
+                control={form.control}
+                name="timeframe"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Preferred Timeframe" : "Gewenste Tijdsbestek"}</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder={isEnglish ? "e.g. 2-3 months, ASAP, etc." : "bijv. 2-3 maanden, zo snel mogelijk, etc."} 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="contactPerson"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{isEnglish ? "Contact Person" : "Contactpersoon"}</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="contactEmail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{isEnglish ? "Contact Email" : "Contact E-mail"}</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="contactPhone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{isEnglish ? "Contact Phone" : "Telefoonnummer"}</FormLabel>
+                      <FormControl>
+                        <Input type="tel" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
