@@ -85,6 +85,30 @@ function App() {
   useEffect(() => {
     initGA();
   }, []);
+  
+  // Handle redirect result from Firebase auth
+  useEffect(() => {
+    // Import the Firebase functions in a way compatible with Vite
+    import("firebase/auth").then(({ getAuth, getRedirectResult }) => {
+      const auth = getAuth();
+      
+      // Check for auth redirect result
+      getRedirectResult(auth)
+        .then((result: any) => {
+          if (result) {
+            console.log("Redirect authentication succeeded:", result);
+            // Gebruiker is succesvol ingelogd, indien nodig redirect naar dashboard
+            window.location.href = '/dashboard';
+          }
+        })
+        .catch((error: any) => {
+          if (error.code !== 'auth/no-auth-event') {
+            // Alleen fouten loggen als het geen 'geen auth event' is
+            console.error("Redirect authentication failed:", error);
+          }
+        });
+    });
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
