@@ -9,6 +9,7 @@ import {
   insertNotificationSchema
 } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
+import { ZodError } from "zod";
 import { setupAuth } from "./auth";
 
 // Middleware to check if user is authenticated
@@ -36,10 +37,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: 'Contact form submitted successfully',
         contactId: contact.id
       });
-    } catch (error) {
+    } catch (error: any) {
       // Handle validation errors
       if (error.name === 'ZodError') {
-        const validationError = fromZodError(error);
+        const validationError = fromZodError(error as ZodError);
         return res.status(400).json({
           message: 'Invalid form data',
           errors: validationError.details
