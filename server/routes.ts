@@ -444,7 +444,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fileType: 'pdf', // Bepaal hier het echte bestandstype in productie
         fileSize: 1024, // Bepaal hier de echte bestandsgrootte in productie
         uploadedBy: user.id,
-        uploadedAt: new Date(),
+        createdAt: new Date(),
       });
       
       // Als notifyAdmin is ingeschakeld, stuur een notificatie naar alle admins

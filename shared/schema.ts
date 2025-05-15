@@ -203,6 +203,7 @@ export const insertProjectFileSchema = createInsertSchema(projectFiles).pick({
   fileSize: true,
   uploadedBy: true,
   description: true,
+  createdAt: true,
 });
 
 export const insertNotificationSchema = createInsertSchema(notifications).pick({
@@ -210,7 +211,9 @@ export const insertNotificationSchema = createInsertSchema(notifications).pick({
   title: true,
   message: true,
   type: true,
+  read: true,
   link: true,
+  createdAt: true,
 });
 
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
