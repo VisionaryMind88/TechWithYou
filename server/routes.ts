@@ -123,6 +123,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store contact form submission
       const contact = await storage.createContact(contactData);
       
+      // Send email to info@techwithyou.nl
+      await emailService.sendContactFormEmail(
+        contactData.name,
+        contactData.email,
+        contactData.company,
+        contactData.service,
+        contactData.message
+      );
+      
       // Return success response
       return res.status(201).json({
         message: 'Contact form submitted successfully',
@@ -139,6 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Handle other errors
+      console.error('Contact form error:', error);
       return res.status(500).json({
         message: 'Failed to submit contact form'
       });

@@ -4,6 +4,7 @@ import crypto from 'crypto';
 export interface EmailService {
   sendVerificationEmail(email: string, username: string, token: string): Promise<boolean>;
   sendPasswordResetEmail(email: string, token: string): Promise<boolean>;
+  sendContactFormEmail(name: string, email: string, company: string, service: string, message: string): Promise<boolean>;
 }
 
 // Mock implementation for testing (when SendGrid API key is not available)
@@ -21,6 +22,20 @@ export class MockEmailService implements EmailService {
     console.log(`[MOCK EMAIL] Sending password reset email to ${email}`);
     console.log(`[MOCK EMAIL] Reset token: ${token}`);
     console.log(`[MOCK EMAIL] Reset link would be: http://localhost:5000/reset-password?token=${token}`);
+    
+    // Mock successful email sending
+    return true;
+  }
+  
+  async sendContactFormEmail(name: string, email: string, company: string, service: string, message: string): Promise<boolean> {
+    console.log(`[MOCK EMAIL] Sending contact form submission to info@techwithyou.nl`);
+    console.log(`[MOCK EMAIL] From: ${name} (${email})`);
+    console.log(`[MOCK EMAIL] Company: ${company}`);
+    console.log(`[MOCK EMAIL] Service: ${service}`);
+    console.log(`[MOCK EMAIL] Message: ${message}`);
+    
+    // In a real implementation, this would send an email to info@techwithyou.nl
+    // using a service like SendGrid or NodeMailer
     
     // Mock successful email sending
     return true;
