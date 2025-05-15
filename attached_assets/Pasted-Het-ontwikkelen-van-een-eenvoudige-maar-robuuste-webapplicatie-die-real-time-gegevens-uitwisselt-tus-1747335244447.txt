@@ -1,0 +1,22 @@
+Het ontwikkelen van een eenvoudige maar robuuste webapplicatie die real-time gegevens uitwisselt tussen gebruikers en gegevens veilig opslaat. Dit project zal gebruik maken van Firebase voor authenticatie en live data updates, Supabase voor database management, en gehost worden op Railway.
+
+Kernfunctionaliteiten:
+
+Gebruikersauthenticatie: Implementeer een systeem met Firebase dat de gebruikers in staat stelt zich te registreren en in te loggen met e-mail en wachtwoord.
+Database Opslag en Ophalen: Gebruik Supabase om gebruikersgegevens en berichten op te slaan. Zorg ervoor dat elke gebruiker alleen toegang heeft tot zijn eigen gegevens.
+Realtime Data-uitwisseling: Zet een eenvoudig chat-systeem op waar gebruikers in real-time berichten kunnen versturen en ontvangen, gebruik makend van Firebase’s real-time mogelijkheden.
+Interface Design: Ontwerp een heldere, gebruiksvriendelijke interface die de lijst van berichten en een eenvoudig formulier voor het verzenden van nieuwe berichten toont.
+Technische Eisen:
+
+De frontend kan simpel gehouden worden met HTML/CSS, eventueel aangevuld met JavaScript of een eenvoudiger framework voor dynamische inhoud.
+Voor backend logic (indien nodig), gebruik Node.js om te integreren met Firebase en Supabase API's.
+Zorg voor een responsive design, zodat de applicatie bruikbaar is op zowel desktop als mobiele apparaten.
+Implementeer basis beveiligingsmaatregelen, zoals het beveiligen van gebruikersgegevens en het voorkomen van SQL-injectie in Supabase.
+Testen en Validering:
+
+Voer handmatige tests uit om te garanderen dat gebruikers succesvol kunnen registreren, inloggen, en berichten kunnen versturen en ontvangen.
+Test de applicatie in verschillende browsers (Chrome, Firefox, Safari) om cross-browser compatibiliteit te verzekeren.
+Valideer de beveiliging door te proberen toegang te krijgen tot gebruikersgegevens zonder geschikte authenticatie.
+Einddoel:
+
+Een functionele, goed geteste webapplicatie die real-time communicatie tussen gebruikers mogelijk maakt, met een sterke nadruk op gebruikersvriendelijkheid, veiligheid, en betrouwbaarheid.
