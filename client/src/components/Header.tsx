@@ -48,19 +48,12 @@ export const Header = () => {
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
             <a href="/" className="flex items-center">
-              <div className="flex items-center">
-                <img 
-                  src="/assets/techwithyou-logo.svg" 
-                  alt="TechWithYou" 
-                  className="h-10 mr-2" 
-                />
-                <div
-                  className={`text-2xl font-bold ${
-                    scrolledPast50 ? "text-neutral-900" : "text-white lg:text-neutral-900"
-                  }`}
-                >
-                  <span className="text-primary">Tech</span>WithYou
-                </div>
+              <div
+                className={`text-2xl font-bold ${
+                  scrolledPast50 ? "text-neutral-900" : "text-white lg:text-neutral-900"
+                }`}
+              >
+                <span className="text-primary">Tech</span>WithYou
               </div>
             </a>
           </div>

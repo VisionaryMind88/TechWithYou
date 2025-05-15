@@ -318,7 +318,7 @@ const nlTranslations = {
   about: {
     title: 'Wij zijn een team van gepassioneerde experts',
     subtitle: 'OVER ONS',
-    description1: 'Digitaal Atelier is opgericht met één doel: het leveren van uitzonderlijke digitale ervaringen die bedrijven helpen groeien. Met meer dan 10 jaar ervaring in de branche hebben we een team samengesteld van de beste professionals in hun vakgebied.',
+    description1: 'TechWithYou is opgericht met één doel: het leveren van uitzonderlijke digitale ervaringen die bedrijven helpen groeien. Met meer dan 10 jaar ervaring in de branche hebben we een team samengesteld van de beste professionals in hun vakgebied.',
     description2: 'Onze missie is om technologische uitdagingen om te zetten in kansen door innovatieve oplossingen te bieden die écht impact maken. We werken nauw samen met onze klanten om hun visie te begrijpen en te vertalen naar succesvolle digitale producten.',
     meetTeam: 'Ontmoet ons team',
     contact: 'Neem contact op'
@@ -408,7 +408,7 @@ const nlTranslations = {
       placeholder: 'Uw e-mail adres',
       subscribe: 'Inschrijven'
     },
-    rights: '© 2023 Digitaal Atelier. Alle rechten voorbehouden.',
+    rights: '© 2023 TechWithYou. Alle rechten voorbehouden.',
     privacy: 'Privacy Policy',
     terms: 'Algemene Voorwaarden',
     cookies: 'Cookies'

@@ -3,14 +3,12 @@ import { Link, useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import LanguageToggle from '@/components/ui/language-toggle';
+// import { LanguageToggle } from '@/components/LanguageToggle';
 import { scrollToElement } from '@/lib/utils';
-import { useLanguage } from '@/context/LanguageContext';
 
 const Header = () => {
   const [location] = useLocation();
-  const { t } = useTranslation();
-  const { language } = useLanguage();
+  const { t, language } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isHomePage = location === '/';
@@ -58,7 +56,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <div className={`text-2xl font-bold ${isScrolled || !isHomePage ? 'text-neutral-900' : 'text-white'}`}>
-                <span className="text-primary">Digitaal</span>Atelier
+                <span className="text-primary">Tech</span>WithYou
               </div>
             </Link>
           </div>
