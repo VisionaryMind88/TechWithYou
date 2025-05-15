@@ -5,6 +5,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import ServicePage from "@/pages/ServicePage";
+import PortfolioPage from "@/pages/PortfolioPage";
+import ContactPage from "@/pages/ContactPage";
 import { LanguageContext } from "@/hooks/use-translation";
 import { CookieConsent } from "@/components/CookieConsent";
 import { Chatbot } from "@/components/Chatbot";
@@ -17,10 +20,10 @@ function Router() {
         {() => <Home />}
       </Route>
       <Route path="/services">
-        {() => <Home initialSection="services" />}
+        {() => <ServicePage />}
       </Route>
       <Route path="/portfolio">
-        {() => <Home initialSection="portfolio" />}
+        {() => <PortfolioPage />}
       </Route>
       <Route path="/about">
         {() => <Home initialSection="about" />}
@@ -29,7 +32,7 @@ function Router() {
         {() => <Home initialSection="faq" />}
       </Route>
       <Route path="/contact">
-        {() => <Home initialSection="contact" />}
+        {() => <ContactPage />}
       </Route>
       <Route path="/privacy-policy">
         {() => <PrivacyPolicy />}

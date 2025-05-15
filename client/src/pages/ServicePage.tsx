@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
 import { useParams } from 'wouter';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet';
+import { SEO } from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { scrollToElement } from '@/lib/utils';
-import CallToAction from '@/components/home/CallToAction';
-import Contact from '@/components/home/Contact';
+import { CallToAction } from '@/components/CallToAction';
+import { Contact } from '@/components/Contact';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 
 const ServicePage = () => {
   const { id } = useParams();
@@ -82,12 +84,11 @@ const ServicePage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{service.title} | Digitaal Atelier</title>
-        <meta name="description" content={service.description} />
-        <meta property="og:title" content={`${service.title} | Digitaal Atelier`} />
-        <meta property="og:description" content={service.description} />
-      </Helmet>
+      <SEO
+        title={service.title}
+        description={service.description}
+        ogType="website"
+      />
       
       <div className="pt-20"> {/* Padding to account for fixed header */}
         {/* Hero */}

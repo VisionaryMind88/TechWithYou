@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
-import Contact from '@/components/home/Contact';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { Contact } from '@/components/Contact';
 
 const ContactPage = () => {
   const { t } = useTranslation();
@@ -14,12 +16,13 @@ const ContactPage = () => {
   return (
     <>
       <Helmet>
-        <title>{t('meta.contact.title')} | Digitaal Atelier</title>
-        <meta name="description" content={t('meta.contact.description')} />
-        <meta property="og:title" content={`${t('meta.contact.title')} | Digitaal Atelier`} />
-        <meta property="og:description" content={t('meta.contact.description')} />
+        <title>{t('contact.title')} | Digitaal Atelier</title>
+        <meta name="description" content={t('contact.description')} />
+        <meta property="og:title" content={`${t('contact.title')} | Digitaal Atelier`} />
+        <meta property="og:description" content={t('contact.description')} />
       </Helmet>
-
+      
+      <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}
         {/* Hero */}
         <section className="relative py-24 bg-neutral-900 text-white overflow-hidden">
@@ -51,6 +54,7 @@ const ContactPage = () => {
 
         <Contact />
       </div>
+      <Footer />
     </>
   );
 };

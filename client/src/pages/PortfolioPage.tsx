@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
-import PortfolioCard from '@/components/ui/portfolio-card';
-import CallToAction from '@/components/home/CallToAction';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { PortfolioCard } from '@/components/PortfolioCard';
+import { CallToAction } from '@/components/CallToAction';
 import { staggerContainer, staggerItem } from '@/lib/animations';
 
 const PortfolioPage = () => {
@@ -73,12 +75,13 @@ const PortfolioPage = () => {
   return (
     <>
       <Helmet>
-        <title>{t('meta.portfolio.title')} | Digitaal Atelier</title>
-        <meta name="description" content={t('meta.portfolio.description')} />
-        <meta property="og:title" content={`${t('meta.portfolio.title')} | Digitaal Atelier`} />
-        <meta property="og:description" content={t('meta.portfolio.description')} />
+        <title>{t('portfolio.title')} | Digitaal Atelier</title>
+        <meta name="description" content={t('portfolio.description')} />
+        <meta property="og:title" content={`${t('portfolio.title')} | Digitaal Atelier`} />
+        <meta property="og:description" content={t('portfolio.description')} />
       </Helmet>
-
+      
+      <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}
         {/* Hero */}
         <section className="relative py-24 bg-neutral-900 text-white overflow-hidden">
@@ -135,6 +138,7 @@ const PortfolioPage = () => {
 
         <CallToAction />
       </div>
+      <Footer />
     </>
   );
 };
