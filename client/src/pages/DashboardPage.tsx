@@ -9,7 +9,6 @@ import { useTranslation } from "@/hooks/use-translation";
 import { trackEvent } from "@/lib/analytics";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { DashboardTour } from "@/components/DashboardTour";
-import { ChatInterface } from "@/components/ChatInterface";
 import { Project, InsertProject } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
@@ -18,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { getDatabase, ref, onValue, push, set } from "firebase/database";
 
 import {
   Card,
@@ -739,8 +737,10 @@ export default function DashboardPage() {
                       : "Chat in realtime met je teamleden"}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-0 flex flex-col h-[calc(100%-8rem)] overflow-hidden">
-                  <ChatInterface userId={user?.id || null} username={user?.username || ""} />
+                <CardContent className="p-4">
+                  <p className="text-muted-foreground text-center">
+                    {isEnglish ? "Chat functionality coming soon" : "Chat functionaliteit komt binnenkort beschikbaar"}
+                  </p>
                 </CardContent>
               </Card>
             </TabsContent>

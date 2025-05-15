@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -9,7 +9,16 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/use-translation";
 import { format } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
-import { ChatMessage, sendChatMessage, subscribeToChatMessages } from "@/lib/firebase";
+import { sendChatMessage, subscribeToChatMessages } from "@/lib/firebase";
+
+// Define interface for chat messages
+interface ChatMessage {
+  userId: number | null;
+  username: string;
+  message: string;
+  timestamp: number;
+  id?: string;
+}
 
 interface ChatInterfaceProps {
   userId: number | null;
