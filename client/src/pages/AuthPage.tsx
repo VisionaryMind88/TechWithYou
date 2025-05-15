@@ -907,8 +907,8 @@ export default function AuthPage() {
                       </h1>
                       <p className="mt-4 text-lg text-muted-foreground">
                         {isEnglish 
-                          ? "Your partner for exceptional digital experiences. Log in to access your project dashboard and collaborate with our team."
-                          : "Uw partner voor uitzonderlijke digitale ervaringen. Log in om toegang te krijgen tot uw projectdashboard en samen te werken met ons team."}
+                          ? "Your partner for exceptional digital experiences. Log in to access your client dashboard and enjoy a wide range of tools and services designed to make project management simple and effective."
+                          : "Uw partner voor uitzonderlijke digitale ervaringen. Log in om toegang te krijgen tot uw klantdashboard en geniet van een breed scala aan tools en diensten die zijn ontworpen om projectmanagement eenvoudig en effectief te maken."}
                       </p>
                     </motion.div>
 
@@ -924,8 +924,8 @@ export default function AuthPage() {
                         </div>
                         <p className="font-medium">
                           {isEnglish 
-                            ? "Secure access to your project dashboard" 
-                            : "Beveiligde toegang tot uw projectdashboard"}
+                            ? "Secure access to your personalized project dashboard" 
+                            : "Beveiligde toegang tot uw gepersonaliseerde projectdashboard"}
                         </p>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -934,8 +934,8 @@ export default function AuthPage() {
                         </div>
                         <p className="font-medium">
                           {isEnglish 
-                            ? "Track project milestones and progress" 
-                            : "Volg projectmijlpalen en voortgang"}
+                            ? "Real-time tracking of project milestones and development progress" 
+                            : "Realtime bijhouden van projectmijlpalen en ontwikkelingsvoortgang"}
                         </p>
                       </div>
                       <div className="flex items-center space-x-3">
@@ -944,8 +944,38 @@ export default function AuthPage() {
                         </div>
                         <p className="font-medium">
                           {isEnglish 
-                            ? "Communicate directly with our team" 
-                            : "Communiceer direct met ons team"}
+                            ? "Direct communication with our development team" 
+                            : "Directe communicatie met ons ontwikkelingsteam"}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                          <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <p className="font-medium">
+                          {isEnglish 
+                            ? "File sharing and document management system" 
+                            : "Bestanden delen en documentbeheersysteem"}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                          <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <p className="font-medium">
+                          {isEnglish 
+                            ? "Approval workflows for design and development stages" 
+                            : "Goedkeuringsworkflows voor ontwerp- en ontwikkelingsfasen"}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
+                          <CheckCircle2Icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <p className="font-medium">
+                          {isEnglish 
+                            ? "Easily request changes or additional features" 
+                            : "Eenvoudig wijzigingen of extra functies aanvragen"}
                         </p>
                       </div>
                       <div className="flex items-center space-x-3">
