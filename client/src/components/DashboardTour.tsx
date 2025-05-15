@@ -1,14 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "@/hooks/use-translation";
 import { Button } from "@/components/ui/button";
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { X, ChevronRight, ChevronLeft } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 // Define the steps for the tour
 interface TourStep {
@@ -77,22 +72,37 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(true);
   
-  // Function to find target element
-  const findTargetElement = (selector: string): HTMLElement | null => {
-    return document.querySelector(selector);
-  };
+  console.log("Tour started");
+  trackEvent('tour_started', 'onboarding', 'dashboard');
   
-  // Update target element when current step changes
+  // Function to find target element
   useEffect(() => {
     if (!isVisible) return;
     
     const step = steps[currentStep];
-    const element = findTargetElement(step.target);
+    const element = document.querySelector(step.target) as HTMLElement;
     
     if (element) {
       setTargetElement(element);
       // Scroll the element into view if needed
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Add highlight effect to target element
+      const originalOutline = element.style.outline;
+      const originalPosition = element.style.position;
+      const originalZIndex = element.style.zIndex;
+      
+      // Add highlight styles
+      element.style.outline = '2px solid var(--primary)';
+      element.style.position = 'relative';
+      element.style.zIndex = '1000';
+      
+      // Cleanup function to restore original styles
+      return () => {
+        element.style.outline = originalOutline;
+        element.style.position = originalPosition;
+        element.style.zIndex = originalZIndex;
+      };
     } else {
       // If element is not found, show an error and skip this step
       console.error(`Tour target not found: ${step.target}`);
@@ -106,42 +116,42 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
       
       // Try to move to next step, or complete tour if this is the last step
       if (currentStep < steps.length - 1) {
-        setCurrentStep(currentStep + 1);
+        setCurrentStep(prevStep => prevStep + 1);
       } else {
         onComplete();
       }
     }
-  }, [currentStep, steps, isVisible]);
+  }, [currentStep, steps, isVisible, isEnglish, toast, onComplete]);
   
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(prevStep => prevStep + 1);
     } else {
       // Tour completed
       setIsVisible(false);
+      trackEvent('tour_completed', 'onboarding', 'dashboard');
       onComplete();
     }
   };
   
   const handlePrevious = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(prevStep => prevStep - 1);
     }
   };
   
   const handleSkip = () => {
     setIsVisible(false);
+    trackEvent('tour_skipped', 'onboarding', 'dashboard');
     onSkip();
   };
   
-  if (!isVisible || !targetElement) return null;
-  
-  const step = steps[currentStep];
-  const isLastStep = currentStep === steps.length - 1;
-  
-  // Calculate position for the tooltip based on the target element and placement
-  const calculatePosition = () => {
+  // This must be before the early return to avoid changing hook order
+  const position = useMemo(() => {
+    if (!targetElement) return { top: '0px', left: '0px', transform: 'translate(-50%, -50%)' };
+    
     const rect = targetElement.getBoundingClientRect();
+    const step = steps[currentStep];
     const placement = step.placement || 'bottom';
     
     // Add some spacing from the element
@@ -179,31 +189,13 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
           transform: 'translateX(-50%)'
         };
     }
-  };
+  }, [targetElement, currentStep, steps]);
   
-  const position = calculatePosition();
+  // If not visible or no target element found, don't render anything
+  if (!isVisible || !targetElement) return null;
   
-  // Add highlight effect to target element
-  useEffect(() => {
-    if (targetElement) {
-      // Store original styles
-      const originalOutline = targetElement.style.outline;
-      const originalPosition = targetElement.style.position;
-      const originalZIndex = targetElement.style.zIndex;
-      
-      // Add highlight styles
-      targetElement.style.outline = '2px solid var(--primary)';
-      targetElement.style.position = 'relative';
-      targetElement.style.zIndex = '1000';
-      
-      // Cleanup function to restore original styles
-      return () => {
-        targetElement.style.outline = originalOutline;
-        targetElement.style.position = originalPosition;
-        targetElement.style.zIndex = originalZIndex;
-      };
-    }
-  }, [targetElement]);
+  const step = steps[currentStep];
+  const isLastStep = currentStep === steps.length - 1;
   
   return (
     <div 
@@ -214,43 +206,70 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
         transform: position.transform,
       }}
     >
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="absolute right-2 top-2"
+      {/* Close button */}
+      <button 
+        className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
         onClick={handleSkip}
       >
         <X className="h-4 w-4" />
-      </Button>
+        <span className="sr-only">{isEnglish ? "Close" : "Sluiten"}</span>
+      </button>
       
-      <div className="mb-1 font-semibold">
-        {isEnglish ? step.title : step.titleNL}
+      {/* Step content */}
+      <div className="mb-4">
+        <h3 className="font-medium text-lg mb-1">
+          {isEnglish ? step.title : step.titleNL}
+        </h3>
+        <p className="text-muted-foreground text-sm">
+          {isEnglish ? step.content : step.contentNL}
+        </p>
       </div>
       
-      <p className="text-sm mb-4">
-        {isEnglish ? step.content : step.contentNL}
-      </p>
-      
-      <div className="flex items-center justify-between">
-        <div className="text-xs text-muted-foreground">
-          {isEnglish ? `Step ${currentStep + 1} of ${steps.length}` : `Stap ${currentStep + 1} van ${steps.length}`}
+      {/* Navigation buttons */}
+      <div className="flex justify-between">
+        <div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrevious}
+            disabled={currentStep === 0}
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            {isEnglish ? "Previous" : "Vorige"}
+          </Button>
         </div>
         
         <div className="flex gap-2">
-          {currentStep > 0 && (
-            <Button size="sm" variant="outline" onClick={handlePrevious}>
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              {isEnglish ? 'Previous' : 'Vorige'}
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSkip}
+          >
+            {isEnglish ? "Skip" : "Overslaan"}
+          </Button>
           
-          <Button size="sm" onClick={handleNext}>
+          <Button
+            size="sm"
+            onClick={handleNext}
+          >
             {isLastStep 
-              ? (isEnglish ? 'Finish' : 'Afronden')
-              : (isEnglish ? 'Next' : 'Volgende')}
+              ? (isEnglish ? "Finish" : "Voltooien") 
+              : (isEnglish ? "Next" : "Volgende")}
             {!isLastStep && <ChevronRight className="h-4 w-4 ml-1" />}
           </Button>
         </div>
+      </div>
+      
+      {/* Step indicator */}
+      <div className="flex justify-center mt-4 gap-1">
+        {steps.map((_, index) => (
+          <div
+            key={index}
+            className={`h-1.5 rounded-full ${
+              index === currentStep ? "bg-primary w-4" : "bg-muted w-2"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );
