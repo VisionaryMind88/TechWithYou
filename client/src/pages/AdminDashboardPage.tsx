@@ -684,7 +684,7 @@ export default function AdminDashboardPage() {
           </div>
           
           <Tabs defaultValue="clients" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-1 md:grid-cols-4">
+            <TabsList className="grid w-full grid-cols-1 md:grid-cols-5">
               <TabsTrigger value="clients">
                 <UserIcon className="h-4 w-4 mr-2" />
                 {isEnglish ? "Clients" : "Klanten"}
@@ -710,6 +710,10 @@ export default function AdminDashboardPage() {
                     {contacts.filter(c => !c.read).length}
                   </Badge>
                 )}
+              </TabsTrigger>
+              <TabsTrigger value="chat">
+                <MessageSquare className="h-4 w-4 mr-2" />
+                {isEnglish ? "Chat" : "Chat"}
               </TabsTrigger>
             </TabsList>
             
@@ -1154,6 +1158,27 @@ export default function AdminDashboardPage() {
                       </TableBody>
                     </Table>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Chat Tab */}
+            <TabsContent value="chat" className="space-y-4">
+              <Card className="h-[calc(100vh-300px)]">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <div>
+                    <CardTitle>{isEnglish ? "Chat with Clients" : "Chat met Klanten"}</CardTitle>
+                    <CardDescription>
+                      {isEnglish 
+                        ? "Real-time support and communication with website clients" 
+                        : "Realtime ondersteuning en communicatie met websiteklanten"}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="h-full pb-0">
+                  <div className="h-full">
+                    <ChatInterface userId={user.id} username={user.name || user.username} />
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
