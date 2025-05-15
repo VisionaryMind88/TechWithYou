@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/use-translation";
+import { Link } from "wouter";
 
 interface PortfolioCardProps {
   title: string;
@@ -45,13 +46,13 @@ export const PortfolioCard = ({
             </span>
           ))}
         </div>
-        <a
-          href={link}
+        <Link
+          href={link !== "#" ? link : `/portfolio/${title.toLowerCase().replace(/\s+/g, '-')}`}
           className="inline-flex items-center text-primary-light hover:text-primary font-medium"
         >
           {t('portfolio.viewCase')}
           <i className="ri-arrow-right-line ml-1"></i>
-        </a>
+        </Link>
       </div>
     </div>
   );

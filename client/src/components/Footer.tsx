@@ -16,16 +16,16 @@ export const Footer = () => {
               {t('footer.description')}
             </p>
             <div className="flex space-x-4">
-              <Link href="https://linkedin.com" target="_blank" className="text-neutral-400 hover:text-white transition">
+              <Link href="https://www.linkedin.com/company/techwithyou/" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-linkedin-fill text-xl"></i>
               </Link>
-              <Link href="https://twitter.com" target="_blank" className="text-neutral-400 hover:text-white transition">
+              <Link href="https://twitter.com/TechWithYouNL" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-twitter-fill text-xl"></i>
               </Link>
-              <Link href="https://instagram.com" target="_blank" className="text-neutral-400 hover:text-white transition">
+              <Link href="https://instagram.com/techwithyou.nl" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-instagram-fill text-xl"></i>
               </Link>
-              <Link href="https://facebook.com" target="_blank" className="text-neutral-400 hover:text-white transition">
+              <Link href="https://facebook.com/techwithyounl" target="_blank" className="text-neutral-400 hover:text-white transition">
                 <i className="ri-facebook-fill text-xl"></i>
               </Link>
             </div>

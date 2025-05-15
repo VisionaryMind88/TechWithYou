@@ -100,28 +100,28 @@ export const Contact = () => {
                   <h4 className="text-lg font-semibold mb-4">{t('contact.info.followUs')}</h4>
                   <div className="flex space-x-4">
                     <Link
-                      href="https://linkedin.com"
+                      href="https://www.linkedin.com/company/techwithyou/"
                       target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-linkedin-fill"></i>
                     </Link>
                     <Link
-                      href="https://twitter.com"
+                      href="https://twitter.com/TechWithYouNL"
                       target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-twitter-fill"></i>
                     </Link>
                     <Link
-                      href="https://instagram.com"
+                      href="https://instagram.com/techwithyou.nl"
                       target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
                       <i className="ri-instagram-fill"></i>
                     </Link>
                     <Link
-                      href="https://facebook.com"
+                      href="https://facebook.com/techwithyounl"
                       target="_blank"
                       className="bg-neutral-200 hover:bg-primary hover:text-white transition duration-300 rounded-full w-10 h-10 flex items-center justify-center"
                     >
