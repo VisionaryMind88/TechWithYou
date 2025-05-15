@@ -33,11 +33,6 @@ export const Chatbot = () => {
   const shouldHideChatbot = location.startsWith('/dashboard') || 
                            location.startsWith('/admin') || 
                            location.startsWith('/project/');
-                           
-  // Als we op een pagina zijn waar de chatbot verborgen moet zijn, toon hem dan niet
-  if (shouldHideChatbot) {
-    return null;
-  }
                           
   // Auto-open chat after 10 seconds (only if it hasn't been closed by user)
   useEffect(() => {
@@ -194,6 +189,11 @@ export const Chatbot = () => {
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
+  
+  // Als de chatbot verborgen moet zijn, toon dan niets
+  if (shouldHideChatbot) {
+    return null;
+  }
   
   return (
     <>

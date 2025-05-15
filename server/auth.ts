@@ -154,7 +154,7 @@ export function setupAuth(app: Express) {
       // Create welcome notification
       await storage.createNotification({
         userId: user.id,
-        title: "Welcome to Digitaal Atelier!",
+        title: "Welcome to TechWithYou!",
         message: "Thank you for registering. Please check your email to verify your account.",
         type: "info",
       });
