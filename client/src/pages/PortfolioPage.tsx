@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { PortfolioCard } from '@/components/PortfolioCard';
 import { CallToAction } from '@/components/CallToAction';
 import { staggerContainer, staggerItem } from '@/lib/animations';
+import { SEO } from '@/components/SEO';
 
 const PortfolioPage = () => {
   const { t } = useTranslation();
@@ -74,12 +74,38 @@ const PortfolioPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{t('portfolio.title')} | Digitaal Atelier</title>
-        <meta name="description" content={t('portfolio.description')} />
-        <meta property="og:title" content={`${t('portfolio.title')} | Digitaal Atelier`} />
-        <meta property="og:description" content={t('portfolio.description')} />
-      </Helmet>
+      <SEO
+        title={t('portfolio.title')}
+        description={t('portfolio.description')}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": t('portfolio.title'),
+          "description": t('portfolio.description'),
+          "publisher": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "url": "https://digitaalatelier.com/"
+          },
+          "mainEntity": {
+            "@type": "ItemList",
+            "itemListElement": portfolioItems.map((item, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "CreativeWork",
+                "name": item.title,
+                "description": item.description,
+                "creator": {
+                  "@type": "Organization",
+                  "name": "Digitaal Atelier"
+                },
+                "image": item.image
+              }
+            }))
+          }
+        }}
+      />
       
       <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}

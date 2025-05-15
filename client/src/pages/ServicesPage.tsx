@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Services } from '@/components/Services';
 import { CallToAction } from '@/components/CallToAction';
+import { SEO } from '@/components/SEO';
 
 const ServicesPage = () => {
   const { t } = useTranslation();
@@ -46,12 +46,53 @@ const ServicesPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{t('services.title')} | Digitaal Atelier</title>
-        <meta name="description" content={t('services.description')} />
-        <meta property="og:title" content={`${t('services.title')} | Digitaal Atelier`} />
-        <meta property="og:description" content={t('services.description')} />
-      </Helmet>
+      <SEO
+        title={t('services.title')}
+        description={t('services.description')}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": t('services.title'),
+          "description": t('services.description'),
+          "provider": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "url": "https://digitaalatelier.com/"
+          },
+          "serviceType": ["Web Development", "App Development", "Dashboard Development"],
+          "areaServed": {
+            "@type": "Country",
+            "name": "Netherlands"
+          },
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Web Development Services",
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": t('language') === 'en' ? "Web Development" : "Webontwikkeling"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": t('language') === 'en' ? "App Development" : "App Ontwikkeling"
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": t('language') === 'en' ? "Dashboard Development" : "Dashboard Ontwikkeling"
+                }
+              }
+            ]
+          }
+        }}
+      />
       
       <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}

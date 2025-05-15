@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { About } from '@/components/About';
 import { Team } from '@/components/Team';
 import { Stats } from '@/components/Stats';
 import { CallToAction } from '@/components/CallToAction';
+import { SEO } from '@/components/SEO';
 
 const AboutPage = () => {
   const { t } = useTranslation();
@@ -18,12 +18,43 @@ const AboutPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{t('about.title')} | Digitaal Atelier</title>
-        <meta name="description" content={t('about.description')} />
-        <meta property="og:title" content={`${t('about.title')} | Digitaal Atelier`} />
-        <meta property="og:description" content={t('about.description')} />
-      </Helmet>
+      <SEO
+        title={t('about.title')}
+        description={t('about.description')}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          "name": t('about.title'),
+          "description": t('about.description'),
+          "publisher": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "url": "https://digitaalatelier.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://digitaalatelier.com/logo.png"
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+31-20-1234567",
+              "contactType": "customer service",
+              "availableLanguage": ["English", "Dutch"]
+            },
+            "sameAs": [
+              "https://facebook.com/digitaalatelier",
+              "https://twitter.com/digatelier",
+              "https://linkedin.com/company/digitaal-atelier"
+            ]
+          },
+          "about": {
+            "@type": "Organization",
+            "name": "Digitaal Atelier",
+            "description": t('about.description'),
+            "foundingDate": "2020",
+            "foundingLocation": "Amsterdam, Netherlands"
+          }
+        }}
+      />
       
       <Header />
       <div className="pt-20"> {/* Padding to account for fixed header */}
