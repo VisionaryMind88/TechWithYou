@@ -154,10 +154,16 @@ export default function AdminDashboardPage() {
       const res = await apiRequest("PUT", `/api/admin/projects/${projectId}`, {
         status: "planning"
       });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to approve project");
+      }
       return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
+      setIsProjectDetailDialogOpen(false);
+      setSelectedProject(null);
       toast({
         title: isEnglish ? "Project Approved" : "Project Goedgekeurd",
         description: isEnglish 
@@ -482,41 +488,41 @@ export default function AdminDashboardPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Target Audience" : "Doelgroep"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.targetAudience || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.targetAudience || "-"}</p>
                   </div>
                   
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Design Preferences" : "Designvoorkeuren"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.designPreferences || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.designPreferences || "-"}</p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Required Features" : "Gewenste Functionaliteiten"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.features || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.features || "-"}</p>
                   </div>
                   
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Competitors" : "Concurrenten"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.competitors || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.competitors || "-"}</p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Budget" : "Budget"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.budget || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.budget || "-"}</p>
                   </div>
                   
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Deadline" : "Deadline"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.deadline || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.deadline || "-"}</p>
                   </div>
                   
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Timeframe" : "Tijdsbestek"}</h4>
-                    <p className="text-sm">{selectedProject.metadata?.timeframe || "-"}</p>
+                    <p className="text-sm">{selectedProject.metaData?.timeframe || "-"}</p>
                   </div>
                 </div>
               </div>
@@ -529,17 +535,21 @@ export default function AdminDashboardPage() {
                 <Button 
                   variant="default" 
                   className="bg-green-600 hover:bg-green-700"
+                  disabled={approveProjectMutation.isPending}
                   onClick={() => {
-                    // TODO: Implement approve project functionality
-                    toast({
-                      title: isEnglish ? "Project Approved" : "Project Goedgekeurd",
-                      description: isEnglish 
-                        ? "The project status has been changed to planning" 
-                        : "De projectstatus is gewijzigd naar planning",
-                    });
+                    if (selectedProject && selectedProject.id) {
+                      approveProjectMutation.mutate(selectedProject.id);
+                    }
                   }}
                 >
-                  {isEnglish ? "Approve Project" : "Project Goedkeuren"}
+                  {approveProjectMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isEnglish ? "Approving..." : "Goedkeuren..."}
+                    </>
+                  ) : (
+                    isEnglish ? "Approve Project" : "Project Goedkeuren"
+                  )}
                 </Button>
               )}
             </div>
