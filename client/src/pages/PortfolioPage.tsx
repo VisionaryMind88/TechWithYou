@@ -84,8 +84,8 @@ const PortfolioPage = () => {
           "description": t('portfolio.description'),
           "publisher": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
-            "url": "https://digitaalatelier.com/"
+            "name": "TechWithYou",
+            "url": "https://techwithyou.nl/"
           },
           "mainEntity": {
             "@type": "ItemList",

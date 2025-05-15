@@ -32,8 +32,8 @@ export default function NotFound() {
             : "De pagina die u zoekt bestaat niet of is verplaatst. Ga terug naar onze homepagina.",
           "publisher": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
-            "url": "https://digitaalatelier.com/"
+            "name": "TechWithYou",
+            "url": "https://techwithyou.nl/"
           },
           "breadcrumb": {
             "@type": "BreadcrumbList",

@@ -23,8 +23,8 @@ export default function PrivacyPolicy() {
       <SEO 
         title={isEnglish ? "Privacy Policy" : "Privacybeleid"}
         description={isEnglish 
-          ? "Privacy Policy for Digitaal Atelier. Learn how we collect, use, and protect your personal information."
-          : "Privacybeleid van Digitaal Atelier. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen."
+          ? "Privacy Policy for TechWithYou. Learn how we collect, use, and protect your personal information."
+          : "Privacybeleid van TechWithYou. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen."
         }
         ogType="article"
         structuredData={{
@@ -32,15 +32,15 @@ export default function PrivacyPolicy() {
           "@type": "WebPage",
           "name": isEnglish ? "Privacy Policy" : "Privacybeleid",
           "description": isEnglish 
-            ? "Privacy Policy for Digitaal Atelier. Learn how we collect, use, and protect your personal information."
-            : "Privacybeleid van Digitaal Atelier. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen.",
+            ? "Privacy Policy for TechWithYou. Learn how we collect, use, and protect your personal information."
+            : "Privacybeleid van TechWithYou. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen.",
           "publisher": {
             "@type": "Organization",
-            "name": "Digitaal Atelier",
-            "url": "https://digitaalatelier.com/",
+            "name": "TechWithYou",
+            "url": "https://techwithyou.nl/",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://digitaalatelier.com/logo.png"
+              "url": "https://techwithyou.nl/assets/techwithyou-logo.svg"
             }
           },
           "mainEntity": {
@@ -236,8 +236,8 @@ export default function PrivacyPolicy() {
               </h2>
               <p>
                 {isEnglish
-                  ? "If you have any questions about this Privacy Policy, please contact us at privacy@digitaalatelier.com."
-                  : "Als u vragen heeft over dit Privacybeleid, neem dan contact met ons op via privacy@digitaalatelier.com."}
+                  ? "If you have any questions about this Privacy Policy, please contact us at privacy@techwithyou.nl."
+                  : "Als u vragen heeft over dit Privacybeleid, neem dan contact met ons op via privacy@techwithyou.nl."}
               </p>
             </div>
           </motion.div>
