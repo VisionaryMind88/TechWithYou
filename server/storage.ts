@@ -42,9 +42,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getContacts(): Promise<Contact[]> {
-    return db.select()
-      .from(contacts)
-      .orderBy(db.sql`${contacts.createdAt} DESC`);
+    const result = await db.select().from(contacts);
+    return result.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
   }
 
   async getContact(id: number): Promise<Contact | undefined> {

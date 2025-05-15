@@ -95,6 +95,11 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
+                <a href="#faq" className="text-neutral-400 hover:text-white transition">
+                  FAQ
+                </a>
+              </li>
+              <li>
                 <a href="#contact" className="text-neutral-400 hover:text-white transition">
                   {t('header.contact')}
                 </a>

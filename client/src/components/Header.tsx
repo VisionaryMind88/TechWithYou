@@ -82,6 +82,16 @@ export const Header = () => {
                 {t('header.about')}
               </a>
               <a
+                href="#faq"
+                className={`font-medium ${
+                  scrolledPast50
+                    ? "text-neutral-700"
+                    : "text-white lg:text-neutral-700"
+                } hover:text-primary transition duration-150`}
+              >
+                FAQ
+              </a>
+              <a
                 href="#contact"
                 className={`font-medium ${
                   scrolledPast50
@@ -139,6 +149,13 @@ export const Header = () => {
                 className="font-medium text-neutral-900 hover:text-primary transition duration-150"
               >
                 {t('header.about')}
+              </a>
+              <a
+                href="#faq"
+                onClick={closeMobileMenu}
+                className="font-medium text-neutral-900 hover:text-primary transition duration-150"
+              >
+                FAQ
               </a>
               <a
                 href="#contact"

@@ -118,6 +118,37 @@ const enTranslations = {
     experts: 'Experts in team',
     yearsExperience: 'Years experience'
   },
+  faq: {
+    title: 'Frequently Asked Questions',
+    subtitle: 'FAQ',
+    description: 'Find answers to common questions about our services and process.',
+    items: [
+      {
+        question: 'What type of businesses do you work with?',
+        answer: 'We work with businesses of all sizes, from startups to established enterprises, across various industries. Our solutions are tailored to meet the specific needs and goals of each client.'
+      },
+      {
+        question: 'How long does it take to complete a website project?',
+        answer: 'The timeline for a website project depends on its complexity and scope. A simple website might take 3-4 weeks, while more complex projects with custom features can take 8-12 weeks. We\'ll provide a detailed timeline during our initial consultation.'
+      },
+      {
+        question: 'Do you provide website maintenance services?',
+        answer: 'Yes, we offer ongoing maintenance and support services to ensure your website remains secure, up-to-date, and optimized for performance. We can set up a maintenance plan tailored to your specific needs.'
+      },
+      {
+        question: 'What is your approach to website security?',
+        answer: 'Security is a top priority in all our projects. We implement SSL certificates, security plugins, regular updates, and follow best practices for coding and server configuration to protect against potential vulnerabilities.'
+      },
+      {
+        question: 'Can you help with SEO for my website?',
+        answer: 'Absolutely! We build all our websites with SEO in mind, including proper HTML structure, fast loading times, and mobile optimization. We also offer additional SEO services such as keyword research, content optimization, and ongoing SEO strategy.'
+      },
+      {
+        question: 'What is your payment structure?',
+        answer: 'Our typical payment structure includes a 50% deposit to begin the project, with the remaining balance due upon completion. For larger projects, we may break payments into multiple milestones. We accept bank transfers and major credit cards.'
+      }
+    ]
+  },
   team: {
     title: 'The people behind our successes',
     subtitle: 'OUR TEAM',
@@ -289,6 +320,37 @@ const nlTranslations = {
     satisfiedClients: 'Tevreden klanten',
     experts: 'Experts in team',
     yearsExperience: 'Jaren ervaring'
+  },
+  faq: {
+    title: 'Veelgestelde Vragen',
+    subtitle: 'FAQ',
+    description: 'Vind antwoorden op veelvoorkomende vragen over onze diensten en werkwijze.',
+    items: [
+      {
+        question: 'Met welk type bedrijven werkt u samen?',
+        answer: 'Wij werken samen met bedrijven van alle groottes, van startups tot gevestigde ondernemingen, in verschillende sectoren. Onze oplossingen zijn toegespitst op de specifieke behoeften en doelen van elke klant.'
+      },
+      {
+        question: 'Hoe lang duurt het om een websiteproject te voltooien?',
+        answer: 'De tijdlijn voor een websiteproject hangt af van de complexiteit en omvang. Een eenvoudige website kan 3-4 weken duren, terwijl meer complexe projecten met aangepaste functies 8-12 weken kunnen duren. We geven een gedetailleerde planning tijdens ons eerste consult.'
+      },
+      {
+        question: 'Biedt u websiteonderhoudsdiensten aan?',
+        answer: 'Ja, wij bieden doorlopende onderhouds- en ondersteuningsdiensten om ervoor te zorgen dat uw website veilig, up-to-date en geoptimaliseerd blijft voor prestaties. We kunnen een onderhoudsplan opstellen dat is afgestemd op uw specifieke behoeften.'
+      },
+      {
+        question: 'Wat is uw aanpak van websitebeveiliging?',
+        answer: 'Beveiliging is een topprioriteit in al onze projecten. We implementeren SSL-certificaten, beveiligingsplugins, regelmatige updates en volgen best practices voor codering en serverconfiguratie om te beschermen tegen potentiële kwetsbaarheden.'
+      },
+      {
+        question: 'Kunt u helpen met SEO voor mijn website?',
+        answer: 'Absoluut! We bouwen al onze websites met SEO in gedachten, inclusief de juiste HTML-structuur, snelle laadtijden en mobiele optimalisatie. We bieden ook aanvullende SEO-diensten zoals trefwoordonderzoek, contentoptimalisatie en doorlopende SEO-strategie.'
+      },
+      {
+        question: 'Wat is uw betalingsstructuur?',
+        answer: 'Onze typische betalingsstructuur omvat een aanbetaling van 50% om het project te starten, waarbij het resterende saldo verschuldigd is bij voltooiing. Voor grotere projecten kunnen we betalingen in meerdere mijlpalen verdelen. We accepteren bankoverschrijvingen en belangrijke creditcards.'
+      }
+    ]
   },
   team: {
     title: 'De mensen achter onze successen',
