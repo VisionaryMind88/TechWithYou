@@ -216,6 +216,8 @@ export interface ChatMessage {
   username: string;
   message: string;
   timestamp: number;
+  isAdmin?: boolean;
+  clientId?: number;
   attachment?: {
     type: string;
     name: string;
@@ -224,8 +226,22 @@ export interface ChatMessage {
   };
 }
 
+// Interface voor notificaties
+export interface ChatNotification {
+  roomId: string;
+  fromUsername: string;
+  message: string;
+  timestamp: number;
+  read: boolean;
+  isAdmin: boolean;
+}
+
 // Functie om een bericht te versturen naar de Firebase Realtime Database
-export const sendChatMessage = async (roomId: string, message: ChatMessage): Promise<void> => {
+export const sendChatMessage = async (
+  roomId: string, 
+  message: ChatMessage, 
+  notifyClientId?: number
+): Promise<void> => {
   try {
     // Referentie naar de chatroom in de realtime database
     const chatRef = databaseRef(database, `chats/${roomId}/messages`);
@@ -239,9 +255,43 @@ export const sendChatMessage = async (roomId: string, message: ChatMessage): Pro
       timestamp: serverTimestamp()
     });
     
+    // Als dit een admin bericht is, stuur een notificatie naar de client
+    if (message.isAdmin && notifyClientId) {
+      await sendChatNotification(notifyClientId, {
+        roomId,
+        fromUsername: message.username,
+        message: message.message || 'Heeft een bestand gedeeld',
+        timestamp: Date.now(),
+        read: false,
+        isAdmin: true
+      });
+    }
+    
     console.log('Message sent successfully');
   } catch (error) {
     console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+// Functie om een chat notificatie te versturen
+export const sendChatNotification = async (
+  userId: number,
+  notification: ChatNotification
+): Promise<void> => {
+  try {
+    // Referentie naar de notificaties van de gebruiker
+    const notificationRef = databaseRef(database, `notifications/${userId}`);
+    
+    // Nieuwe notificatie toevoegen
+    const newNotificationRef = push(notificationRef);
+    
+    // Notificatie opslaan
+    await set(newNotificationRef, notification);
+    
+    console.log('Notification sent successfully');
+  } catch (error) {
+    console.error('Error sending notification:', error);
     throw error;
   }
 };
@@ -276,6 +326,56 @@ export const subscribeToChatMessages = (
   
   // Functie teruggeven om de subscription op te heffen
   return unsubscribe;
+};
+
+// Functie om notificaties op te halen voor een gebruiker
+export const subscribeToNotifications = (
+  userId: number,
+  callback: (notifications: ChatNotification[]) => void
+) => {
+  // Referentie naar de notificaties
+  const notificationsRef = databaseRef(database, `notifications/${userId}`);
+  
+  // Luisteren naar veranderingen in de notificaties
+  const unsubscribe = onValue(notificationsRef, (snapshot) => {
+    const notifications: ChatNotification[] = [];
+    
+    // Itereren door alle notificaties in de snapshot
+    snapshot.forEach((childSnapshot) => {
+      // Notificatie toevoegen aan de array
+      notifications.push({
+        ...childSnapshot.val(),
+        id: childSnapshot.key
+      });
+    });
+    
+    // Sorteren op timestamp (nieuwste eerst)
+    notifications.sort((a, b) => b.timestamp - a.timestamp);
+    
+    // Callback aanroepen met de notificaties
+    callback(notifications);
+  });
+  
+  // Functie teruggeven om de subscription op te heffen
+  return unsubscribe;
+};
+
+// Functie om een notificatie als gelezen te markeren
+export const markNotificationAsRead = async (userId: number, notificationId: string): Promise<void> => {
+  try {
+    // Referentie naar de notificatie
+    const notificationRef = databaseRef(database, `notifications/${userId}/${notificationId}`);
+    
+    // Update de notificatie
+    await set(notificationRef, {
+      read: true
+    }, { merge: true });
+    
+    console.log('Notification marked as read');
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    throw error;
+  }
 };
 
 // Exporteer auth voor gebruik in andere componenten

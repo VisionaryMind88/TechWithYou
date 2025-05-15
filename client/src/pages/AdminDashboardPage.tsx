@@ -790,10 +790,52 @@ export default function AdminDashboardPage() {
                                   </TableCell>
                                   <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
-                                      <Button variant="outline" size="icon">
+                                      <Button 
+                                        variant="outline" 
+                                        size="icon"
+                                        onClick={() => {
+                                          setSelectedClientId(client.id);
+                                          setActiveTab("chat");
+                                          trackEvent("admin_chat_opened", "admin", "client_chat");
+                                        }}
+                                        title={isEnglish ? "Chat with client" : "Chat met klant"}
+                                      >
+                                        <MessageSquare className="h-4 w-4" />
+                                      </Button>
+                                      <Button 
+                                        variant="outline" 
+                                        size="icon"
+                                        onClick={() => {
+                                          // Edit client functionality
+                                          toast({
+                                            title: isEnglish ? "Edit Client" : "Klant Bewerken",
+                                            description: isEnglish
+                                              ? "Edit functionality coming soon"
+                                              : "Bewerk functionaliteit komt binnenkort",
+                                          });
+                                        }}
+                                        title={isEnglish ? "Edit client" : "Klant bewerken"}
+                                      >
                                         <Edit className="h-4 w-4" />
                                       </Button>
-                                      <Button variant="destructive" size="icon">
+                                      <Button 
+                                        variant="destructive" 
+                                        size="icon"
+                                        onClick={() => {
+                                          // Delete client functionality with confirmation
+                                          if (confirm(isEnglish 
+                                            ? `Are you sure you want to delete ${client.name}? This will delete all their projects, files and data.`
+                                            : `Weet je zeker dat je ${client.name} wilt verwijderen? Dit verwijdert al hun projecten, bestanden en gegevens.`)) {
+                                            toast({
+                                              title: isEnglish ? "Delete Client" : "Klant Verwijderen",
+                                              description: isEnglish
+                                                ? "Delete functionality coming soon"
+                                                : "Verwijder functionaliteit komt binnenkort",
+                                            });
+                                          }
+                                        }}
+                                        title={isEnglish ? "Delete client" : "Klant verwijderen"}
+                                      >
                                         <Trash className="h-4 w-4" />
                                       </Button>
                                     </div>
