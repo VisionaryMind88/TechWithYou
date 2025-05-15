@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/Header";
@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { getDatabase, ref, onValue, push, set } from "firebase/database";
 
 import {
   Card,
@@ -50,7 +51,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2, MoreVertical, Bell, User, LogOut, Briefcase, Clock, FileText, ChevronRight, Star, PlusCircle } from "lucide-react";
+import { Loader2, MoreVertical, Bell, User, LogOut, Briefcase, Clock, FileText, ChevronRight, Star, PlusCircle, MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -542,7 +543,7 @@ export default function DashboardPage() {
           </div>
 
           <Tabs defaultValue="projects">
-            <TabsList className="grid w-full md:w-auto grid-cols-3 mb-8">
+            <TabsList className="grid w-full md:w-auto grid-cols-4 mb-8">
               <TabsTrigger value="projects" data-tour-target="projects-tab-trigger">
                 <Briefcase className="h-4 w-4 mr-2" />
                 {isEnglish ? "Projects" : "Projecten"}
@@ -554,6 +555,10 @@ export default function DashboardPage() {
               <TabsTrigger value="activity" data-tour-target="activity-tab-trigger">
                 <Clock className="h-4 w-4 mr-2" />
                 {isEnglish ? "Activity" : "Activiteit"}
+              </TabsTrigger>
+              <TabsTrigger value="chat" data-tour-target="chat-tab-trigger">
+                <MessageSquare className="h-4 w-4 mr-2" />
+                {isEnglish ? "Chat" : "Chat"}
               </TabsTrigger>
             </TabsList>
 

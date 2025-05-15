@@ -13,10 +13,18 @@ import {
 } from "firebase/auth";
 import { 
   getStorage, 
-  ref, 
+  ref as storageRef, 
   uploadBytesResumable,
   getDownloadURL
 } from "firebase/storage";
+import {
+  getDatabase, 
+  ref as databaseRef,
+  set,
+  push,
+  onValue,
+  serverTimestamp
+} from "firebase/database";
 
 // Firebase configuratie met omgevingsvariabelen
 const firebaseConfig = {
@@ -132,14 +140,17 @@ export const firebaseSignOut = async (): Promise<void> => {
 // Maak de storage instantie aan
 const storage = getStorage(app);
 
+// Maak de realtime database instantie aan
+const database = getDatabase(app);
+
 // Upload bestand naar Firebase Storage
 export const uploadFileToStorage = async (file: File, path: string): Promise<string> => {
   try {
     // Referentie naar de locatie in Firebase Storage
-    const storageRef = ref(storage, path);
+    const fileStorageRef = storageRef(storage, path);
     
     // Upload bestand met progress tracking
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const uploadTask = uploadBytesResumable(fileStorageRef, file);
     
     // Wacht tot upload is voltooid en krijg downloadURL
     return new Promise((resolve, reject) => {
@@ -168,6 +179,68 @@ export const uploadFileToStorage = async (file: File, path: string): Promise<str
   }
 };
 
+// Chat functies voor Firebase Realtime Database
+export interface ChatMessage {
+  userId: number | null;
+  username: string;
+  message: string;
+  timestamp: number;
+}
+
+// Functie om een bericht te versturen naar de Firebase Realtime Database
+export const sendChatMessage = async (roomId: string, message: ChatMessage): Promise<void> => {
+  try {
+    // Referentie naar de chatroom in de realtime database
+    const chatRef = databaseRef(database, `chats/${roomId}/messages`);
+    
+    // Nieuw bericht toevoegen aan de chatroom
+    const newMessageRef = push(chatRef);
+    
+    // Bericht met timestamp opslaan
+    await set(newMessageRef, {
+      ...message,
+      timestamp: serverTimestamp()
+    });
+    
+    console.log('Message sent successfully');
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+// Functie om berichten uit een chatroom op te halen en realtime updates te ontvangen
+export const subscribeToChatMessages = (
+  roomId: string, 
+  callback: (messages: ChatMessage[]) => void
+) => {
+  // Referentie naar de chatroom
+  const chatRef = databaseRef(database, `chats/${roomId}/messages`);
+  
+  // Luisteren naar veranderingen in de chatroom
+  const unsubscribe = onValue(chatRef, (snapshot) => {
+    const messages: ChatMessage[] = [];
+    
+    // Itereren door alle berichten in de snapshot
+    snapshot.forEach((childSnapshot) => {
+      // Bericht toevoegen aan de array
+      messages.push({
+        ...childSnapshot.val(),
+        id: childSnapshot.key
+      });
+    });
+    
+    // Sorteren op timestamp (oudste eerst)
+    messages.sort((a, b) => a.timestamp - b.timestamp);
+    
+    // Callback aanroepen met de berichten
+    callback(messages);
+  });
+  
+  // Functie teruggeven om de subscription op te heffen
+  return unsubscribe;
+};
+
 // Exporteer auth voor gebruik in andere componenten
-export { auth, onAuthStateChanged, storage };
+export { auth, onAuthStateChanged, storage, database };
 export type { FirebaseUser };
