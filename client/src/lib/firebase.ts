@@ -365,12 +365,10 @@ export const subscribeToNotifications = (
 export const markNotificationAsRead = async (userId: number, notificationId: string): Promise<void> => {
   try {
     // Referentie naar de notificatie
-    const notificationRef = databaseRef(database, `notifications/${userId}/${notificationId}`);
+    const notificationRef = databaseRef(database, `notifications/${userId}/${notificationId}/read`);
     
-    // Update de notificatie
-    await set(notificationRef, {
-      read: true
-    });
+    // Update alleen het 'read' veld naar true
+    await set(notificationRef, true);
     
     console.log('Notification marked as read');
   } catch (error) {
