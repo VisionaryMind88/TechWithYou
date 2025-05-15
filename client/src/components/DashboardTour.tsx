@@ -13,11 +13,14 @@ interface TourStep {
   content: string;
   contentNL: string;
   placement?: "top" | "right" | "bottom" | "left";
+  // Alternatieve targets als het primaire doel niet wordt gevonden
+  fallbackTargets?: string[];
 }
 
 const defaultTourSteps: TourStep[] = [
   {
     target: ".dashboard-sidebar",
+    fallbackTargets: ["header", "nav", ".header"],
     title: "Navigation",
     titleNL: "Navigatie",
     content: "Use this sidebar to navigate between different sections of your dashboard.",
@@ -26,6 +29,7 @@ const defaultTourSteps: TourStep[] = [
   },
   {
     target: ".dashboard-projects",
+    fallbackTargets: ["[value='projects']", "[data-value='projects']", ".TabsContent:first-of-type"],
     title: "Your Projects",
     titleNL: "Je Projecten",
     content: "Here you can see all your active projects and their status.",
@@ -34,14 +38,16 @@ const defaultTourSteps: TourStep[] = [
   },
   {
     target: ".dashboard-milestones",
-    title: "Project Milestones",
-    titleNL: "Project Mijlpalen",
-    content: "Track the progress of your projects through these milestones.",
-    contentNL: "Volg de voortgang van je projecten via deze mijlpalen.",
+    fallbackTargets: ["[value='activity']", "[data-value='activity']", ".TabsContent:nth-of-type(3)"],
+    title: "Recent Activity",
+    titleNL: "Recente Activiteit",
+    content: "Here you can see recent activity and track the progress of your projects.",
+    contentNL: "Hier zie je recente activiteit en kun je de voortgang van je projecten volgen.",
     placement: "bottom"
   },
   {
     target: ".dashboard-files",
+    fallbackTargets: ["[value='files']", "[data-value='files']", ".TabsContent:nth-of-type(2)"],
     title: "Project Files",
     titleNL: "Project Bestanden",
     content: "Access and manage all files related to your projects.",
@@ -50,6 +56,7 @@ const defaultTourSteps: TourStep[] = [
   },
   {
     target: ".dashboard-notifications",
+    fallbackTargets: [".notification-bell", ".notifications-button", "button:has(.bell)"],
     title: "Notifications",
     titleNL: "Meldingen",
     content: "Stay updated with the latest changes and announcements.",
@@ -87,10 +94,25 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
     // Gebruik een interval om periodiek te proberen het element te vinden
     const findElement = () => {
       console.log(`Looking for target element: ${step.target} (attempt ${retryCount + 1})`);
-      const element = document.querySelector(step.target) as HTMLElement;
+      let element = document.querySelector(step.target) as HTMLElement;
+      
+      // Als het hoofddoel niet is gevonden, probeer de fallback targets
+      if (!element && step.fallbackTargets && step.fallbackTargets.length > 0) {
+        console.log(`Main target not found, trying fallback targets:`, step.fallbackTargets);
+        
+        // Probeer elk fallback target
+        for (const fallbackTarget of step.fallbackTargets) {
+          console.log(`Trying fallback target: ${fallbackTarget}`);
+          element = document.querySelector(fallbackTarget) as HTMLElement;
+          if (element) {
+            console.log(`Found element with fallback target: ${fallbackTarget}`);
+            break;
+          }
+        }
+      }
       
       if (element) {
-        console.log(`Found target element: ${step.target}`);
+        console.log(`Found target element:`, element);
         setTargetElement(element);
         
         // Scroll the element into view if needed
@@ -124,6 +146,15 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
           
           // If element is not found after retries, show an error and skip this step
           console.error(`Tour target not found after ${maxRetries} attempts: ${step.target}`);
+          console.log(`All available elements:`, document.querySelectorAll('*').length);
+          
+          // Registreer enkele belangrijke elementen voor debugging
+          const allTabsContent = document.querySelectorAll('[role="tabpanel"]');
+          console.log(`TabsContent elements (${allTabsContent.length}):`, allTabsContent);
+          
+          const allTabsTriggers = document.querySelectorAll('[role="tab"]');
+          console.log(`TabsTrigger elements (${allTabsTriggers.length}):`, allTabsTriggers);
+          
           toast({
             title: isEnglish ? "Tour element not found" : "Rondleiding element niet gevonden",
             description: isEnglish 

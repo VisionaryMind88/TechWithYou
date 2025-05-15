@@ -560,8 +560,8 @@ export default function DashboardPage() {
             {/* Projects Tab */}
             <TabsContent value="projects" className="dashboard-projects">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">{isEnglish ? "Your Projects" : "Jouw Projecten"}</h2>
-                <Button onClick={() => setIsCreateProjectOpen(true)}>
+                <h2 className="text-xl font-semibold" data-tour-target="projects-title">{isEnglish ? "Your Projects" : "Jouw Projecten"}</h2>
+                <Button onClick={() => setIsCreateProjectOpen(true)} className="create-project-button">
                   <PlusCircle className="h-4 w-4 mr-2" />
                   {isEnglish ? "New Project" : "Nieuw Project"}
                 </Button>
