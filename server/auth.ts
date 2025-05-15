@@ -159,22 +159,12 @@ export function setupAuth(app: Express) {
         type: "info",
       });
       
-      // TODO: Restore this when email verification is fully implemented
       // Return success without logging in (user must verify email first)
-      // const { password, ...userWithoutPassword } = user;
-      // return res.status(201).json({
-      //   ...userWithoutPassword,
-      //   message: "Registration successful. Please check your email to verify your account.",
-      //   requiresVerification: true
-      // });
-      
-      // Temporarily log in the user automatically until verification is implemented
-      req.login(user, (err) => {
-        if (err) return next(err);
-        
-        // Return the user without password
-        const { password, ...userWithoutPassword } = user;
-        return res.status(201).json(userWithoutPassword);
+      const { password, ...userWithoutPassword } = user;
+      return res.status(201).json({
+        ...userWithoutPassword,
+        message: "Registration successful. Please check your email to verify your account.",
+        requiresVerification: true
       });
     } catch (error: any) {
       // Handle validation errors

@@ -76,6 +76,7 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
   const isEnglish = t('language') === 'en';
 
   const loginForm = useForm<LoginFormValues>({
@@ -129,6 +130,13 @@ export default function AuthPage() {
       password: values.password,
       name: values.username, // Using username as name for simplicity
       role: 'client'
+    }, {
+      onSuccess: (data: any) => {
+        // Check if email verification is required
+        if (data.requiresVerification) {
+          setVerificationEmail(values.email);
+        }
+      }
     });
     
     // Track registration attempt
