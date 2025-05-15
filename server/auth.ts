@@ -65,26 +65,43 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
+        console.log(`Login attempt for username: ${username}`);
+        
         // Try to find user by username first
         let user = await storage.getUserByUsername(username);
         
         // If not found, try by email
         if (!user) {
+          console.log(`No user found with username ${username}, trying with email`);
           user = await storage.getUserByEmail(username);
         }
         
-        // If still not found or password is incorrect
-        if (!user || !(await comparePasswords(password, user.password))) {
+        // Log user found status
+        if (user) {
+          console.log(`User found: ${user.username}, role: ${user.role}, verified: ${user.verified}`);
+        } else {
+          console.log(`No user found with username or email: ${username}`);
+          return done(null, false, { message: "Invalid credentials" });
+        }
+        
+        // Check password
+        const passwordValid = await comparePasswords(password, user.password);
+        console.log(`Password comparison result: ${passwordValid}`);
+        
+        if (!passwordValid) {
+          console.log(`Password invalid for user: ${username}`);
           return done(null, false, { message: "Invalid credentials" });
         }
         
         // Check if user is verified
         if (!user.verified) {
+          console.log(`User not verified: ${username}`);
           return done(null, false, { message: "Please verify your email address before logging in" });
         }
         
         // Update last login timestamp
         await storage.updateUser(user.id, {});
+        console.log(`Login successful for user: ${username}`);
         
         return done(null, user);
       } catch (error) {
