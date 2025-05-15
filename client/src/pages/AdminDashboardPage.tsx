@@ -41,6 +41,26 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Loader2, PlusCircle, Edit, Trash, UserIcon, Search, FileText, Bell, CheckCircle, XCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 // Import types from schema
 import { User as UserType, Project, Contact, Notification } from "@shared/schema";
@@ -132,6 +152,40 @@ export default function AdminDashboardPage() {
     logoutMutation.mutate();
   };
 
+  // Define client form schema inside component
+  const clientFormSchema = z.object({
+    username: z.string().min(3, {
+      message: isEnglish ? "Username must be at least 3 characters" : "Gebruikersnaam moet minimaal 3 tekens bevatten",
+    }),
+    email: z.string().email({
+      message: isEnglish ? "Please enter a valid email address" : "Voer een geldig e-mailadres in",
+    }),
+    name: z.string().min(2, {
+      message: isEnglish ? "Name must be at least 2 characters" : "Naam moet minimaal 2 tekens bevatten",
+    }),
+    password: z.string().min(6, {
+      message: isEnglish ? "Password must be at least 6 characters" : "Wachtwoord moet minimaal 6 tekens bevatten",
+    }),
+  });
+  
+  // Define the form
+  type ClientFormValues = z.infer<typeof clientFormSchema>;
+  
+  const form = useForm<ClientFormValues>({
+    resolver: zodResolver(clientFormSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      name: "",
+      password: "",
+    },
+  });
+  
+  // Handle form submission
+  function onSubmit(data: ClientFormValues) {
+    createClientMutation.mutate(data);
+  }
+  
   return (
     <>
       <SEO 
@@ -141,6 +195,94 @@ export default function AdminDashboardPage() {
           : "Administratiepaneel voor het beheren van klanten, projecten en contacten bij Digitaal Atelier"} 
         noIndex={true}
       />
+      
+      {/* Add Client Dialog */}
+      <Dialog open={isAddClientDialogOpen} onOpenChange={setIsAddClientDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{isEnglish ? "Add New Client" : "Nieuwe Klant Toevoegen"}</DialogTitle>
+            <DialogDescription>
+              {isEnglish 
+                ? "Create a new client account. The client will be able to log in using these credentials." 
+                : "Maak een nieuw klantaccount. De klant kan inloggen met deze gegevens."}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Full Name" : "Volledige Naam"}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={isEnglish ? "John Doe" : "Jan Jansen"} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Email" : "E-mail"}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={isEnglish ? "client@example.com" : "klant@voorbeeld.nl"} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Username" : "Gebruikersnaam"}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={isEnglish ? "client123" : "klant123"} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{isEnglish ? "Password" : "Wachtwoord"}</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      {isEnglish ? "Must be at least 6 characters." : "Moet minimaal 6 tekens bevatten."}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button 
+                  type="submit" 
+                  disabled={createClientMutation.isPending}
+                >
+                  {createClientMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isEnglish ? "Creating..." : "Aanmaken..."}
+                    </>
+                  ) : (
+                    isEnglish ? "Create Client" : "Klant Aanmaken"
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
       
       <Header />
       
@@ -200,7 +342,7 @@ export default function AdminDashboardPage() {
                         : "Beheer klantaccounts en toegang"}
                     </CardDescription>
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => setIsAddClientDialogOpen(true)}>
                     <PlusCircle className="h-4 w-4 mr-2" />
                     {isEnglish ? "Add Client" : "Klant Toevoegen"}
                   </Button>
@@ -211,6 +353,8 @@ export default function AdminDashboardPage() {
                     <Input 
                       placeholder={isEnglish ? "Search clients..." : "Zoek klanten..."}
                       className="flex-1"
+                      value={clientSearchQuery}
+                      onChange={(e) => setClientSearchQuery(e.target.value)}
                     />
                   </div>
                   
@@ -236,31 +380,38 @@ export default function AdminDashboardPage() {
                       </TableHeader>
                       <TableBody>
                         {clients.length > 0 ? (
-                          clients.map((client) => {
-                            const clientProjects = projects.filter(p => p.userId === client.id);
-                            return (
-                              <TableRow key={client.id}>
-                                <TableCell className="font-medium">{client.name}</TableCell>
-                                <TableCell>{client.email}</TableCell>
-                                <TableCell>{client.company || "-"}</TableCell>
-                                <TableCell>
-                                  <Badge variant="secondary">
-                                    {clientProjects.length}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                  <div className="flex justify-end gap-2">
-                                    <Button variant="outline" size="icon">
-                                      <Edit className="h-4 w-4" />
-                                    </Button>
-                                    <Button variant="destructive" size="icon">
-                                      <Trash className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })
+                          clients
+                            .filter(client => 
+                              !clientSearchQuery || 
+                              client.name.toLowerCase().includes(clientSearchQuery.toLowerCase()) ||
+                              client.email.toLowerCase().includes(clientSearchQuery.toLowerCase()) ||
+                              (client.company && client.company.toLowerCase().includes(clientSearchQuery.toLowerCase()))
+                            )
+                            .map((client) => {
+                              const clientProjects = projects.filter(p => p.userId === client.id);
+                              return (
+                                <TableRow key={client.id}>
+                                  <TableCell className="font-medium">{client.name}</TableCell>
+                                  <TableCell>{client.email}</TableCell>
+                                  <TableCell>{client.company || "-"}</TableCell>
+                                  <TableCell>
+                                    <Badge variant="secondary">
+                                      {clientProjects.length}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-right">
+                                    <div className="flex justify-end gap-2">
+                                      <Button variant="outline" size="icon">
+                                        <Edit className="h-4 w-4" />
+                                      </Button>
+                                      <Button variant="destructive" size="icon">
+                                        <Trash className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })
                         ) : (
                           <TableRow>
                             <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
