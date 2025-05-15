@@ -22,11 +22,13 @@ function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 // Helper function to assert user exists in authenticated routes
 function assertUser(req: Request, res: Response): Express.User | null {
-  if (!req.user) {
+  // @ts-ignore - req.user is defined because we use requireAuth middleware before
+  const user = req.user;
+  if (!user) {
     res.status(401).json({ message: "Authentication required" });
     return null;
   }
-  return req.user;
+  return user;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -79,7 +81,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post('/api/dashboard/projects', requireAuth, async (req: Request, res: Response) => {
     try {
-      const userId = req.user.id;
+      const user = assertUser(req, res);
+      if (!user) return;
+      
+      const userId = user.id;
       const projectData = insertProjectSchema.parse({
         ...req.body,
         userId
@@ -111,6 +116,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.get('/api/dashboard/projects/:id', requireAuth, async (req: Request, res: Response) => {
     try {
+      const user = assertUser(req, res);
+      if (!user) return;
+      
       const projectId = parseInt(req.params.id, 10);
       const project = await storage.getProject(projectId);
       
@@ -119,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Ensure user owns this project
-      if (project.userId !== req.user.id) {
+      if (project.userId !== user.id) {
         return res.status(403).json({ message: 'Access denied' });
       }
       
@@ -131,6 +139,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.put('/api/dashboard/projects/:id', requireAuth, async (req: Request, res: Response) => {
     try {
+      const user = assertUser(req, res);
+      if (!user) return;
+      
       const projectId = parseInt(req.params.id, 10);
       const project = await storage.getProject(projectId);
       
@@ -139,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Ensure user owns this project
-      if (project.userId !== req.user.id) {
+      if (project.userId !== user.id) {
         return res.status(403).json({ message: 'Access denied' });
       }
       
