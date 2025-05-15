@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/hooks/use-translation";
 import { trackEvent } from "@/lib/analytics";
 import { apiRequest } from "@/lib/queryClient";
+import { uploadFileToStorage } from "@/lib/firebase";
 
 // UI Components
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -100,10 +101,50 @@ export function UploadFileForm({ projectId, onSuccess }: UploadFileFormProps) {
     },
   });
   
-  const onSubmit = (data: FileUploadFormValues) => {
+  const onSubmit = async (data: FileUploadFormValues) => {
     if (selectedFile) {
-      data.file = selectedFile;
-      uploadFileMutation.mutate(data);
+      try {
+        // Upload het bestand naar Firebase Storage
+        data.file = selectedFile;
+        
+        // Toon loading toast
+        toast({
+          title: isEnglish ? "Uploading File..." : "Bestand Uploaden...",
+          description: isEnglish ? "Please wait while we upload your file." : "Even geduld terwijl we je bestand uploaden.",
+        });
+        
+        // Genereer een uniek pad voor het bestand in Firebase Storage
+        const timestamp = new Date().getTime();
+        const fileName = `${timestamp}_${selectedFile.name}`;
+        const storagePath = `project-files/${projectId}/${fileName}`;
+        
+        // Upload het bestand naar Firebase Storage
+        const fileUrl = await uploadFileToStorage(selectedFile, storagePath);
+        
+        // Formdata om te versturen naar de server
+        const formData = new FormData();
+        formData.append("name", data.name);
+        if (data.description) {
+          formData.append("description", data.description);
+        }
+        formData.append("fileUrl", fileUrl);
+        formData.append("fileType", selectedFile.type);
+        formData.append("fileSize", selectedFile.size.toString());
+        formData.append("notifyAdmin", "true");
+        
+        // Server API aanroepen
+        uploadFileMutation.mutate({
+          ...data,
+          fileUrl, // Voeg de fileUrl toe aan de data
+        });
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        toast({
+          title: isEnglish ? "Upload Failed" : "Upload Mislukt",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: isEnglish ? "No File Selected" : "Geen Bestand Geselecteerd",

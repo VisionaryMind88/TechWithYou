@@ -11,6 +11,12 @@ import {
   onAuthStateChanged,
   User as FirebaseUser
 } from "firebase/auth";
+import { 
+  getStorage, 
+  ref, 
+  uploadBytesResumable,
+  getDownloadURL
+} from "firebase/storage";
 
 // Firebase configuratie met omgevingsvariabelen
 const firebaseConfig = {
@@ -123,6 +129,45 @@ export const firebaseSignOut = async (): Promise<void> => {
   return signOut(auth);
 };
 
+// Maak de storage instantie aan
+const storage = getStorage(app);
+
+// Upload bestand naar Firebase Storage
+export const uploadFileToStorage = async (file: File, path: string): Promise<string> => {
+  try {
+    // Referentie naar de locatie in Firebase Storage
+    const storageRef = ref(storage, path);
+    
+    // Upload bestand met progress tracking
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    
+    // Wacht tot upload is voltooid en krijg downloadURL
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          // Optioneel: track upload progress
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload progress: ' + progress + '%');
+        },
+        (error) => {
+          // Handle errors
+          console.error('Upload error:', error);
+          reject(error);
+        },
+        async () => {
+          // Upload successful, get download URL
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadURL);
+        }
+      );
+    });
+  } catch (error) {
+    console.error('File upload error:', error);
+    throw error;
+  }
+};
+
 // Exporteer auth voor gebruik in andere componenten
-export { auth, onAuthStateChanged };
+export { auth, onAuthStateChanged, storage };
 export type { FirebaseUser };
