@@ -20,6 +20,14 @@ export default function PrivacyPolicy() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      <SEO 
+        title={isEnglish ? "Privacy Policy" : "Privacybeleid"}
+        description={isEnglish 
+          ? "Privacy Policy for Digitaal Atelier. Learn how we collect, use, and protect your personal information."
+          : "Privacybeleid van Digitaal Atelier. Lees hoe wij uw persoonlijke gegevens verzamelen, gebruiken en beschermen."
+        }
+        ogType="article"
+      />
       <Header />
       <main className="pt-28 pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

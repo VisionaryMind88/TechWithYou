@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 import { useTranslation } from "@/hooks/use-translation";
 import { useLocation } from "wouter";
 
@@ -15,6 +16,13 @@ export default function NotFound() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      <SEO 
+        title={t('language') === 'en' ? "404 - Page Not Found" : "404 - Pagina Niet Gevonden"}
+        description={t('language') === 'en' 
+          ? "The page you are looking for doesn't exist or has been moved. Please navigate back to our homepage."
+          : "De pagina die u zoekt bestaat niet of is verplaatst. Ga terug naar onze homepagina."
+        }
+      />
       <Header />
       <div className="min-h-[70vh] w-full flex flex-col items-center justify-center bg-white py-20">
         <motion.div

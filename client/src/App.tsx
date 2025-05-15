@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import { LanguageContext } from "@/hooks/use-translation";
 import { CookieConsent } from "@/components/CookieConsent";
+import { Chatbot } from "@/components/Chatbot";
 import { initGA, trackPageView } from "@/lib/analytics";
 
 function Router() {
@@ -43,6 +44,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <Chatbot />
         <CookieConsent />
       </TooltipProvider>
     </LanguageContext.Provider>
