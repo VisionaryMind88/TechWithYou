@@ -59,6 +59,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
 
 // Projectformulier validatieschema
 const projectFormSchema = z.object({
@@ -82,6 +84,17 @@ const projectFormSchema = z.object({
   contactPerson: z.string().optional(),
   contactEmail: z.string().optional(),
   contactPhone: z.string().optional(),
+  needsDomain: z.boolean().optional(),
+  hasDomain: z.boolean().optional(),
+  domainName: z.string().optional(),
+  needsLogo: z.boolean().optional(),
+  hasLogo: z.boolean().optional(),
+  logoFile: z.any().optional(),
+  needsHosting: z.boolean().optional(),
+  needsDesign: z.boolean().optional(),
+  needsDevelopment: z.boolean().optional(),
+  needsSEO: z.boolean().optional(),
+  needsMaintenance: z.boolean().optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -132,6 +145,17 @@ export default function DashboardPage() {
       contactPerson: "",
       contactEmail: "",
       contactPhone: "",
+      needsDomain: false,
+      hasDomain: false,
+      domainName: "",
+      needsLogo: false,
+      hasLogo: false,
+      logoFile: null,
+      needsHosting: false,
+      needsDesign: false,
+      needsDevelopment: false,
+      needsSEO: false,
+      needsMaintenance: false,
     },
   });
 
@@ -610,7 +634,7 @@ export default function DashboardPage() {
         setIsCreateProjectOpen(open);
         if (!open) form.reset();
       }}>
-        <AlertDialogContent className="max-w-lg">
+        <AlertDialogContent className="max-w-4xl">
           <AlertDialogHeader>
             <AlertDialogTitle>
               {isEnglish ? "Create New Project" : "Nieuw Project Aanmaken"}
@@ -623,16 +647,21 @@ export default function DashboardPage() {
           </AlertDialogHeader>
           
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => createProjectMutation.mutate(data))} className="space-y-4 py-2 max-h-[70vh] overflow-y-auto pr-4">
+            <form onSubmit={form.handleSubmit((data) => createProjectMutation.mutate(data))} className="space-y-4 py-2">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{isEnglish ? "Project Name" : "Projectnaam"}</FormLabel>
+                    <FormLabel>
+                      {isEnglish ? "Project Name" : "Projectnaam"} <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder={isEnglish ? "My New Website" : "Mijn Nieuwe Website"} {...field} />
                     </FormControl>
+                    <FormDescription>
+                      {isEnglish ? "Required field" : "Verplicht veld"}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -643,7 +672,9 @@ export default function DashboardPage() {
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{isEnglish ? "Project Type" : "Projecttype"}</FormLabel>
+                    <FormLabel>
+                      {isEnglish ? "Project Type" : "Projecttype"} <span className="text-destructive">*</span>
+                    </FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
                       defaultValue={field.value}
