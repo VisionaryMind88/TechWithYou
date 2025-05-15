@@ -7,6 +7,7 @@ import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser, insertUserSchema } from "@shared/schema";
 import { fromZodError } from "zod-validation-error";
+import { ZodError } from "zod";
 import connectPg from "connect-pg-simple";
 import { pool } from "./db";
 
@@ -142,10 +143,10 @@ export function setupAuth(app: Express) {
         const { password, ...userWithoutPassword } = user;
         return res.status(201).json(userWithoutPassword);
       });
-    } catch (error) {
+    } catch (error: any) {
       // Handle validation errors
       if (error.name === "ZodError") {
-        const validationError = fromZodError(error);
+        const validationError = fromZodError(error as ZodError);
         return res.status(400).json({
           message: "Invalid registration data",
           errors: validationError.details,
@@ -158,7 +159,7 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: Error | null, user: SelectUser | false, info: { message: string } | undefined) => {
       if (err) {
         return next(err);
       }
@@ -167,7 +168,7 @@ export function setupAuth(app: Express) {
         return res.status(401).json({ message: info?.message || "Authentication failed" });
       }
       
-      req.login(user, (loginErr) => {
+      req.login(user, (loginErr: Error | null | undefined) => {
         if (loginErr) {
           return next(loginErr);
         }
@@ -180,7 +181,7 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/logout", (req, res, next) => {
-    req.logout((err) => {
+    req.logout((err: Error | null | undefined) => {
       if (err) return next(err);
       res.status(200).json({ message: "Logged out successfully" });
     });
