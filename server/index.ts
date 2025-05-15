@@ -11,6 +11,29 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Productie-specifieke middleware toevoegen
+if (process.env.NODE_ENV === 'production') {
+  // Security headers
+  app.use((req, res, next) => {
+    // Bescherming tegen clickjacking
+    res.setHeader('X-Frame-Options', 'DENY');
+    // XSS Protection
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    // Content type sniffing bescherming
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    // Strict Transport Security
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    // Referrer policy
+    res.setHeader('Referrer-Policy', 'same-origin');
+    // Content Security Policy
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.openai.com https://*.supabase.co"
+    );
+    next();
+  });
+}
+
 // Firebase Authentication middleware toevoegen
 app.use(firebaseAuthMiddleware);
 

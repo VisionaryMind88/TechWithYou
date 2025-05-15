@@ -11,5 +11,15 @@
     "sleepApplication": false,
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 5
+  },
+  "scaling": {
+    "minInstances": 1,
+    "maxInstances": 3,
+    "autoScaling": true
+  },
+  "resources": {
+    "cpu": 1,
+    "memory": "512MB",
+    "disk": "1GB"
   }
 }
