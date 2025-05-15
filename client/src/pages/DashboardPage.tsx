@@ -217,6 +217,14 @@ export default function DashboardPage() {
                     <FileText className="mr-2 h-4 w-4" />
                     {isEnglish ? "Documents" : "Documenten"}
                   </DropdownMenuItem>
+                  {user?.role === "admin" && (
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <a href="/admin">
+                        <User className="mr-2 h-4 w-4" />
+                        {isEnglish ? "Admin Dashboard" : "Admin Dashboard"}
+                      </a>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
                     className="cursor-pointer text-red-600"
