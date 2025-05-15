@@ -78,10 +78,11 @@ export function setupAuth(app: Express) {
           return done(null, false, { message: "Invalid credentials" });
         }
         
+        // TODO: Uncomment this when the database migration is complete
         // Check if user is verified
-        if (!user.verified) {
-          return done(null, false, { message: "Please verify your email address before logging in" });
-        }
+        // if (!user.verified) {
+        //   return done(null, false, { message: "Please verify your email address before logging in" });
+        // }
         
         // Update last login timestamp
         await storage.updateUser(user.id, {});
@@ -131,37 +132,50 @@ export function setupAuth(app: Express) {
       const verificationToken = generateToken();
       const verificationExpires = generateTokenExpiration();
       
-      // Create user with verified=false
+      // Create user (temporarily not setting verified=false until schema migration is complete)
       const user = await storage.createUser({
         ...userData,
         password: hashedPassword,
-        verified: false,
+        // verified: false, // Uncomment when schema migration is complete
       });
       
-      // Set verification token
-      await storage.setVerificationToken(user.id, verificationToken, verificationExpires);
+      // Set verification token (temporarily commented until schema migration is complete)
+      // await storage.setVerificationToken(user.id, verificationToken, verificationExpires);
       
-      // Send verification email
-      await emailService.sendVerificationEmail(
-        user.email,
-        user.username,
-        verificationToken
-      );
+      // Send verification email (temporarily commented until SendGrid API is set up)
+      // await emailService.sendVerificationEmail(
+      //   user.email,
+      //   user.username,
+      //   verificationToken
+      // );
+      
+      // Log verification info for testing
+      console.log(`[DEBUG] Verification would be sent to ${user.email} with token ${verificationToken}`);
       
       // Create welcome notification
       await storage.createNotification({
         userId: user.id,
         title: "Welcome to Digitaal Atelier!",
-        message: "Thank you for registering. Please check your email to verify your account.",
-        type: "info",
+        message: "Thank you for registering. You are now logged in and can access your dashboard.",
+        type: "success",
       });
       
+      // TODO: Restore this when email verification is fully implemented
       // Return success without logging in (user must verify email first)
-      const { password, ...userWithoutPassword } = user;
-      return res.status(201).json({
-        ...userWithoutPassword,
-        message: "Registration successful. Please check your email to verify your account.",
-        requiresVerification: true
+      // const { password, ...userWithoutPassword } = user;
+      // return res.status(201).json({
+      //   ...userWithoutPassword,
+      //   message: "Registration successful. Please check your email to verify your account.",
+      //   requiresVerification: true
+      // });
+      
+      // Temporarily log in the user automatically until verification is implemented
+      req.login(user, (err) => {
+        if (err) return next(err);
+        
+        // Return the user without password
+        const { password, ...userWithoutPassword } = user;
+        return res.status(201).json(userWithoutPassword);
       });
     } catch (error: any) {
       // Handle validation errors
