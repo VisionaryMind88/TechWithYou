@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/Header";
@@ -295,24 +295,40 @@ export default function DashboardPage() {
   };
   
   // Handlers voor welkomstscherm en tour
-  const handleCloseWelcome = () => {
+  const handleCloseWelcome = useCallback(() => {
     // Sla op dat de gebruiker het welkomstscherm heeft gezien
     if (user?.id) {
       localStorage.setItem(`welcome_seen_${user.id}`, 'true');
     }
     setShowWelcomeScreen(false);
-  };
+  }, [user?.id]);
   
-  const handleStartTour = () => {
+  const handleStartTour = useCallback(() => {
     // Sluit welkomstscherm en start tour
     setShowWelcomeScreen(false);
-    setShowTour(true);
-    console.log("Tour started"); // Debug logging
+    
+    // Toon debug informatie
+    console.log("Tour started - preparation"); 
+    console.log("Current dashboard elements:");
+    console.log("- .dashboard-sidebar:", document.querySelector(".dashboard-sidebar"));
+    console.log("- .dashboard-projects:", document.querySelector(".dashboard-projects"));
+    console.log("- .dashboard-files:", document.querySelector(".dashboard-files"));
+    console.log("- .dashboard-milestones:", document.querySelector(".dashboard-milestones"));
+    console.log("- .dashboard-notifications:", document.querySelector(".dashboard-notifications"));
+    
     // Forceer een refresh van de tour component door state te manipuleren
     localStorage.removeItem(`tour_completed_${user?.id}`);
-  };
+    
+    // Geef de DOM tijd om zich volledig te renderen voordat we de tour starten
+    setTimeout(() => {
+      console.log("Starting tour after delay");
+      setShowTour(true);
+      // Track gebeurtenis
+      trackEvent("tour_started", "onboarding", "dashboard");
+    }, 500);
+  }, [user?.id, trackEvent]);
   
-  const handleCompleteTour = () => {
+  const handleCompleteTour = useCallback(() => {
     // Sla op dat de gebruiker de tour heeft voltooid
     if (user?.id) {
       localStorage.setItem(`tour_completed_${user.id}`, 'true');
@@ -329,15 +345,18 @@ export default function DashboardPage() {
     
     // Track gebeurtenis
     trackEvent("tour_completed", "onboarding", "dashboard");
-  };
+  }, [user?.id, isEnglish, toast, trackEvent]);
   
-  const handleSkipTour = () => {
+  const handleSkipTour = useCallback(() => {
     // Sla op dat de gebruiker de tour heeft overgeslagen
     if (user?.id) {
       localStorage.setItem(`tour_completed_${user.id}`, 'skipped');
     }
     setShowTour(false);
-  };
+    
+    // Track gebeurtenis
+    trackEvent("tour_skipped", "onboarding", "dashboard");
+  }, [user?.id, trackEvent]);
 
   const getProjectStatusColor = (status: string) => {
     switch (status) {

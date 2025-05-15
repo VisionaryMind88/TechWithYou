@@ -75,52 +75,83 @@ export function DashboardTour({ onComplete, onSkip, steps = defaultTourSteps }: 
   console.log("Tour started");
   trackEvent('tour_started', 'onboarding', 'dashboard');
   
-  // Function to find target element
+  // Function to find target element with retry
   useEffect(() => {
     if (!isVisible) return;
     
     const step = steps[currentStep];
-    const element = document.querySelector(step.target) as HTMLElement;
+    let retryCount = 0;
+    const maxRetries = 5;
+    const retryInterval = 500; // 500ms between retries
     
-    if (element) {
-      setTargetElement(element);
-      // Scroll the element into view if needed
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Gebruik een interval om periodiek te proberen het element te vinden
+    const findElement = () => {
+      console.log(`Looking for target element: ${step.target} (attempt ${retryCount + 1})`);
+      const element = document.querySelector(step.target) as HTMLElement;
+      
+      if (element) {
+        console.log(`Found target element: ${step.target}`);
+        setTargetElement(element);
+        
+        // Scroll the element into view if needed
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // Add highlight effect to target element
-      const originalOutline = element.style.outline;
-      const originalPosition = element.style.position;
-      const originalZIndex = element.style.zIndex;
-      
-      // Add highlight styles
-      element.style.outline = '2px solid var(--primary)';
-      element.style.position = 'relative';
-      element.style.zIndex = '1000';
-      
-      // Cleanup function to restore original styles
-      return () => {
-        element.style.outline = originalOutline;
-        element.style.position = originalPosition;
-        element.style.zIndex = originalZIndex;
-      };
-    } else {
-      // If element is not found, show an error and skip this step
-      console.error(`Tour target not found: ${step.target}`);
-      toast({
-        title: isEnglish ? "Tour element not found" : "Rondleiding element niet gevonden",
-        description: isEnglish 
-          ? `Could not find "${step.title}" element. Skipping this step.` 
-          : `Kon "${step.titleNL}" element niet vinden. Deze stap wordt overgeslagen.`,
-        variant: "destructive",
-      });
-      
-      // Try to move to next step, or complete tour if this is the last step
-      if (currentStep < steps.length - 1) {
-        setCurrentStep(prevStep => prevStep + 1);
+        // Add highlight effect to target element
+        const originalOutline = element.style.outline;
+        const originalPosition = element.style.position;
+        const originalZIndex = element.style.zIndex;
+        
+        // Add highlight styles
+        element.style.outline = '2px solid var(--primary)';
+        element.style.position = 'relative';
+        element.style.zIndex = '1000';
+        
+        clearInterval(intervalId);
+        
+        // Cleanup function to restore original styles
+        return () => {
+          if (element) {
+            element.style.outline = originalOutline;
+            element.style.position = originalPosition;
+            element.style.zIndex = originalZIndex;
+          }
+        };
       } else {
-        onComplete();
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          clearInterval(intervalId);
+          
+          // If element is not found after retries, show an error and skip this step
+          console.error(`Tour target not found after ${maxRetries} attempts: ${step.target}`);
+          toast({
+            title: isEnglish ? "Tour element not found" : "Rondleiding element niet gevonden",
+            description: isEnglish 
+              ? `Could not find "${step.title}" element. Skipping this step.` 
+              : `Kon "${step.titleNL}" element niet vinden. Deze stap wordt overgeslagen.`,
+            variant: "destructive",
+          });
+          
+          // Try to move to next step, or complete tour if this is the last step
+          if (currentStep < steps.length - 1) {
+            setCurrentStep(prevStep => prevStep + 1);
+          } else {
+            onComplete();
+          }
+        }
       }
-    }
+    };
+    
+    // Start het interval
+    const intervalId = setInterval(findElement, retryInterval);
+    
+    // Direct een keer proberen
+    findElement();
+    
+    // Cleanup functie
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [currentStep, steps, isVisible, isEnglish, toast, onComplete]);
   
   const handleNext = () => {
