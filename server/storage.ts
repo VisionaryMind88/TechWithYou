@@ -16,6 +16,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUsersByRole(role: string): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, data: Partial<Omit<InsertUser, 'password'>>): Promise<User | undefined>;
   updateUserPassword(id: number, password: string): Promise<User | undefined>;
@@ -40,6 +41,7 @@ export interface IStorage {
   createProject(project: InsertProject): Promise<Project>;
   getProject(id: number): Promise<Project | undefined>;
   getUserProjects(userId: number): Promise<Project[]>;
+  getAllProjects(): Promise<Project[]>;
   updateProject(id: number, data: Partial<InsertProject>): Promise<Project | undefined>;
   deleteProject(id: number): Promise<boolean>;
   

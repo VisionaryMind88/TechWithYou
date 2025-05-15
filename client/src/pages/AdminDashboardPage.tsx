@@ -103,6 +103,7 @@ export default function AdminDashboardPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/contacts"] });
+      trackEvent("mark_contact_read", "admin", "contact_management", 1);
     },
   });
 
@@ -394,15 +395,15 @@ export default function AdminDashboardPage() {
                       <TableBody>
                         {contacts.length > 0 ? (
                           contacts.map((contact) => (
-                            <TableRow key={contact.id} className={!contact.isRead ? "bg-muted/30" : ""}>
+                            <TableRow key={contact.id} className={!contact.read ? "bg-muted/30" : ""}>
                               <TableCell className="font-medium">{contact.name}</TableCell>
                               <TableCell>{contact.email}</TableCell>
-                              <TableCell>{contact.subject}</TableCell>
+                              <TableCell>{contact.service}</TableCell>
                               <TableCell>
                                 {new Date(contact.createdAt).toLocaleDateString()}
                               </TableCell>
                               <TableCell>
-                                {contact.isRead ? (
+                                {contact.read ? (
                                   <Badge variant="outline" className="flex items-center">
                                     <CheckCircle className="h-3 w-3 mr-1" />
                                     {isEnglish ? "Read" : "Gelezen"}
@@ -424,14 +425,14 @@ export default function AdminDashboardPage() {
                                     </PopoverTrigger>
                                     <PopoverContent className="w-80">
                                       <div className="space-y-2">
-                                        <h4 className="font-medium">{contact.subject}</h4>
+                                        <h4 className="font-medium">{contact.service}</h4>
                                         <p className="text-sm text-muted-foreground">
                                           {isEnglish ? "From" : "Van"}: {contact.name} ({contact.email})
                                         </p>
                                         <div className="text-sm border rounded-lg p-3 mt-2 bg-muted/50">
                                           {contact.message}
                                         </div>
-                                        {!contact.isRead && (
+                                        {!contact.read && (
                                           <Button 
                                             variant="default" 
                                             size="sm" 

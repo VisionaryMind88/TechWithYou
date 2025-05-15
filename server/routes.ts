@@ -255,6 +255,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =================== ADMIN ROUTES ===================
+  // Middleware to require admin role
+  function requireAdmin(req: Request, res: Response, next: NextFunction) {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    
+    if (req.user?.role !== 'admin') {
+      return res.status(403).json({ message: "Access denied: Admin rights required" });
+    }
+    
+    next();
+  }
+
+  // Get all clients (users with role 'client')
+  app.get('/api/admin/clients', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const clients = await storage.getUsersByRole('client');
+      res.json(clients);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      res.status(500).json({ error: 'Failed to fetch clients' });
+    }
+  });
+
+  // Get all projects (across all clients)
+  app.get('/api/admin/projects', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const projects = await storage.getAllProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error('Error fetching all projects:', error);
+      res.status(500).json({ error: 'Failed to fetch projects' });
+    }
+  });
+
+  // Get all contact form submissions
+  app.get('/api/admin/contacts', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const contacts = await storage.getContacts();
+      res.json(contacts);
+    } catch (error) {
+      console.error('Error fetching contacts:', error);
+      res.status(500).json({ error: 'Failed to fetch contacts' });
+    }
+  });
+
+  // Mark contact form as read
+  app.post('/api/admin/contacts/:id/read', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const contactId = parseInt(req.params.id);
+      const updatedContact = await storage.markContactAsRead(contactId);
+      if (!updatedContact) {
+        return res.status(404).json({ error: 'Contact not found' });
+      }
+      res.json(updatedContact);
+    } catch (error) {
+      console.error('Error marking contact as read:', error);
+      res.status(500).json({ error: 'Failed to update contact' });
+    }
+  });
+
   // Create HTTP server
   const httpServer = createServer(app);
 
