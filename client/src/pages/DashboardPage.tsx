@@ -84,17 +84,35 @@ const projectFormSchema = z.object({
   contactPerson: z.string().optional(),
   contactEmail: z.string().optional(),
   contactPhone: z.string().optional(),
-  needsDomain: z.boolean().optional(),
-  hasDomain: z.boolean().optional(),
+  needsDomain: z.boolean(),
+  hasDomain: z.boolean(),
   domainName: z.string().optional(),
-  needsLogo: z.boolean().optional(),
-  hasLogo: z.boolean().optional(),
+  needsLogo: z.boolean(),
+  hasLogo: z.boolean(),
   logoFile: z.any().optional(),
-  needsHosting: z.boolean().optional(),
-  needsDesign: z.boolean().optional(),
-  needsDevelopment: z.boolean().optional(),
-  needsSEO: z.boolean().optional(),
-  needsMaintenance: z.boolean().optional(),
+  needsHosting: z.boolean(),
+  needsDesign: z.boolean(),
+  needsDevelopment: z.boolean(),
+  needsSEO: z.boolean(),
+  needsMaintenance: z.boolean(),
+}).refine((data) => {
+  // Tenminste één TechWithYou dienst moet geselecteerd zijn
+  return data.needsDesign || data.needsDevelopment || data.needsHosting || data.needsSEO || data.needsMaintenance;
+}, {
+  message: "Select at least one TechWithYou service",
+  path: ["services"]
+}).refine((data) => {
+  // Voor domein moet ofwel needsDomain of hasDomain true zijn
+  return data.needsDomain || data.hasDomain;
+}, {
+  message: "Select domain option",
+  path: ["domainOption"]  
+}).refine((data) => {
+  // Voor logo moet ofwel needsLogo of hasLogo true zijn
+  return data.needsLogo || data.hasLogo;
+}, {
+  message: "Select logo option",
+  path: ["logoOption"]
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -165,7 +183,9 @@ export default function DashboardPage() {
       const res = await apiRequest("POST", "/api/dashboard/projects", {
         ...data,
         userId: user?.id,
-        status: "proposal",
+        status: "new", // Markeer als nieuwe projectaanvraag
+        notifyAdmin: true, // Onmiddellijke notificatie voor admin
+        submittedAt: new Date().toISOString(), // Tijdstempel toevoegen
       });
       return await res.json();
     },
@@ -174,15 +194,19 @@ export default function DashboardPage() {
       form.reset();
       setIsCreateProjectOpen(false);
       
-      // Invalidate the projects query to refetch the list
+      // Invalidate de projecten query
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/projects"] });
+      
+      // Invalidate admin notifications en projecten
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
       
       // Show success toast
       toast({
         title: isEnglish ? "Project Created" : "Project Aangemaakt",
         description: isEnglish 
-          ? "Your project request has been submitted successfully."
-          : "Je projectaanvraag is succesvol ingediend.",
+          ? "Your project request has been sent directly to the admin dashboard."
+          : "Je projectaanvraag is direct verzonden naar het admin dashboard.",
         variant: "default",
       });
       
@@ -905,13 +929,20 @@ export default function DashboardPage() {
               {/* TechWithYou Services Section */}
               <div className="mb-6">
                 <h3 className="text-lg font-medium mb-2">
-                  {isEnglish ? "TechWithYou Services" : "TechWithYou Diensten"}
+                  {isEnglish ? "TechWithYou Services" : "TechWithYou Diensten"} <span className="text-destructive">*</span>
                 </h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   {isEnglish 
-                    ? "Select which services you need from TechWithYou" 
-                    : "Selecteer welke diensten je nodig hebt van TechWithYou"}
+                    ? "Select which services you need from TechWithYou (at least one required)" 
+                    : "Selecteer welke diensten je nodig hebt van TechWithYou (tenminste één vereist)"}
                 </p>
+                {form.formState.errors.root?.message && form.formState.errors.root.message.includes("service") && (
+                  <p className="text-sm text-destructive mb-2">
+                    {isEnglish 
+                      ? "Please select at least one service" 
+                      : "Selecteer tenminste één dienst"}
+                  </p>
+                )}
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField
@@ -1036,8 +1067,15 @@ export default function DashboardPage() {
               {/* Domain Name Section */}
               <div className="mb-6">
                 <h3 className="text-lg font-medium mb-2">
-                  {isEnglish ? "Domain Name" : "Domeinnaam"}
+                  {isEnglish ? "Domain Name" : "Domeinnaam"} <span className="text-destructive">*</span>
                 </h3>
+                {form.formState.errors.root?.message && form.formState.errors.root.message.includes("domain") && (
+                  <p className="text-sm text-destructive mb-2">
+                    {isEnglish 
+                      ? "Please select a domain option" 
+                      : "Selecteer een domein optie"}
+                  </p>
+                )}
                 
                 <div className="space-y-4">
                   <FormField
@@ -1105,8 +1143,15 @@ export default function DashboardPage() {
               {/* Logo Section */}
               <div className="mb-6">
                 <h3 className="text-lg font-medium mb-2">
-                  {isEnglish ? "Logo" : "Logo"}
+                  {isEnglish ? "Logo" : "Logo"} <span className="text-destructive">*</span>
                 </h3>
+                {!form.formState.isValid && form.formState.errors.logoOption && (
+                  <p className="text-sm text-destructive mb-2">
+                    {isEnglish 
+                      ? "Please select a logo option" 
+                      : "Selecteer een logo optie"}
+                  </p>
+                )}
                 
                 <div className="space-y-4">
                   <FormField
