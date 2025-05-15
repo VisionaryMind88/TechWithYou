@@ -34,32 +34,32 @@ export const Footer = () => {
             <h3 className="text-lg font-semibold mb-6">{t('footer.services')}</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/services#website-development" className="text-neutral-400 hover:text-white transition">
                   Website Development
                 </a>
               </li>
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/services#web-applications" className="text-neutral-400 hover:text-white transition">
                   Web Applicaties
                 </a>
               </li>
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/services#dashboards" className="text-neutral-400 hover:text-white transition">
                   Dashboards & Data Visualisatie
                 </a>
               </li>
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/services#ux-ui-design" className="text-neutral-400 hover:text-white transition">
                   UX/UI Design
                 </a>
               </li>
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/services#performance-optimization" className="text-neutral-400 hover:text-white transition">
                   Performance Optimalisatie
                 </a>
               </li>
               <li>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="/services#security-maintenance" className="text-neutral-400 hover:text-white transition">
                   Beveiliging & Onderhoud
                 </a>
               </li>
