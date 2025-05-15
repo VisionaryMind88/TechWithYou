@@ -300,7 +300,7 @@ export default function DashboardPage() {
           onSkip={handleSkipTour}
         />
       )}
-      <Header />
+      <div className="dashboard-sidebar"><Header /></div>
       <main className="flex-1 py-8">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Welcome section */}
@@ -420,7 +420,7 @@ export default function DashboardPage() {
             </TabsList>
 
             {/* Projects Tab */}
-            <TabsContent value="projects">
+            <TabsContent value="projects" className="dashboard-projects">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold">{isEnglish ? "Your Projects" : "Jouw Projecten"}</h2>
                 <Button onClick={() => setIsCreateProjectOpen(true)}>
@@ -526,7 +526,7 @@ export default function DashboardPage() {
             </TabsContent>
 
             {/* Files Tab */}
-            <TabsContent value="files">
+            <TabsContent value="files" className="dashboard-files">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold">{isEnglish ? "Project Documents" : "Projectdocumenten"}</h2>
                 <Button>
