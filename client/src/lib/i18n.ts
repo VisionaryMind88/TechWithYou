@@ -226,6 +226,30 @@ const enTranslations = {
       {
         question: 'What is your payment structure?',
         answer: 'Our typical payment structure includes a 50% deposit to begin the project, with the remaining balance due upon completion. For larger projects, we may break payments into multiple milestones. We accept bank transfers and major credit cards.'
+      },
+      {
+        question: 'What technologies do you use for development?',
+        answer: 'We use the latest and most reliable technologies including React, Angular, Vue.js, Node.js, PHP, Python, and various CMS platforms like WordPress. Our technology choices are always based on your specific project requirements and long-term goals.'
+      },
+      {
+        question: 'Do you provide hosting for websites?',
+        answer: 'Yes, we offer high-performance, secure hosting solutions tailored to your website\'s needs. Our hosting includes 99.9% uptime guarantee, regular backups, security monitoring, and technical support. We can also work with your existing hosting provider if preferred.'
+      },
+      {
+        question: 'How do you handle revisions during the development process?',
+        answer: 'We include two rounds of revisions in our standard project scope. This gives you multiple opportunities to provide feedback and request changes. Additional revision rounds can be arranged if needed. We maintain clear communication throughout the process to ensure your satisfaction.'
+      },
+      {
+        question: 'What information do you need to start a website project?',
+        answer: 'To get started, we need to understand your business goals, target audience, brand guidelines, content requirements, and any specific functionality you need. During our initial consultation, we\'ll guide you through all the necessary details and help you organize your thoughts and materials.'
+      },
+      {
+        question: 'Do you offer custom web application development?',
+        answer: 'Yes, we specialize in developing custom web applications tailored to your business processes. Whether you need an internal tool, customer portal, or complex system, we can build a scalable, secure, and user-friendly solution that meets your specific requirements.'
+      },
+      {
+        question: 'How do you ensure websites are mobile-friendly?',
+        answer: 'All our websites are built with a mobile-first approach using responsive design techniques. We rigorously test on multiple devices and screen sizes to ensure optimal performance and user experience across all platforms. This approach also benefits your SEO as mobile-friendliness is a key ranking factor.'
       }
     ]
   },
@@ -509,6 +533,30 @@ const nlTranslations = {
       {
         question: 'Wat is uw betalingsstructuur?',
         answer: 'Onze typische betalingsstructuur omvat een aanbetaling van 50% om het project te starten, waarbij het resterende saldo verschuldigd is bij voltooiing. Voor grotere projecten kunnen we betalingen in meerdere mijlpalen verdelen. We accepteren bankoverschrijvingen en belangrijke creditcards.'
+      },
+      {
+        question: 'Welke technologieën gebruikt u voor ontwikkeling?',
+        answer: 'We gebruiken de nieuwste en meest betrouwbare technologieën waaronder React, Angular, Vue.js, Node.js, PHP, Python en verschillende CMS-platforms zoals WordPress. Onze technologiekeuzes zijn altijd gebaseerd op uw specifieke projectvereisten en langetermijndoelen.'
+      },
+      {
+        question: 'Biedt u hosting aan voor websites?',
+        answer: 'Ja, we bieden hoogwaardige, beveiligde hostingoplossingen op maat van de behoeften van uw website. Onze hosting omvat 99,9% uptime garantie, regelmatige back-ups, beveiligingsmonitoring en technische ondersteuning. We kunnen ook werken met uw bestaande hostingprovider indien gewenst.'
+      },
+      {
+        question: 'Hoe gaat u om met revisies tijdens het ontwikkelingsproces?',
+        answer: 'We nemen twee revisierondes op in onze standaard projectomvang. Dit geeft u meerdere mogelijkheden om feedback te geven en wijzigingen aan te vragen. Extra revisierondes kunnen indien nodig worden geregeld. We houden de communicatie duidelijk gedurende het hele proces om uw tevredenheid te garanderen.'
+      },
+      {
+        question: 'Welke informatie heeft u nodig om een websiteproject te starten?',
+        answer: 'Om te beginnen moeten we inzicht hebben in uw bedrijfsdoelen, doelgroep, merkrichtlijnen, content-vereisten en specifieke functionaliteiten die u nodig heeft. Tijdens ons eerste consult begeleiden we u door alle benodigde details en helpen we u bij het organiseren van uw gedachten en materialen.'
+      },
+      {
+        question: 'Biedt u aangepaste webapplicatie-ontwikkeling aan?',
+        answer: 'Ja, we zijn gespecialiseerd in het ontwikkelen van aangepaste webapplicaties die zijn afgestemd op uw bedrijfsprocessen. Of u nu een interne tool, klantenportaal of complex systeem nodig heeft, we kunnen een schaalbare, veilige en gebruiksvriendelijke oplossing bouwen die aan uw specifieke eisen voldoet.'
+      },
+      {
+        question: 'Hoe zorgt u ervoor dat websites mobiel-vriendelijk zijn?',
+        answer: 'Al onze websites worden gebouwd met een mobile-first benadering en responsieve ontwerptechnieken. We testen uitvoerig op meerdere apparaten en schermformaten om optimale prestaties en gebruikerservaring op alle platforms te garanderen. Deze aanpak komt ook uw SEO ten goede, aangezien mobiel-vriendelijkheid een belangrijke rankingfactor is.'
       }
     ]
   },
