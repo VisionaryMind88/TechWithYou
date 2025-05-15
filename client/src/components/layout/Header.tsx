@@ -61,8 +61,8 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <div className={`text-2xl font-bold ${isScrolled || !isHomePage ? 'text-neutral-900' : 'text-white'}`}>
-                <span className="text-primary">Tech</span>WithYou
+              <div className="text-2xl font-bold text-primary">
+                TechWithYou
               </div>
             </Link>
           </div>

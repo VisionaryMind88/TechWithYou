@@ -49,11 +49,9 @@ export const Header = () => {
           <div className="flex items-center">
             <a href="/" className="flex items-center">
               <div
-                className={`text-2xl font-bold ${
-                  scrolledPast50 ? "text-neutral-900" : "text-white lg:text-neutral-900"
-                }`}
+                className="text-2xl font-bold text-primary"
               >
-                <span className="text-primary">Tech</span>WithYou
+                TechWithYou
               </div>
             </a>
           </div>
