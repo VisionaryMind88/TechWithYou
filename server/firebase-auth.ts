@@ -75,7 +75,7 @@ export async function verifyFirebaseToken(token: string) {
       role: 'client',
       firebaseUid: uid,
       verified: true, // Social login gebruikers zijn al geverifieerd
-      profileImage: picture || null,
+      avatarUrl: picture || null,
     };
     
     return await storage.createUser(newUser);
