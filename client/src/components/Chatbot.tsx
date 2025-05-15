@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocation } from "wouter";
 import { Send, Maximize2, Minimize2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,17 +18,29 @@ interface Message {
 export const Chatbot = () => {
   const { t } = useTranslation();
   const isEnglish = t('language') === 'en';
+  const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [hasShownAutomatically, setHasShownAutomatically] = useState(false);
+  const [hasBeenClosedByUser, setHasBeenClosedByUser] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Check if we're on a dashboard page - don't show chatbot there
+  const isDashboardPage = location.includes("/dashboard") || 
+                          location.includes("/admin") || 
+                          location.includes("/project");
+                          
+  // Don't render chatbot on dashboard pages
+  if (isDashboardPage) {
+    return null;
+  }
 
-  // Auto-open chat after 10 seconds
+  // Auto-open chat after 10 seconds (only if it hasn't been closed by user)
   useEffect(() => {
-    if (!hasShownAutomatically) {
+    if (!hasShownAutomatically && !hasBeenClosedByUser) {
       const timer = setTimeout(() => {
         setIsOpen(true);
         setHasShownAutomatically(true);
@@ -52,7 +65,7 @@ export const Chatbot = () => {
       
       return () => clearTimeout(timer);
     }
-  }, [hasShownAutomatically, isEnglish]);
+  }, [hasShownAutomatically, hasBeenClosedByUser, isEnglish]);
 
   // Show welcome message when chat is first opened manually
   useEffect(() => {
@@ -105,6 +118,7 @@ export const Chatbot = () => {
 
   const closeChat = () => {
     setIsOpen(false);
+    setHasBeenClosedByUser(true); // User closed the chat, don't show it again automatically
     trackEvent('chat_closed', 'engagement', 'chatbot');
   };
 
