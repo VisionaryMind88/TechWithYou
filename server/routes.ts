@@ -12,6 +12,7 @@ import { fromZodError } from "zod-validation-error";
 import { ZodError } from "zod";
 import { setupAuth } from "./auth";
 import { emailService } from "./email-service";
+import { verifyFirebaseToken } from "./firebase-auth";
 
 // Middleware to check if user is authenticated
 function requireAuth(req: Request, res: Response, next: NextFunction) {
