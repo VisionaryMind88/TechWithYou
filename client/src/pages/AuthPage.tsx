@@ -371,12 +371,8 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title={isEnglish ? "Login or Register | TechWithYou" : "Inloggen of Registreren | TechWithYou"}
-        description={
-          isEnglish
-            ? "Login to your TechWithYou account or register for a new account to access your dashboard and manage your projects."
-            : "Log in op je TechWithYou-account of registreer voor een nieuw account om toegang te krijgen tot je dashboard en je projecten te beheren."
-        }
+        title={`${t('auth.login')} ${t('auth.register')} | TechWithYou`}
+        description={t('auth.loginDescription') + " " + t('auth.registerDescription')}
       />
       <Header />
       <main className="flex-1 py-16">
@@ -392,12 +388,10 @@ export default function AuthPage() {
                       <Mail className="w-6 h-6" />
                     </div>
                     <CardTitle className="text-2xl">
-                      {isEnglish ? "Verify Your Email" : "Verifieer Je E-mail"}
+                      {t('auth.emailVerification')}
                     </CardTitle>
                     <CardDescription>
-                      {isEnglish 
-                        ? "We've sent a verification email to:" 
-                        : "We hebben een verificatie-e-mail verzonden naar:"}
+                      {t('auth.verificationSent')}:
                       <span className="block font-medium text-lg mt-1">{verificationEmail}</span>
                     </CardDescription>
                   </CardHeader>
@@ -405,12 +399,10 @@ export default function AuthPage() {
                     <Alert>
                       <Mail className="h-4 w-4" />
                       <AlertTitle>
-                        {isEnglish ? "Check your inbox" : "Controleer je inbox"}
+                        {t('auth.emailVerification')}
                       </AlertTitle>
                       <AlertDescription>
-                        {isEnglish 
-                          ? "Click the verification link in the email to activate your account. If you don't see it, check your spam folder."
-                          : "Klik op de verificatielink in de e-mail om je account te activeren. Als je het niet ziet, controleer dan je spammap."}
+                        {t('auth.verificationInstructions')}
                       </AlertDescription>
                     </Alert>
                     
@@ -517,8 +509,8 @@ export default function AuthPage() {
                     ) : (
                       <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList className="grid w-full grid-cols-2">
-                          <TabsTrigger value="login">{isEnglish ? "Login" : "Inloggen"}</TabsTrigger>
-                          <TabsTrigger value="register">{isEnglish ? "Register" : "Registreren"}</TabsTrigger>
+                          <TabsTrigger value="login">{t('auth.login')}</TabsTrigger>
+                          <TabsTrigger value="register">{t('auth.register')}</TabsTrigger>
                         </TabsList>
                         
                         <TabsContent value="login">
