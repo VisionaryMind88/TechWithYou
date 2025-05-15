@@ -9,6 +9,7 @@ import { Redirect } from "wouter";
 import { SEO } from "@/components/SEO";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ChatInterface } from "@/components/ChatInterface";
 
 import { 
   Tabs, 
