@@ -12,7 +12,7 @@ export const ServiceCard = ({ icon, title, description, features, id }: ServiceC
   const { t } = useTranslation();
   
   return (
-    <div className="bg-white rounded-lg shadow-md p-8 card-hover">
+    <div id={id} className="bg-white rounded-lg shadow-md p-8 card-hover">
       <div className="text-primary mb-4">
         <i className={`${icon} text-3xl`}></i>
       </div>
