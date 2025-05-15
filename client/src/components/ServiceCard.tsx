@@ -5,6 +5,7 @@ interface ServiceCardProps {
   title: string;
   description: string;
   features: string[];
+  id?: string;
 }
 
 export const ServiceCard = ({ icon, title, description, features }: ServiceCardProps) => {

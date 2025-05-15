@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useParams } from 'wouter';
 import { useTranslation } from '@/hooks/use-translation';
 import { motion } from 'framer-motion';
 import { SEO } from '@/components/SEO';
@@ -10,8 +9,11 @@ import { Contact } from '@/components/Contact';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 
-const ServicePage = () => {
-  const { id } = useParams();
+interface ServicePageProps {
+  id?: string;
+}
+
+const ServicePage = ({ id }: ServicePageProps) => {
   const { t } = useTranslation();
   
   const services = [

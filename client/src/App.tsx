@@ -20,7 +20,10 @@ function Router() {
         {() => <Home />}
       </Route>
       <Route path="/services">
-        {() => <ServicePage />}
+        {() => <Home initialSection="services" />}
+      </Route>
+      <Route path="/services/:id">
+        {(params) => <ServicePage id={params.id} />}
       </Route>
       <Route path="/portfolio">
         {() => <PortfolioPage />}
