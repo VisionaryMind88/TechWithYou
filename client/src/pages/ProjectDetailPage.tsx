@@ -485,7 +485,7 @@ export default function ProjectDetailPage() {
                             {Object.entries(project.metaData as Record<string, unknown>).map(([key, value]) => (
                               <div key={key} className="flex flex-col">
                                 <span className="text-sm text-muted-foreground">{key}</span>
-                                <span>{String(value)}</span>
+                                <span>{typeof value === 'string' ? value : String(value)}</span>
                               </div>
                             ))}
                           </div>

@@ -57,6 +57,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard API routes
   app.get('/api/dashboard/projects', requireAuth, async (req: Request, res: Response) => {
     try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
       const userId = req.user.id;
       const projects = await storage.getUserProjects(userId);
       res.json(projects);
@@ -84,9 +87,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       res.status(201).json(project);
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === 'ZodError') {
-        const validationError = fromZodError(error);
+        const validationError = fromZodError(error as ZodError);
         return res.status(400).json({
           message: 'Invalid project data',
           errors: validationError.details
@@ -225,9 +228,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const milestone = await storage.createMilestone(milestoneData);
       res.status(201).json(milestone);
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === 'ZodError') {
-        const validationError = fromZodError(error);
+        const validationError = fromZodError(error as ZodError);
         return res.status(400).json({
           message: 'Invalid milestone data',
           errors: validationError.details
