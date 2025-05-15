@@ -206,6 +206,9 @@ export default function DashboardPage() {
     // Sluit welkomstscherm en start tour
     setShowWelcomeScreen(false);
     setShowTour(true);
+    console.log("Tour started"); // Debug logging
+    // Forceer een refresh van de tour component door state te manipuleren
+    localStorage.removeItem(`tour_completed_${user?.id}`);
   };
   
   const handleCompleteTour = () => {
@@ -317,7 +320,7 @@ export default function DashboardPage() {
               {/* Notification icon */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="relative">
+                  <Button variant="outline" size="icon" className="relative dashboard-notifications">
                     <Bell className="h-4 w-4" />
                     {notifications.length > 0 && (
                       <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500 transform translate-x-1/4 -translate-y-1/4" />
