@@ -179,12 +179,49 @@ export const uploadFileToStorage = async (file: File, path: string): Promise<str
   }
 };
 
+// Upload een bestand voor een chatbericht
+export const uploadChatAttachment = async (
+  file: File, 
+  roomId: string,
+  userId: number | null
+): Promise<{ url: string; type: string; name: string; size: number }> => {
+  try {
+    // Maak een unieke bestandsnaam met timestamp en originele naam
+    const timestamp = Date.now();
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `${timestamp}_${userId}_${file.name}`;
+    
+    // Pad naar de opslag locatie in Firebase Storage
+    const path = `chat_attachments/${roomId}/${fileName}`;
+    
+    // Upload het bestand
+    const url = await uploadFileToStorage(file, path);
+    
+    // Geef attachment details terug
+    return {
+      url,
+      type: file.type,
+      name: file.name,
+      size: file.size
+    };
+  } catch (error) {
+    console.error('Chat attachment upload error:', error);
+    throw error;
+  }
+};
+
 // Chat functies voor Firebase Realtime Database
 export interface ChatMessage {
   userId: number | null;
   username: string;
   message: string;
   timestamp: number;
+  attachment?: {
+    type: string;
+    name: string;
+    url: string;
+    size: number;
+  };
 }
 
 // Functie om een bericht te versturen naar de Firebase Realtime Database

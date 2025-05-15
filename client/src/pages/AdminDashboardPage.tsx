@@ -1177,7 +1177,13 @@ export default function AdminDashboardPage() {
                 </CardHeader>
                 <CardContent className="h-full pb-0">
                   <div className="h-full">
-                    <ChatInterface userId={user.id} username={user.name || user.username} />
+                    <ChatInterface 
+                      userId={user.id} 
+                      username={user.name || user.username}
+                      isAdmin={true}
+                      selectedClientId={selectedClientId}
+                      onClientSelect={(clientId) => setSelectedClientId(clientId)}
+                    />
                   </div>
                 </CardContent>
               </Card>
