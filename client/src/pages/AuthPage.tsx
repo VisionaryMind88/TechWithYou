@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,6 +10,8 @@ import { SEO } from "@/components/SEO";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { trackEvent } from "@/lib/analytics";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import {
   Form,
@@ -29,26 +31,51 @@ import {
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2Icon } from "lucide-react";
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string().min(1, { message: "Username is required" }),
+  password: z.string().min(1, { message: "Password is required" }),
+  rememberMe: z.boolean().optional(),
+});
+
+const registerSchema = z.object({
+  username: z.string().min(3, { 
+    message: "Username must be at least 3 characters" 
+  }),
+  email: z.string().email({ 
+    message: "Invalid email address" 
+  }),
+  password: z.string().min(8, { 
+    message: "Password must be at least 8 characters" 
+  }).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, {
+    message: "Password must contain at least one uppercase letter, one lowercase letter, and one number" 
+  }),
+  confirmPassword: z.string(),
+  terms: z.boolean().refine(val => val === true, {
+    message: "You must accept the terms and conditions"
+  })
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email({ 
+    message: "Invalid email address" 
+  }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 export default function AuthPage() {
   const { t } = useTranslation();
-  const { user, loginMutation } = useAuth();
+  const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const isEnglish = t('language') === 'en';
 
   const loginForm = useForm<LoginFormValues>({
@@ -56,6 +83,18 @@ export default function AuthPage() {
     defaultValues: {
       username: "",
       password: "",
+      rememberMe: false,
+    },
+  });
+
+  const registerForm = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      terms: false,
     },
   });
 
