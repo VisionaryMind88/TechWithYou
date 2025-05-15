@@ -622,6 +622,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to fetch projects' });
     }
   });
+  
+  // Update a project (admin access)
+  app.put('/api/admin/projects/:id', requireAdmin, async (req: Request, res: Response) => {
+    try {
+      const projectId = parseInt(req.params.id, 10);
+      const project = await storage.getProject(projectId);
+      
+      if (!project) {
+        return res.status(404).json({ error: 'Project not found' });
+      }
+      
+      const updatedProject = await storage.updateProject(projectId, req.body);
+      
+      if (updatedProject && req.body.status === 'planning' && project.status === 'new') {
+        // Create notification for project owner that project was approved
+        await storage.createNotification({
+          userId: project.userId,
+          title: 'Project Approved',
+          message: `Your project '${project.name}' has been approved and moved to planning phase.`,
+          type: 'success'
+        });
+      }
+      
+      res.json(updatedProject);
+    } catch (error) {
+      console.error('Error updating project:', error);
+      res.status(500).json({ error: 'Failed to update project' });
+    }
+  });
 
   // Get all contact form submissions
   app.get('/api/admin/contacts', requireAdmin, async (req: Request, res: Response) => {

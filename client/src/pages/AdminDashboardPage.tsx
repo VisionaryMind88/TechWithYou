@@ -36,6 +36,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { 
   Popover,
   PopoverContent,
@@ -433,13 +434,13 @@ export default function AdminDashboardPage() {
                     <div className="col-span-2">{selectedProject.userId}</div>
                     
                     <div className="font-medium text-muted-foreground">{isEnglish ? "Contact Person" : "Contactpersoon"}:</div>
-                    <div className="col-span-2">{selectedProject.metadata?.contactPerson || "-"}</div>
+                    <div className="col-span-2">{selectedProject.metaData?.contactPerson || "-"}</div>
                     
                     <div className="font-medium text-muted-foreground">{isEnglish ? "Email" : "E-mail"}:</div>
-                    <div className="col-span-2">{selectedProject.metadata?.contactEmail || "-"}</div>
+                    <div className="col-span-2">{selectedProject.metaData?.contactEmail || "-"}</div>
                     
                     <div className="font-medium text-muted-foreground">{isEnglish ? "Phone" : "Telefoon"}:</div>
-                    <div className="col-span-2">{selectedProject.metadata?.contactPhone || "-"}</div>
+                    <div className="col-span-2">{selectedProject.metaData?.contactPhone || "-"}</div>
                   </div>
                 </div>
               </div>
@@ -452,7 +453,7 @@ export default function AdminDashboardPage() {
                   <div className="space-y-2">
                     <h4 className="font-medium">{isEnglish ? "Services Required" : "Benodigde Diensten"}</h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProject.metadata?.services?.map((service, index) => (
+                      {selectedProject.metaData?.services?.map((service: string, index: number) => (
                         <Badge key={index} variant="secondary">{service}</Badge>
                       )) || "-"}
                     </div>
@@ -463,15 +464,15 @@ export default function AdminDashboardPage() {
                     <div className="grid grid-cols-3 gap-2">
                       <div className="font-medium text-muted-foreground">{isEnglish ? "Has Domain" : "Heeft Domein"}:</div>
                       <div className="col-span-2">
-                        {selectedProject.metadata?.domain?.hasOwn 
+                        {selectedProject.metaData?.domain?.hasOwn 
                           ? (isEnglish ? "Yes" : "Ja") 
                           : (isEnglish ? "No" : "Nee")}
                       </div>
                       
-                      {selectedProject.metadata?.domain?.hasOwn && (
+                      {selectedProject.metaData?.domain?.hasOwn && (
                         <>
                           <div className="font-medium text-muted-foreground">{isEnglish ? "Domain Name" : "Domeinnaam"}:</div>
-                          <div className="col-span-2">{selectedProject.metadata?.domain?.name || "-"}</div>
+                          <div className="col-span-2">{selectedProject.metaData?.domain?.name || "-"}</div>
                         </>
                       )}
                     </div>
