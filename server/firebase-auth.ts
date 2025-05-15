@@ -22,11 +22,15 @@ try {
 // De Firebase token verifiëren en de gebruiker opzoeken of aanmaken in onze database
 export async function verifyFirebaseToken(token: string) {
   try {
+    console.log("Server verifying Firebase token...");
+    
     // Token verifiëren
     const decodedToken = await getAuth(firebaseApp).verifyIdToken(token);
+    console.log("Token verified, decoded token:", decodedToken);
     
     // Gebruikersgegevens ophalen
     const { uid, email, name, picture } = decodedToken;
+    console.log("Auth data from token:", { uid, email, name });
     
     if (!email) {
       throw new Error("Email is required");

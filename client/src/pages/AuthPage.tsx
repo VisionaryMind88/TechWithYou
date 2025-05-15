@@ -97,8 +97,19 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     try {
       setIsSocialLoading("google");
+      
+      // Debug Firebase configuratie
+      console.log("Firebase login poging met configuratie:", {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID
+      });
+      
       const result = await signInWithGoogle();
+      console.log("Google login resultaat:", result);
+      
       const idToken = await result.user.getIdToken();
+      console.log("Token verkregen, versturen naar server");
       
       // Verstuur het token naar de server voor verificatie
       const response = await fetch("/api/auth/firebase", {
@@ -109,12 +120,16 @@ export default function AuthPage() {
         body: JSON.stringify({ token: idToken }),
       });
       
+      console.log("Server response status:", response.status);
+      
       if (response.ok) {
         // Na succesvolle authenticatie, werk de gebruiker state bij
         trackEvent("login", "auth", "google_login");
         window.location.href = "/"; // Forceer een refresh om de authenticatie state bij te werken
       } else {
-        throw new Error("Authentication failed");
+        const errorData = await response.json();
+        console.error("Server authentication error:", errorData);
+        throw new Error(errorData.message || "Authentication failed");
       }
     } catch (error) {
       console.error("Google sign in error:", error);
@@ -134,8 +149,19 @@ export default function AuthPage() {
   const handleGithubSignIn = async () => {
     try {
       setIsSocialLoading("github");
+      
+      // Debug Firebase configuratie
+      console.log("GitHub login poging met configuratie:", {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID
+      });
+      
       const result = await signInWithGithub();
+      console.log("GitHub login resultaat:", result);
+      
       const idToken = await result.user.getIdToken();
+      console.log("Token verkregen, versturen naar server");
       
       // Verstuur het token naar de server voor verificatie
       const response = await fetch("/api/auth/firebase", {
@@ -146,12 +172,16 @@ export default function AuthPage() {
         body: JSON.stringify({ token: idToken }),
       });
       
+      console.log("Server response status:", response.status);
+      
       if (response.ok) {
         // Na succesvolle authenticatie, werk de gebruiker state bij
         trackEvent("login", "auth", "github_login");
         window.location.href = "/"; // Forceer een refresh om de authenticatie state bij te werken
       } else {
-        throw new Error("Authentication failed");
+        const errorData = await response.json();
+        console.error("Server authentication error:", errorData);
+        throw new Error(errorData.message || "Authentication failed");
       }
     } catch (error) {
       console.error("GitHub sign in error:", error);
