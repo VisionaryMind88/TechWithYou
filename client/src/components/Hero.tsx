@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/use-translation";
+import { Link } from "wouter";
 
 export const Hero = () => {
   const { t } = useTranslation();
@@ -44,19 +45,19 @@ export const Hero = () => {
             {t('hero.description')}
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <a
+            <Link 
               href="/auth"
               className="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-150"
             >
               {t('hero.cta')}
               <i className="ri-arrow-right-line ml-2"></i>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/portfolio"
               className="inline-flex justify-center items-center px-6 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-white hover:text-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition duration-150"
             >
               {t('hero.viewWork')}
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>
@@ -66,10 +67,10 @@ export const Hero = () => {
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 3 }}
       >
-        <a href="#services" className="text-white flex flex-col items-center">
+        <Link href="/services" className="text-white flex flex-col items-center">
           <span className="text-sm mb-2">{t('hero.discoverMore')}</span>
           <i className="ri-arrow-down-line text-2xl"></i>
-        </a>
+        </Link>
       </motion.div>
     </section>
   );

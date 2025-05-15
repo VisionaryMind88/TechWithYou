@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "@/hooks/use-translation";
+import { Link } from "wouter";
 
 export const CallToAction = () => {
   const { t } = useTranslation();
