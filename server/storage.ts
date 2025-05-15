@@ -83,6 +83,10 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user || undefined;
   }
+  
+  async getUsersByRole(role: string): Promise<User[]> {
+    return await db.select().from(users).where(eq(users.role, role));
+  }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db.insert(users).values(insertUser).returning();
@@ -217,6 +221,13 @@ export class DatabaseStorage implements IStorage {
       .where(eq(projects.userId, userId))
       .orderBy(desc(projects.updatedAt));
     return userProjects;
+  }
+  
+  async getAllProjects(): Promise<Project[]> {
+    const allProjects = await db.select()
+      .from(projects)
+      .orderBy(desc(projects.updatedAt));
+    return allProjects;
   }
   
   async updateProject(id: number, data: Partial<InsertProject>): Promise<Project | undefined> {
