@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 import { setupAuth } from "./auth";
 import { emailService } from "./email-service";
 import { verifyFirebaseToken } from "./firebase-auth";
+import { db } from "./db";
 
 // Middleware to check if user is authenticated
 function requireAuth(req: Request, res: Response, next: NextFunction) {
@@ -36,6 +37,18 @@ function assertUser(req: Request, res: Response): Express.User | null {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
+  
+  // Health check endpoint voor Railway deployment
+  app.get('/api/health', async (req: Request, res: Response) => {
+    try {
+      // Database connectie testen
+      await db.execute('SELECT 1');
+      return res.status(200).json({ status: 'healthy', message: 'Application is running and database connection is active' });
+    } catch (error) {
+      console.error('Health check failed:', error);
+      return res.status(500).json({ status: 'unhealthy', message: 'Database connection failed' });
+    }
+  });
   
   // API endpoints for checking username and email existence (for registration validation)
   app.get('/api/check-username', async (req: Request, res: Response) => {
