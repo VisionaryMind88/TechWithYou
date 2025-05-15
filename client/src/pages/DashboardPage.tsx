@@ -202,13 +202,14 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/notifications"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/projects"] });
       
-      // Show success toast
+      // Show success toast with green color
       toast({
-        title: isEnglish ? "Project Created" : "Project Aangemaakt",
+        title: isEnglish ? "Project Request Submitted!" : "Projectaanvraag Ingediend!",
         description: isEnglish 
-          ? "Your project request has been sent directly to the admin dashboard."
-          : "Je projectaanvraag is direct verzonden naar het admin dashboard.",
+          ? "Your project request has been sent to our team and will appear in your dashboard with 'Pending' status."
+          : "Je projectaanvraag is verzonden naar ons team en zal in je dashboard verschijnen met de status 'In afwachting'.",
         variant: "default",
+        className: "bg-green-50 border-green-200",
       });
       
       // Track event
@@ -307,9 +308,12 @@ export default function DashboardPage() {
 
   const getProjectStatusColor = (status: string) => {
     switch (status) {
-      case "proposal":
+      case "new":
+        return "bg-orange-100 text-orange-800";
+      case "planning":
         return "bg-blue-100 text-blue-800";
       case "in-progress":
+      case "in_progress":
         return "bg-yellow-100 text-yellow-800";
       case "review":
         return "bg-purple-100 text-purple-800";
