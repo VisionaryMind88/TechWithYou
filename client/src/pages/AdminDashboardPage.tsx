@@ -78,6 +78,8 @@ export default function AdminDashboardPage() {
   const [clientSearchQuery, setClientSearchQuery] = useState("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isProjectDetailDialogOpen, setIsProjectDetailDialogOpen] = useState(false);
+  // State voor geselecteerde client in de chat
+  const [selectedClientId, setSelectedClientId] = useState<number>();
   
   // Tracking analytics on page visit
   useEffect(() => {

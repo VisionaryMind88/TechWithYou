@@ -9,6 +9,7 @@ import { useTranslation } from "@/hooks/use-translation";
 import { trackEvent } from "@/lib/analytics";
 import { WelcomeScreen } from "@/components/WelcomeScreen";
 import { DashboardTour } from "@/components/DashboardTour";
+import { ChatInterface } from "@/components/ChatInterface";
 import { Project, InsertProject } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "@/lib/queryClient";
 import { format } from "date-fns";
@@ -730,17 +731,20 @@ export default function DashboardPage() {
             <TabsContent value="chat" className="dashboard-chat" data-tour-target="chat-tab">
               <Card className="h-[calc(80vh-10rem)]">
                 <CardHeader>
-                  <CardTitle>{isEnglish ? "Team Chat" : "Team Chat"}</CardTitle>
+                  <CardTitle>{isEnglish ? "Support Chat" : "Support Chat"}</CardTitle>
                   <CardDescription>
                     {isEnglish 
-                      ? "Chat with your team members in real-time" 
-                      : "Chat in realtime met je teamleden"}
+                      ? "Chat with our team in real-time and share files" 
+                      : "Chat in realtime met ons team en deel bestanden"}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-4">
-                  <p className="text-muted-foreground text-center">
-                    {isEnglish ? "Chat functionality coming soon" : "Chat functionaliteit komt binnenkort beschikbaar"}
-                  </p>
+                <CardContent className="h-full p-0">
+                  <div className="h-full">
+                    <ChatInterface 
+                      userId={user.id} 
+                      username={user.name || user.username}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
