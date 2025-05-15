@@ -623,7 +623,7 @@ export default function DashboardPage() {
           </AlertDialogHeader>
           
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => createProjectMutation.mutate(data))} className="space-y-4 py-2">
+            <form onSubmit={form.handleSubmit((data) => createProjectMutation.mutate(data))} className="space-y-4 py-2 max-h-[70vh] overflow-y-auto pr-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -869,21 +869,23 @@ export default function DashboardPage() {
                 />
               </div>
               
-              <AlertDialogFooter className="pt-4">
-                <AlertDialogCancel type="button">
-                  {isEnglish ? "Cancel" : "Annuleren"}
-                </AlertDialogCancel>
-                <AlertDialogAction type="submit" disabled={createProjectMutation.isPending || !form.formState.isValid}>
-                  {createProjectMutation.isPending ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {isEnglish ? "Submitting..." : "Bezig met indienen..."}
-                    </>
-                  ) : (
-                    isEnglish ? "Submit Project Request" : "Projectaanvraag Indienen"
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
+              <div className="sticky bottom-0 bg-white dark:bg-gray-950 pt-2">
+                <AlertDialogFooter>
+                  <AlertDialogCancel type="button">
+                    {isEnglish ? "Cancel" : "Annuleren"}
+                  </AlertDialogCancel>
+                  <AlertDialogAction type="submit" disabled={createProjectMutation.isPending || !form.formState.isValid}>
+                    {createProjectMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {isEnglish ? "Submitting..." : "Bezig met indienen..."}
+                      </>
+                    ) : (
+                      isEnglish ? "Submit Project Request" : "Projectaanvraag Indienen"
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </div>
             </form>
           </Form>
         </AlertDialogContent>
