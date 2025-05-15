@@ -36,41 +36,32 @@ Een geavanceerde professionele website voor TechWithYou die diensten aanbiedt vo
 
 ## Database configuratie
 
-Om de Supabase database te configureren:
+Voor gedetailleerde instructies over het opzetten van de Supabase database, zie [docs/supabase-setup.md](docs/supabase-setup.md).
 
-1. Ga naar de [Supabase dashboard](https://supabase.com/dashboard/projects)
-2. Maak een nieuw project aan
-3. Zodra je op de projectpagina bent, klik op de "Connect" knop in de bovenste werkbalk
-4. Kopieer de URI waarde onder "Connection string" -> "Transaction pooler"
-5. Vervang `[YOUR-PASSWORD]` met het databasewachtwoord dat je hebt ingesteld voor het project
-6. Voeg deze URL toe als DATABASE_URL in je `.env` bestand
+Samenvatting:
+1. Maak een Supabase project aan
+2. Kopieer de Connection Pooling URL
+3. Voeg de URL toe als DATABASE_URL in je `.env` bestand
 
 ## Firebase configuratie
 
 Om Firebase authenticatie te configureren:
 
-1. Ga naar de [Firebase console](https://console.firebase.google.com/) en maak een nieuw Firebase project.
-2. Klik op "Add app" en selecteer het Web platform (/>).
-3. Ga naar de "Authentication" sectie in de nieuwe Firebase app, schakel de Google aanmeldingsmethode in, en klik op opslaan.
-4. Voeg de Repl's Dev URL toe aan de "Authorized domains" lijst in de Firebase app onder Authentication > Settings > Authorized domains.
-5. Kopieer de Firebase configuratiegegevens (apiKey, authDomain, etc.) naar je `.env` bestand.
+1. Ga naar de [Firebase console](https://console.firebase.google.com/) en maak een nieuw Firebase project
+2. Klik op "Add app" en selecteer het Web platform (/>)
+3. Ga naar de "Authentication" sectie, schakel de Google aanmeldingsmethode in
+4. Voeg de applicatie URL toe aan de "Authorized domains" lijst
+5. Kopieer de Firebase configuratiegegevens naar je `.env` bestand
 
 ## Deployment met Railway
 
-Deze applicatie is geconfigureerd voor deployment via Railway:
+Voor gedetailleerde instructies over deployment naar Railway, zie [docs/railway-deployment.md](docs/railway-deployment.md).
 
-1. Maak een Railway project aan op [railway.app](https://railway.app/)
-2. Verbind je GitHub repository
-3. Voeg de benodigde environment variabelen toe:
-   - DATABASE_URL: Je Supabase database URL
-   - OPENAI_API_KEY: Je OpenAI API sleutel voor de chatbot
-   - VITE_FIREBASE_*: Je Firebase configuratiegegevens
-   - PORT: 5000
-   - NODE_ENV: production
-
-4. Deploy de applicatie:
-   - Railway zal automatisch de juiste build en start commando's uitvoeren op basis van de railway.json configuratie
-   - De health check endpoint op /api/health zal automatisch worden gebruikt door Railway om de applicatie gezondheid te monitoren
+Samenvatting:
+1. Maak een Railway project aan en koppel je GitHub repository
+2. Configureer alle benodigde environment variabelen
+3. De applicatie wordt automatisch gebouwd en gedeployed
+4. De health check endpoint op `/api/health` wordt gebruikt om de status te monitoren
 
 ## Projectstructuur
 
