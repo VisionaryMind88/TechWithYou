@@ -7,13 +7,13 @@ import { z } from 'zod';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
-// Form validation schema
+// Form validation schema with improved error messages and trimming
 const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  company: z.string().min(1, { message: "Company is required" }),
+  name: z.string().trim().min(2, { message: "Name must be at least 2 characters" }),
+  email: z.string().trim().email({ message: "Please enter a valid email address" }),
+  company: z.string().trim().min(1, { message: "Company name is required" }),
   service: z.string().min(1, { message: "Please select a service" }),
-  message: z.string().min(10, { message: "Message must be at least 10 characters" })
+  message: z.string().trim().min(10, { message: "Message must be at least 10 characters long" })
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -48,12 +48,27 @@ export const ContactForm = () => {
       
       form.reset();
     } catch (error) {
+      // More detailed error handling
+      let errorMessage = "Please try again later.";
+      
+      if (error instanceof Error) {
+        // Check for specific error types
+        if (error.message.includes('Network error')) {
+          errorMessage = "Connection problem. Please check your internet and try again.";
+        } else if (error.message.includes('429')) {
+          errorMessage = "Too many requests. Please wait a moment before trying again.";
+        } else if (error.message.includes('500')) {
+          errorMessage = "Server error. Our team has been notified.";
+        }
+        
+        console.error("Error sending message:", error.message);
+      }
+      
       toast({
-        title: "Something went wrong",
-        description: "Please try again later.",
+        title: "Could not send message",
+        description: errorMessage,
         variant: "destructive",
       });
-      console.error("Error sending message:", error);
     } finally {
       setIsSubmitting(false);
     }

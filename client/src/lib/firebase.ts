@@ -37,27 +37,14 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Debug configuratie
-console.log("Firebase Config:", { 
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "techwithyouu.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: "techwithyouu.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "161803725978",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+// Log config for debugging but mask the API key
+console.log("Firebase Config:", {
+  ...firebaseConfig,
+  apiKey: firebaseConfig.apiKey ? "********" : undefined
 });
 
-// Firebase initialiseren met volledige configuratie
-const app = initializeApp({
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "techwithyouu.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: "techwithyouu.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "161803725978",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-});
+// Firebase initialiseren met de config
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // Auth providers instellen
@@ -75,7 +62,7 @@ googleProvider.setCustomParameters({
 //   tenant: 'TENANT_ID'
 // });
 
-// Functies voor sociale login
+// Functies voor sociale login met verbeterde foutafhandeling
 export const signInWithGoogle = async (): Promise<UserCredential> => {
   try {
     // Eerst proberen met Popup (meest gebruikelijke manier)
@@ -83,23 +70,35 @@ export const signInWithGoogle = async (): Promise<UserCredential> => {
   } catch (error: any) {
     console.log("Popup failed, analyzing error...", error);
     
-    // Check voor specifieke error: unauthorized domain
-    if (error.code === 'auth/unauthorized-domain') {
-      console.error("Firebase authentication domain error:", error);
-      throw new Error(`
+    // Map Firebase error codes to user-friendly error messages
+    const errorMap: Record<string, string> = {
+      'auth/unauthorized-domain': `
         De huidige domain is niet geautoriseerd in Firebase. 
-        Voeg ${window.location.origin} toe aan de lijst van geautoriseerde domeinen in Firebase Console:
-        1. Ga naar Firebase Console > Authentication > Settings > Authorized domains
-        2. Voeg dit domein toe: ${window.location.origin}
-      `);
+        Voeg ${window.location.origin} toe aan de lijst van geautoriseerde domeinen in Firebase Console.
+      `,
+      'auth/popup-closed-by-user': 'Login was interrupted because the popup window was closed.',
+      'auth/cancelled-popup-request': 'The authentication request was cancelled.',
+      'auth/popup-blocked': 'The authentication popup was blocked by the browser. Please enable popups for this site.',
+      'auth/account-exists-with-different-credential': 'An account already exists with the same email address but different sign-in credentials.',
+      'auth/network-request-failed': 'Network error. Please check your internet connection and try again.'
+    };
+    
+    if (error.code in errorMap) {
+      console.error(`Firebase authentication error (${error.code}):`, error);
+      throw new Error(errorMap[error.code]);
     }
     
     // Als het een andere fout is, probeer redirect methode
     console.log("Attempting redirect authentication...");
     sessionStorage.setItem('authRedirectPath', window.location.pathname);
     // Redirect flow starten
-    await signInWithRedirect(auth, googleProvider);
-    // Deze code wordt nooit bereikt vanwege de redirect
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (redirectError) {
+      console.error("Redirect authentication failed:", redirectError);
+      throw redirectError;
+    }
+    // Deze code wordt normaal nooit bereikt vanwege de redirect
     throw error;
   }
 };
@@ -111,23 +110,35 @@ export const signInWithGithub = async (): Promise<UserCredential> => {
   } catch (error: any) {
     console.log("Popup failed, analyzing error...", error);
     
-    // Check voor specifieke error: unauthorized domain
-    if (error.code === 'auth/unauthorized-domain') {
-      console.error("Firebase authentication domain error:", error);
-      throw new Error(`
+    // Map Firebase error codes to user-friendly error messages
+    const errorMap: Record<string, string> = {
+      'auth/unauthorized-domain': `
         De huidige domain is niet geautoriseerd in Firebase. 
-        Voeg ${window.location.origin} toe aan de lijst van geautoriseerde domeinen in Firebase Console:
-        1. Ga naar Firebase Console > Authentication > Settings > Authorized domains
-        2. Voeg dit domein toe: ${window.location.origin}
-      `);
+        Voeg ${window.location.origin} toe aan de lijst van geautoriseerde domeinen in Firebase Console.
+      `,
+      'auth/popup-closed-by-user': 'Login was interrupted because the popup window was closed.',
+      'auth/cancelled-popup-request': 'The authentication request was cancelled.',
+      'auth/popup-blocked': 'The authentication popup was blocked by the browser. Please enable popups for this site.',
+      'auth/account-exists-with-different-credential': 'An account already exists with the same email address but different sign-in credentials.',
+      'auth/network-request-failed': 'Network error. Please check your internet connection and try again.'
+    };
+    
+    if (error.code in errorMap) {
+      console.error(`Firebase authentication error (${error.code}):`, error);
+      throw new Error(errorMap[error.code]);
     }
     
     // Als het een andere fout is, probeer redirect methode
     console.log("Attempting redirect authentication...");
     sessionStorage.setItem('authRedirectPath', window.location.pathname);
     // Redirect flow starten
-    await signInWithRedirect(auth, githubProvider);
-    // Deze code wordt nooit bereikt vanwege de redirect
+    try {
+      await signInWithRedirect(auth, githubProvider);
+    } catch (redirectError) {
+      console.error("GitHub redirect authentication failed:", redirectError);
+      throw redirectError;
+    }
+    // Deze code wordt normaal nooit bereikt vanwege de redirect
     throw error;
   }
 };
