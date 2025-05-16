@@ -35,7 +35,12 @@ export const SEO = ({
   const metaTitle = title || defaultTitle;
   const fullTitle = `${metaTitle} | ${siteName}`;
   const metaDescription = description || defaultDescription;
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://techwithyou.nl/';
+  
+  // Use a safer way to get the current URL that works with Wouter routing
+  const currentUrl = typeof window !== 'undefined' 
+    ? `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}`
+    : 'https://techwithyou.nl/';
+  
   const pageCanonical = canonical || currentUrl;
   
   // Default schema for WebSite

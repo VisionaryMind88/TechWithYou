@@ -32,13 +32,16 @@ const Header = () => {
     setLanguage(newLang);
   };
 
+  const [, setLocation] = useLocation();
+  
   const handleNavClick = (sectionId: string) => {
     if (isHomePage) {
       // If on home page, scroll to section
       scrollToElement(sectionId);
     } else {
       // If on another page, navigate to home and then to section
-      window.location.href = `/#${sectionId}`;
+      // Using wouter's setLocation instead of direct window.location manipulation
+      setLocation(`/#${sectionId}`);
     }
     setIsMobileMenuOpen(false);
   };
