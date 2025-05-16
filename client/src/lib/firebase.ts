@@ -154,9 +154,27 @@ const storage = getStorage(app);
 // Maak de realtime database instantie aan
 const database = getDatabase(app);
 
-// Upload bestand naar Firebase Storage
+// Upload bestand naar Firebase Storage with improved error handling
 export const uploadFileToStorage = async (file: File, path: string): Promise<string> => {
   try {
+    // Validate file size (max 10MB)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error(`File too large. Maximum size is 10MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.`);
+    }
+    
+    // Validate file type (optional security check)
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+      'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/zip', 'text/plain', 'text/csv'
+    ];
+    
+    if (!allowedTypes.includes(file.type)) {
+      console.warn(`File type ${file.type} may not be supported. Attempting upload anyway.`);
+    }
+    
     // Referentie naar de locatie in Firebase Storage
     const fileStorageRef = storageRef(storage, path);
     
@@ -172,15 +190,35 @@ export const uploadFileToStorage = async (file: File, path: string): Promise<str
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log('Upload progress: ' + progress + '%');
         },
-        (error) => {
-          // Handle errors
+        (error: any) => {
+          // Enhanced error handling
           console.error('Upload error:', error);
-          reject(error);
+          
+          // Map Firebase storage error codes to user-friendly messages
+          const errorMap: Record<string, string> = {
+            'storage/unauthorized': 'You do not have permission to upload files.',
+            'storage/canceled': 'The upload was canceled by the user.',
+            'storage/unknown': 'An unknown error occurred during upload.',
+            'storage/object-too-large': 'The file is too large.',
+            'storage/quota-exceeded': 'Storage quota exceeded.',
+            'storage/invalid-checksum': 'File upload failed due to network issues. Please try again.'
+          };
+          
+          if (error.code && errorMap[error.code]) {
+            reject(new Error(errorMap[error.code]));
+          } else {
+            reject(error);
+          }
         },
         async () => {
-          // Upload successful, get download URL
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          resolve(downloadURL);
+          try {
+            // Upload successful, get download URL
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(downloadURL);
+          } catch (urlError) {
+            console.error('Error getting download URL:', urlError);
+            reject(new Error('Upload succeeded but could not retrieve download URL. Please try again.'));
+          }
         }
       );
     });
@@ -190,34 +228,64 @@ export const uploadFileToStorage = async (file: File, path: string): Promise<str
   }
 };
 
-// Upload een bestand voor een chatbericht
+// Upload een bestand voor een chatbericht met extra validatie
 export const uploadChatAttachment = async (
   file: File, 
   roomId: string,
   userId: number | null
 ): Promise<{ url: string; type: string; name: string; size: number }> => {
   try {
+    // Validate roomId (basic sanitization)
+    if (!roomId || !/^[a-zA-Z0-9_-]+$/.test(roomId)) {
+      throw new Error('Invalid room ID. Room ID must only contain letters, numbers, hyphens and underscores.');
+    }
+    
+    // Sanitize file name to prevent path traversal and other issues
+    const sanitizedFilename = file.name.replace(/[^\w\s.-]/g, '_');
+    
     // Maak een unieke bestandsnaam met timestamp en originele naam
     const timestamp = Date.now();
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${timestamp}_${userId}_${file.name}`;
+    const fileName = `${timestamp}_${userId || 'anonymous'}_${sanitizedFilename}`;
     
     // Pad naar de opslag locatie in Firebase Storage
     const path = `chat_attachments/${roomId}/${fileName}`;
     
-    // Upload het bestand
-    const url = await uploadFileToStorage(file, path);
+    // Upload het bestand with timeout protection
+    const UPLOAD_TIMEOUT = 60000; // 60 seconds timeout
     
-    // Geef attachment details terug
-    return {
-      url,
-      type: file.type,
-      name: file.name,
-      size: file.size
-    };
+    let uploadTimedOut = false;
+    const timeoutId = setTimeout(() => {
+      uploadTimedOut = true;
+      throw new Error('File upload timed out. Please try again with a smaller file or check your connection.');
+    }, UPLOAD_TIMEOUT);
+    
+    try {
+      // Upload het bestand
+      const url = await uploadFileToStorage(file, path);
+      
+      // Clear timeout since upload succeeded
+      clearTimeout(timeoutId);
+      
+      // Don't proceed if upload has already timed out
+      if (uploadTimedOut) return Promise.reject(new Error('Upload timed out'));
+      
+      // Geef attachment details terug
+      return {
+        url,
+        type: file.type,
+        name: sanitizedFilename,
+        size: file.size
+      };
+    } finally {
+      clearTimeout(timeoutId);
+    }
   } catch (error) {
     console.error('Chat attachment upload error:', error);
-    throw error;
+    // Rethrow with a more user-friendly message
+    if (error instanceof Error) {
+      throw new Error(`Failed to upload attachment: ${error.message}`);
+    }
+    throw new Error('Failed to upload attachment. Please try again.');
   }
 };
 
@@ -248,13 +316,34 @@ export interface ChatNotification {
   isAdmin: boolean;
 }
 
-// Functie om een bericht te versturen naar de Firebase Realtime Database
+// Functie om een bericht te versturen naar de Firebase Realtime Database met verbeterde validatie
 export const sendChatMessage = async (
   roomId: string, 
   message: ChatMessage, 
   notifyClientId?: number
 ): Promise<void> => {
   try {
+    // Validate roomId
+    if (!roomId || !/^[a-zA-Z0-9_-]+$/.test(roomId)) {
+      throw new Error('Invalid room ID format');
+    }
+    
+    // Validate message content (prevent empty or excessively large messages)
+    if (message.message && message.message.length > 10000) {
+      throw new Error('Message is too long (maximum 10,000 characters)');
+    }
+    
+    // Basic sanitization of message content (optional, can be enhanced)
+    const sanitizedMessage = {
+      ...message,
+      message: message.message 
+        ? message.message.trim().substring(0, 10000)
+        : message.message,
+      username: message.username 
+        ? message.username.trim().substring(0, 100) 
+        : message.username
+    };
+    
     // Referentie naar de chatroom in de realtime database
     const chatRef = databaseRef(database, `chats/${roomId}/messages`);
     
@@ -263,35 +352,66 @@ export const sendChatMessage = async (
     
     // Bericht met timestamp opslaan
     await set(newMessageRef, {
-      ...message,
+      ...sanitizedMessage,
       timestamp: serverTimestamp()
     });
     
     // Als dit een admin bericht is, stuur een notificatie naar de client
     if (message.isAdmin && notifyClientId) {
-      await sendChatNotification(notifyClientId, {
-        roomId,
-        fromUsername: message.username,
-        message: message.message || 'Heeft een bestand gedeeld',
-        timestamp: Date.now(),
-        read: false,
-        isAdmin: true
-      });
+      try {
+        await sendChatNotification(notifyClientId, {
+          roomId,
+          fromUsername: sanitizedMessage.username,
+          message: sanitizedMessage.message || 'Heeft een bestand gedeeld',
+          timestamp: Date.now(),
+          read: false,
+          isAdmin: true
+        });
+      } catch (notificationError) {
+        // Log notification error but don't fail the message send operation
+        console.warn('Failed to send notification, but message was sent:', notificationError);
+      }
     }
     
     console.log('Message sent successfully');
   } catch (error) {
     console.error('Error sending message:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`Failed to send message: ${error.message}`);
+    }
+    throw new Error('Failed to send message. Please try again.');
   }
 };
 
-// Functie om een chat notificatie te versturen
+// Functie om een chat notificatie te versturen met verbeterde validatie
 export const sendChatNotification = async (
   userId: number,
   notification: ChatNotification
 ): Promise<void> => {
   try {
+    // Validate user ID 
+    if (typeof userId !== 'number' || userId <= 0) {
+      throw new Error('Invalid user ID');
+    }
+    
+    // Validate notification data and sanitize
+    if (!notification.roomId || !notification.fromUsername) {
+      throw new Error('Invalid notification data: missing required fields');
+    }
+    
+    // Trim and limit message length for safety
+    const sanitizedNotification = {
+      ...notification,
+      roomId: notification.roomId.trim().substring(0, 100),
+      fromUsername: notification.fromUsername.trim().substring(0, 100),
+      message: notification.message 
+        ? notification.message.trim().substring(0, 500) // Limit message length
+        : 'New notification',
+      timestamp: notification.timestamp || Date.now(),
+      read: !!notification.read, // Ensure boolean
+      isAdmin: !!notification.isAdmin // Ensure boolean
+    };
+    
     // Referentie naar de notificaties van de gebruiker
     const notificationRef = databaseRef(database, `notifications/${userId}`);
     
@@ -299,12 +419,39 @@ export const sendChatNotification = async (
     const newNotificationRef = push(notificationRef);
     
     // Notificatie opslaan
-    await set(newNotificationRef, notification);
+    await set(newNotificationRef, sanitizedNotification);
+    
+    // Set a maximum number of notifications per user (prevent storage overflow)
+    // This could be moved to a cloud function for better performance in a production app
+    try {
+      const limitNotifications = async () => {
+        // Get all notifications for this user
+        const allNotificationsRef = databaseRef(database, `notifications/${userId}`);
+        
+        onValue(allNotificationsRef, (snapshot) => {
+          const MAX_NOTIFICATIONS = 100;
+          
+          if (snapshot.size > MAX_NOTIFICATIONS) {
+            // This is just an example - in a real app this would be better handled in a cloud function
+            console.log(`User ${userId} has more than ${MAX_NOTIFICATIONS} notifications, consider a cleanup strategy`);
+          }
+        }, { onlyOnce: true });
+      };
+      
+      // Run this check but don't await it (don't block notification sending)
+      limitNotifications().catch(e => console.warn('Failed to check notification count:', e));
+    } catch (limitCheckError) {
+      // Just log the error but don't prevent notification from being sent
+      console.warn('Failed to check notification limits:', limitCheckError);
+    }
     
     console.log('Notification sent successfully');
   } catch (error) {
     console.error('Error sending notification:', error);
-    throw error;
+    if (error instanceof Error) {
+      throw new Error(`Failed to send notification: ${error.message}`);
+    }
+    throw new Error('Failed to send notification. Please try again.');
   }
 };
 
