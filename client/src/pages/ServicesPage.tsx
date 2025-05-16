@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
+import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Services } from '@/components/Services';
 import { CallToAction } from '@/components/CallToAction';
 import { SEO } from '@/components/SEO';
+import { scrollToElement } from '@/lib/utils';
 
 const ServicesPage = () => {
   const { t } = useTranslation();
+  const [location] = useLocation();
   
   useEffect(() => {
     // Get hash from URL (if any)
@@ -18,31 +21,18 @@ const ServicesPage = () => {
       // Remove the # character
       const id = hash.substring(1);
       
-      // Find the element
-      const element = document.getElementById(id);
-      
-      if (element) {
-        // Add a small delay to ensure the page is fully loaded
-        setTimeout(() => {
-          // Account for fixed header
-          const headerOffset = 100;
-          const elementPosition = element.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-        }, 300);
-      } else {
-        // If no element found, scroll to top
-        window.scrollTo(0, 0);
-      }
+      // Use our utility function to scroll to element
+      setTimeout(() => {
+        scrollToElement(id);
+      }, 300);
     } else {
       // No hash, scroll to top
-      window.scrollTo(0, 0);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     }
-  }, []);
+  }, [location]); // Re-run when location changes for deep links
 
   return (
     <>

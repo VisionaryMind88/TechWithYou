@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from '@/hooks/use-translation';
+import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -10,10 +11,15 @@ import { SEO } from '@/components/SEO';
 
 const PortfolioPage = () => {
   const { t } = useTranslation();
+  const [location] = useLocation();
   
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    // Scroll to top with smooth behavior when the page loads
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [location]); // Re-run when location changes
 
   const portfolioItems = [
     {
