@@ -16,6 +16,8 @@ import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { useEffect } from "react";
 import { useTranslation } from "@/hooks/use-translation";
+import { useLocation } from "wouter";
+import { scrollToElement } from "@/lib/utils";
 
 interface HomeProps {
   initialSection?: string;
@@ -24,27 +26,31 @@ interface HomeProps {
 export default function Home({ initialSection }: HomeProps) {
   const { t } = useTranslation();
   const isEnglish = t('language') === 'en';
+  const [location] = useLocation();
   
   // Handle navigation to section or top of page on load
   useEffect(() => {
-    if (initialSection) {
-      const sectionElement = document.getElementById(initialSection);
-      if (sectionElement) {
-        setTimeout(() => {
-          const headerOffset = 120; // Adjusted for header height
-          const elementPosition = sectionElement.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-          
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-          });
-        }, 100);
-      }
+    // Check for hash in URL (like /#services)
+    const hash = window.location.hash;
+    if (hash) {
+      // Remove the # character
+      const sectionId = hash.substring(1);
+      setTimeout(() => {
+        scrollToElement(sectionId);
+      }, 100);
+    } else if (initialSection) {
+      // If explicitly provided section via props
+      setTimeout(() => {
+        scrollToElement(initialSection);
+      }, 100);
     } else {
-      window.scrollTo(0, 0);
+      // No section specified, scroll to top
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
-  }, [initialSection]);
+  }, [initialSection, location]);
 
   return (
     <motion.div
