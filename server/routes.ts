@@ -39,10 +39,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
   
   // Health check endpoint voor Railway deployment
-  app.get('/api/health', async (req: Request, res: Response) => {
-    // Simple health check that always returns healthy
-    // This helps Railway to pass the initial health check while your app is starting up
-    return res.status(200).json({ status: 'healthy', message: 'Application is running' });
+  app.get('/api/health', (req: Request, res: Response) => {
+    // Basic health check that doesn't depend on any other services
+    // Returns immediately for Railway's health check system
+    return res.status(200).send('OK');
   });
   
   // Detailed health check endpoint for monitoring
