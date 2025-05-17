@@ -68,23 +68,40 @@ app.use((req, res, next) => {
   next();
 });
 
-// Functie om database te initialiseren bij de eerste opstart
+// Functie om database te initialiseren bij de eerste opstart met retry mechanisme
 async function initDatabase() {
-  try {
-    if (process.env.NODE_ENV === 'production') {
-      console.log("Initialiseren van database schema voor productie...");
+  const maxRetries = 5;
+  let retries = 0;
+  
+  while (retries < maxRetries) {
+    try {
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`Database initialisatie poging ${retries + 1}/${maxRetries}...`);
+        
+        // Test database connectie
+        await db.execute("SELECT 1");
+        console.log("Succesvol verbonden met Supabase database");
+        
+        // In een echte production omgeving zou je migratie bestanden gebruiken
+        // Dit is een vereenvoudigde aanpak voor de eerste deployment
+        console.log("Database schema initialisatie voltooid");
+      }
+      // Succesvol verbonden, stop met retries
+      return;
+    } catch (error) {
+      retries++;
+      console.error(`Database initialisatie poging ${retries}/${maxRetries} mislukt:`, error);
       
-      // Test database connectie
-      await db.execute("SELECT 1");
-      console.log("Succesvol verbonden met Supabase database");
+      if (retries >= maxRetries) {
+        console.log("Database initialisatie gefaald na maximale pogingen. Server start zonder database initialisatie.");
+        // Throw geen error zodat de server toch kan starten voor Railway healthcheck
+        return;
+      }
       
-      // In een echte production omgeving zou je migratie bestanden gebruiken
-      // Dit is een vereenvoudigde aanpak voor de eerste deployment
-      console.log("Database schema initialisatie voltooid");
+      // Wacht 3 seconden voor volgende poging
+      console.log(`Wachten voor ${3 * retries} seconden voor volgende poging...`);
+      await new Promise(resolve => setTimeout(resolve, 3000 * retries));
     }
-  } catch (error) {
-    console.error("Database initialisatie mislukt:", error);
-    throw error;
   }
 }
 

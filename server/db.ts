@@ -14,7 +14,10 @@ export const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Nodig voor Supabase en Railway
   max: 20, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 5000, // How long to wait for a connection to become available
+  connectionTimeoutMillis: 10000, // Increased timeout for Railway deployment
+  statement_timeout: 10000, // Maximum time for queries to execute
+  keepAlive: true, // Keep connections alive
+  keepAliveInitialDelayMillis: 10000, // Delay before starting keepalive probes
 });
 
 // Log database connection status
