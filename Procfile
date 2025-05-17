@@ -1,1 +1,1 @@
-web: npm run start
+web: echo "Starting server..." && node dist/index.js
