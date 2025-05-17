@@ -38,12 +38,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   setupAuth(app);
   
-  // Health check endpoint voor Railway deployment
-  app.get('/api/health', (req: Request, res: Response) => {
-    // Basic health check that doesn't depend on any other services
-    // Returns immediately for Railway's health check system
-    return res.status(200).send('OK');
-  });
+  // Secondary health check endpoint only used internally
+  // Note: The primary /api/health route is defined in index.ts with higher priority
+  // This route will not be called by Railway's health check system
   
   // Detailed health check endpoint for monitoring
   app.get('/api/health/detailed', async (req: Request, res: Response) => {

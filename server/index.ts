@@ -9,6 +9,12 @@ import { db } from './db';
 dotenv.config();
 
 const app = express();
+
+// Railway health check route - highest priority
+// This ensures Railway can always reach the health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).send('OK');
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
